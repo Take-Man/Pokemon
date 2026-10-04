@@ -1,0 +1,21 @@
+{
+ "format": "[Gen 9 Champions] BSS Reg M-C",
+ "formatId": "gen9championsbssregmc",
+ "mod": "champions",
+ "exportedAt": "2026-09-28T10:55:07.048Z",
+ "counts": {
+  "species": 382,
+  "moves": 510,
+  "abilities": 216,
+  "items": 166
+ },
+ "ja_missing": {
+  "abilities": [
+   "Aura Guard",
+   "Eelevate",
+   "Fire Mane"
+  ],
+  "items": [],
+  "moves": []
+ }
+}

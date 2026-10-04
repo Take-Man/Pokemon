@@ -1,0 +1,1825 @@
+[
+ {
+  "id": "abomasite",
+  "en": "Abomasite",
+  "ja": "ユキノオナイト",
+  "megaStone": {
+   "Abomasnow": "Abomasnow-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "absolite",
+  "en": "Absolite",
+  "ja": "アブソルナイト",
+  "megaStone": {
+   "Absol": "Absol-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "absolitez",
+  "en": "Absolite Z",
+  "ja": "アブソルナイトZ",
+  "megaStone": {
+   "Absol": "Absol-Mega-Z"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "aerodactylite",
+  "en": "Aerodactylite",
+  "ja": "プテラナイト",
+  "megaStone": {
+   "Aerodactyl": "Aerodactyl-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "aggronite",
+  "en": "Aggronite",
+  "ja": "ボスゴドラナイト",
+  "megaStone": {
+   "Aggron": "Aggron-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "alakazite",
+  "en": "Alakazite",
+  "ja": "フーディナイト",
+  "megaStone": {
+   "Alakazam": "Alakazam-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "altarianite",
+  "en": "Altarianite",
+  "ja": "チルタリスナイト",
+  "megaStone": {
+   "Altaria": "Altaria-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "ampharosite",
+  "en": "Ampharosite",
+  "ja": "デンリュウナイト",
+  "megaStone": {
+   "Ampharos": "Ampharos-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "audinite",
+  "en": "Audinite",
+  "ja": "タブンネナイト",
+  "megaStone": {
+   "Audino": "Audino-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "banettite",
+  "en": "Banettite",
+  "ja": "ジュペッタナイト",
+  "megaStone": {
+   "Banette": "Banette-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "barbaracite",
+  "en": "Barbaracite",
+  "ja": "ガメノデスナイト",
+  "megaStone": {
+   "Barbaracle": "Barbaracle-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "baxcalibrite",
+  "en": "Baxcalibrite",
+  "ja": "セグレイブナイト",
+  "megaStone": {
+   "Baxcalibur": "Baxcalibur-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "beedrillite",
+  "en": "Beedrillite",
+  "ja": "スピアナイト",
+  "megaStone": {
+   "Beedrill": "Beedrill-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "blastoisinite",
+  "en": "Blastoisinite",
+  "ja": "カメックスナイト",
+  "megaStone": {
+   "Blastoise": "Blastoise-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "blazikenite",
+  "en": "Blazikenite",
+  "ja": "バシャーモナイト",
+  "megaStone": {
+   "Blaziken": "Blaziken-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "cameruptite",
+  "en": "Cameruptite",
+  "ja": "バクーダナイト",
+  "megaStone": {
+   "Camerupt": "Camerupt-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "chandelurite",
+  "en": "Chandelurite",
+  "ja": "シャンデラナイト",
+  "megaStone": {
+   "Chandelure": "Chandelure-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "charizarditex",
+  "en": "Charizardite X",
+  "ja": "リザードナイトＸ",
+  "megaStone": {
+   "Charizard": "Charizard-Mega-X"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "charizarditey",
+  "en": "Charizardite Y",
+  "ja": "リザードナイトＹ",
+  "megaStone": {
+   "Charizard": "Charizard-Mega-Y"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "chesnaughtite",
+  "en": "Chesnaughtite",
+  "ja": "ブリガロナイト",
+  "megaStone": {
+   "Chesnaught": "Chesnaught-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "chimechite",
+  "en": "Chimechite",
+  "ja": "チリーンナイト",
+  "megaStone": {
+   "Chimecho": "Chimecho-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "clefablite",
+  "en": "Clefablite",
+  "ja": "ピクシナイト",
+  "megaStone": {
+   "Clefable": "Clefable-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "crabominite",
+  "en": "Crabominite",
+  "ja": "ケケンカニナイト",
+  "megaStone": {
+   "Crabominable": "Crabominable-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "delphoxite",
+  "en": "Delphoxite",
+  "ja": "マフォクシナイト",
+  "megaStone": {
+   "Delphox": "Delphox-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "dragalgite",
+  "en": "Dragalgite",
+  "ja": "ドラミドナイト",
+  "megaStone": {
+   "Dragalge": "Dragalge-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "dragoninite",
+  "en": "Dragoninite",
+  "ja": "カイリュナイト",
+  "megaStone": {
+   "Dragonite": "Dragonite-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "drampanite",
+  "en": "Drampanite",
+  "ja": "ジジーロナイト",
+  "megaStone": {
+   "Drampa": "Drampa-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "eelektrossite",
+  "en": "Eelektrossite",
+  "ja": "シビルドナイト",
+  "megaStone": {
+   "Eelektross": "Eelektross-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "ejectbutton",
+  "en": "Eject Button",
+  "ja": "だっしゅつボタン",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "emboarite",
+  "en": "Emboarite",
+  "ja": "エンブオナイト",
+  "megaStone": {
+   "Emboar": "Emboar-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "excadrite",
+  "en": "Excadrite",
+  "ja": "ドリュウズナイト",
+  "megaStone": {
+   "Excadrill": "Excadrill-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "falinksite",
+  "en": "Falinksite",
+  "ja": "タイレーツナイト",
+  "megaStone": {
+   "Falinks": "Falinks-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "feraligite",
+  "en": "Feraligite",
+  "ja": "オーダイルナイト",
+  "megaStone": {
+   "Feraligatr": "Feraligatr-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "floettite",
+  "en": "Floettite",
+  "ja": "フラエッテナイト",
+  "megaStone": {
+   "Floette-Eternal": "Floette-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "froslassite",
+  "en": "Froslassite",
+  "ja": "ユキメノコナイト",
+  "megaStone": {
+   "Froslass": "Froslass-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "galladite",
+  "en": "Galladite",
+  "ja": "エルレイドナイト",
+  "megaStone": {
+   "Gallade": "Gallade-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "garchompite",
+  "en": "Garchompite",
+  "ja": "ガブリアスナイト",
+  "megaStone": {
+   "Garchomp": "Garchomp-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "garchompitez",
+  "en": "Garchompite Z",
+  "ja": "ガブリアスナイトZ",
+  "megaStone": {
+   "Garchomp": "Garchomp-Mega-Z"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "gardevoirite",
+  "en": "Gardevoirite",
+  "ja": "サーナイトナイト",
+  "megaStone": {
+   "Gardevoir": "Gardevoir-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "gengarite",
+  "en": "Gengarite",
+  "ja": "ゲンガナイト",
+  "megaStone": {
+   "Gengar": "Gengar-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "glalitite",
+  "en": "Glalitite",
+  "ja": "オニゴーリナイト",
+  "megaStone": {
+   "Glalie": "Glalie-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "glimmoranite",
+  "en": "Glimmoranite",
+  "ja": "キラフロルナイト",
+  "megaStone": {
+   "Glimmora": "Glimmora-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "golisopite",
+  "en": "Golisopite",
+  "ja": "グソクムシャナイト",
+  "megaStone": {
+   "Golisopod": "Golisopod-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "golurkite",
+  "en": "Golurkite",
+  "ja": "ゴルーグナイト",
+  "megaStone": {
+   "Golurk": "Golurk-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "greninjite",
+  "en": "Greninjite",
+  "ja": "ゲッコウガナイト",
+  "megaStone": {
+   "Greninja": "Greninja-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "gyaradosite",
+  "en": "Gyaradosite",
+  "ja": "ギャラドスナイト",
+  "megaStone": {
+   "Gyarados": "Gyarados-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "hawluchanite",
+  "en": "Hawluchanite",
+  "ja": "ルチャブルナイト",
+  "megaStone": {
+   "Hawlucha": "Hawlucha-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "heracronite",
+  "en": "Heracronite",
+  "ja": "ヘラクロスナイト",
+  "megaStone": {
+   "Heracross": "Heracross-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "houndoominite",
+  "en": "Houndoominite",
+  "ja": "ヘルガナイト",
+  "megaStone": {
+   "Houndoom": "Houndoom-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "kangaskhanite",
+  "en": "Kangaskhanite",
+  "ja": "ガルーラナイト",
+  "megaStone": {
+   "Kangaskhan": "Kangaskhan-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "leek",
+  "en": "Leek",
+  "ja": "ながねぎ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "lopunnite",
+  "en": "Lopunnite",
+  "ja": "ミミロップナイト",
+  "megaStone": {
+   "Lopunny": "Lopunny-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "lucarionite",
+  "en": "Lucarionite",
+  "ja": "ルカリオナイト",
+  "megaStone": {
+   "Lucario": "Lucario-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "lucarionitez",
+  "en": "Lucarionite Z",
+  "ja": "ルカリオナイトZ",
+  "megaStone": {
+   "Lucario": "Lucario-Mega-Z"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "malamarite",
+  "en": "Malamarite",
+  "ja": "カラマネナイト",
+  "megaStone": {
+   "Malamar": "Malamar-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "manectite",
+  "en": "Manectite",
+  "ja": "ライボルトナイト",
+  "megaStone": {
+   "Manectric": "Manectric-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "mawilite",
+  "en": "Mawilite",
+  "ja": "クチートナイト",
+  "megaStone": {
+   "Mawile": "Mawile-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "medichamite",
+  "en": "Medichamite",
+  "ja": "チャーレムナイト",
+  "megaStone": {
+   "Medicham": "Medicham-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "meganiumite",
+  "en": "Meganiumite",
+  "ja": "メガニウムナイト",
+  "megaStone": {
+   "Meganium": "Meganium-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "meowsticite",
+  "en": "Meowsticite",
+  "ja": "ニャオニクスナイト",
+  "megaStone": {
+   "Meowstic": "Meowstic-M-Mega",
+   "Meowstic-F": "Meowstic-F-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "metagrossite",
+  "en": "Metagrossite",
+  "ja": "メタグロスナイト",
+  "megaStone": {
+   "Metagross": "Metagross-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "pidgeotite",
+  "en": "Pidgeotite",
+  "ja": "ピジョットナイト",
+  "megaStone": {
+   "Pidgeot": "Pidgeot-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "pinsirite",
+  "en": "Pinsirite",
+  "ja": "カイロスナイト",
+  "megaStone": {
+   "Pinsir": "Pinsir-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "pyroarite",
+  "en": "Pyroarite",
+  "ja": "カエンジシナイト",
+  "megaStone": {
+   "Pyroar": "Pyroar-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "raichunitex",
+  "en": "Raichunite X",
+  "ja": "ライチュウナイトＸ",
+  "megaStone": {
+   "Raichu": "Raichu-Mega-X"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "raichunitey",
+  "en": "Raichunite Y",
+  "ja": "ライチュウナイトＹ",
+  "megaStone": {
+   "Raichu": "Raichu-Mega-Y"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "sablenite",
+  "en": "Sablenite",
+  "ja": "ヤミラミナイト",
+  "megaStone": {
+   "Sableye": "Sableye-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "salamencite",
+  "en": "Salamencite",
+  "ja": "ボーマンダナイト",
+  "megaStone": {
+   "Salamence": "Salamence-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "sceptilite",
+  "en": "Sceptilite",
+  "ja": "ジュカインナイト",
+  "megaStone": {
+   "Sceptile": "Sceptile-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "scizorite",
+  "en": "Scizorite",
+  "ja": "ハッサムナイト",
+  "megaStone": {
+   "Scizor": "Scizor-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "scolipite",
+  "en": "Scolipite",
+  "ja": "ペンドラナイト",
+  "megaStone": {
+   "Scolipede": "Scolipede-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "scovillainite",
+  "en": "Scovillainite",
+  "ja": "スコヴィラナイト",
+  "megaStone": {
+   "Scovillain": "Scovillain-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "scraftinite",
+  "en": "Scraftinite",
+  "ja": "ズルズキナイト",
+  "megaStone": {
+   "Scrafty": "Scrafty-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "sharpedonite",
+  "en": "Sharpedonite",
+  "ja": "サメハダナイト",
+  "megaStone": {
+   "Sharpedo": "Sharpedo-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "skarmorite",
+  "en": "Skarmorite",
+  "ja": "エアームドナイト",
+  "megaStone": {
+   "Skarmory": "Skarmory-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "slowbronite",
+  "en": "Slowbronite",
+  "ja": "ヤドランナイト",
+  "megaStone": {
+   "Slowbro": "Slowbro-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "spelltag",
+  "en": "Spell Tag",
+  "ja": "のろいのおふだ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "staraptite",
+  "en": "Staraptite",
+  "ja": "ムクホークナイト",
+  "megaStone": {
+   "Staraptor": "Staraptor-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "starminite",
+  "en": "Starminite",
+  "ja": "スターミナイト",
+  "megaStone": {
+   "Starmie": "Starmie-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "steelixite",
+  "en": "Steelixite",
+  "ja": "ハガネールナイト",
+  "megaStone": {
+   "Steelix": "Steelix-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "swampertite",
+  "en": "Swampertite",
+  "ja": "ラグラージナイト",
+  "megaStone": {
+   "Swampert": "Swampert-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "tyranitarite",
+  "en": "Tyranitarite",
+  "ja": "バンギラスナイト",
+  "megaStone": {
+   "Tyranitar": "Tyranitar-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "venusaurite",
+  "en": "Venusaurite",
+  "ja": "フシギバナイト",
+  "megaStone": {
+   "Venusaur": "Venusaur-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "victreebelite",
+  "en": "Victreebelite",
+  "ja": "ウツボットナイト",
+  "megaStone": {
+   "Victreebel": "Victreebel-Mega"
+  },
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "airballoon",
+  "en": "Air Balloon",
+  "ja": "ふうせん",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "aspearberry",
+  "en": "Aspear Berry",
+  "ja": "ナナシのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "babiriberry",
+  "en": "Babiri Berry",
+  "ja": "リリバのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "bigroot",
+  "en": "Big Root",
+  "ja": "おおきなねっこ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "bindingband",
+  "en": "Binding Band",
+  "ja": "しめつけバンド",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "blackbelt",
+  "en": "Black Belt",
+  "ja": "くろおび",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "blackglasses",
+  "en": "Black Glasses",
+  "ja": "くろいメガネ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "brightpowder",
+  "en": "Bright Powder",
+  "ja": "ひかりのこな",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "charcoal",
+  "en": "Charcoal",
+  "ja": "もくたん",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "chartiberry",
+  "en": "Charti Berry",
+  "ja": "ヨロギのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "cheriberry",
+  "en": "Cheri Berry",
+  "ja": "クラボのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "chestoberry",
+  "en": "Chesto Berry",
+  "ja": "カゴのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "chilanberry",
+  "en": "Chilan Berry",
+  "ja": "ホズのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "choicescarf",
+  "en": "Choice Scarf",
+  "ja": "こだわりスカーフ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "chopleberry",
+  "en": "Chople Berry",
+  "ja": "ヨプのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "cobaberry",
+  "en": "Coba Berry",
+  "ja": "バコウのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "colburberry",
+  "en": "Colbur Berry",
+  "ja": "ナモのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "damprock",
+  "en": "Damp Rock",
+  "ja": "しめったいわ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "dragonfang",
+  "en": "Dragon Fang",
+  "ja": "りゅうのキバ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "electricseed",
+  "en": "Electric Seed",
+  "ja": "エレキシード",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "expertbelt",
+  "en": "Expert Belt",
+  "ja": "たつじんのおび",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "fairyfeather",
+  "en": "Fairy Feather",
+  "ja": "ようせいのハネ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "focusband",
+  "en": "Focus Band",
+  "ja": "きあいのハチマキ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "focussash",
+  "en": "Focus Sash",
+  "ja": "きあいのタスキ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "grassyseed",
+  "en": "Grassy Seed",
+  "ja": "グラスシード",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "habanberry",
+  "en": "Haban Berry",
+  "ja": "ハバンのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "hardstone",
+  "en": "Hard Stone",
+  "ja": "かたいいし",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "heatrock",
+  "en": "Heat Rock",
+  "ja": "あついいわ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "icyrock",
+  "en": "Icy Rock",
+  "ja": "つめたいいわ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "ironball",
+  "en": "Iron Ball",
+  "ja": "くろいてっきゅう",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "kasibberry",
+  "en": "Kasib Berry",
+  "ja": "カシブのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "kebiaberry",
+  "en": "Kebia Berry",
+  "ja": "ビアーのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "kingsrock",
+  "en": "King's Rock",
+  "ja": "おうじゃのしるし",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "leftovers",
+  "en": "Leftovers",
+  "ja": "たべのこし",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "leppaberry",
+  "en": "Leppa Berry",
+  "ja": "ヒメリのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "lifeorb",
+  "en": "Life Orb",
+  "ja": "いのちのたま",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "lightball",
+  "en": "Light Ball",
+  "ja": "でんきだま",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "lightclay",
+  "en": "Light Clay",
+  "ja": "ひかりのねんど",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "lumberry",
+  "en": "Lum Berry",
+  "ja": "ラムのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "magnet",
+  "en": "Magnet",
+  "ja": "じしゃく",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "mentalherb",
+  "en": "Mental Herb",
+  "ja": "メンタルハーブ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "metalcoat",
+  "en": "Metal Coat",
+  "ja": "メタルコート",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "metronome",
+  "en": "Metronome",
+  "ja": "メトロノーム",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "miracleseed",
+  "en": "Miracle Seed",
+  "ja": "きせきのタネ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "mistyseed",
+  "en": "Misty Seed",
+  "ja": "ミストシード",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "muscleband",
+  "en": "Muscle Band",
+  "ja": "ちからのハチマキ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "mysticwater",
+  "en": "Mystic Water",
+  "ja": "しんぴのしずく",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "nevermeltice",
+  "en": "Never-Melt Ice",
+  "ja": "とけないこおり",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "normalgem",
+  "en": "Normal Gem",
+  "ja": "ノーマルジュエル",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "occaberry",
+  "en": "Occa Berry",
+  "ja": "オッカのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "oranberry",
+  "en": "Oran Berry",
+  "ja": "オレンのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "passhoberry",
+  "en": "Passho Berry",
+  "ja": "イトケのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "payapaberry",
+  "en": "Payapa Berry",
+  "ja": "ウタンのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "pechaberry",
+  "en": "Pecha Berry",
+  "ja": "モモンのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "persimberry",
+  "en": "Persim Berry",
+  "ja": "キーのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "poisonbarb",
+  "en": "Poison Barb",
+  "ja": "どくバリ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "psychicseed",
+  "en": "Psychic Seed",
+  "ja": "サイコシード",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "quickclaw",
+  "en": "Quick Claw",
+  "ja": "せんせいのツメ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "rawstberry",
+  "en": "Rawst Berry",
+  "ja": "チーゴのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "redcard",
+  "en": "Red Card",
+  "ja": "レッドカード",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "rindoberry",
+  "en": "Rindo Berry",
+  "ja": "リンドのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "rockyhelmet",
+  "en": "Rocky Helmet",
+  "ja": "ゴツゴツメット",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "roseliberry",
+  "en": "Roseli Berry",
+  "ja": "ロゼルのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "scopelens",
+  "en": "Scope Lens",
+  "ja": "ピントレンズ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "sharpbeak",
+  "en": "Sharp Beak",
+  "ja": "するどいくちばし",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "shedshell",
+  "en": "Shed Shell",
+  "ja": "きれいなぬけがら",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "shellbell",
+  "en": "Shell Bell",
+  "ja": "かいがらのすず",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "shucaberry",
+  "en": "Shuca Berry",
+  "ja": "シュカのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "silkscarf",
+  "en": "Silk Scarf",
+  "ja": "シルクのスカーフ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "silverpowder",
+  "en": "Silver Powder",
+  "ja": "ぎんのこな",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "sitrusberry",
+  "en": "Sitrus Berry",
+  "ja": "オボンのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "smoothrock",
+  "en": "Smooth Rock",
+  "ja": "さらさらいわ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "softsand",
+  "en": "Soft Sand",
+  "ja": "やわらかいすな",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "tangaberry",
+  "en": "Tanga Berry",
+  "ja": "タンガのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "terrainextender",
+  "en": "Terrain Extender",
+  "ja": "グランドコート",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "twistedspoon",
+  "en": "Twisted Spoon",
+  "ja": "まがったスプーン",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "wacanberry",
+  "en": "Wacan Berry",
+  "ja": "ソクノのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "whiteherb",
+  "en": "White Herb",
+  "ja": "しろいハーブ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "widelens",
+  "en": "Wide Lens",
+  "ja": "こうかくレンズ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "wiseglasses",
+  "en": "Wise Glasses",
+  "ja": "ものしりメガネ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "yacheberry",
+  "en": "Yache Berry",
+  "ja": "ヤチェのみ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": true,
+  "desc_en": null,
+  "ja_missing": false
+ },
+ {
+  "id": "zoomlens",
+  "en": "Zoom Lens",
+  "ja": "フォーカスレンズ",
+  "megaStone": null,
+  "megaEvolves": null,
+  "isBerry": false,
+  "desc_en": null,
+  "ja_missing": false
+ }
+]

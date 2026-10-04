@@ -1,0 +1,8074 @@
+{
+ "source": "ポケモンバトルデータベース 公開データ",
+ "url": "https://champs.pokedb.tokyo/opendata/s5_single_ranked_teams.json",
+ "season": 5,
+ "season_label": "M-5",
+ "updated_at": "2026-09-21 20:24:28",
+ "fetched_at": "2026-09-28T21:04:26+09:00",
+ "teams": [
+  {
+   "rank": 1,
+   "rating": 2626.829,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Chesto Berry"
+    },
+    {
+     "id": "pyroar",
+     "ja": "カエンジシ",
+     "key": "0668-00",
+     "item": "Pyroarite"
+    }
+   ]
+  },
+  {
+   "rank": 2,
+   "rating": 2607.359,
+   "team": [
+    {
+     "id": "lucario",
+     "ja": "ルカリオ",
+     "key": "0448-00",
+     "item": "Lucarionite"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 5,
+   "rating": 2587.713,
+   "team": [
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    },
+    {
+     "id": "vanilluxe",
+     "ja": "バイバニラ",
+     "key": "0584-00",
+     "item": "Never-Melt Ice"
+    },
+    {
+     "id": "sylveon",
+     "ja": "ニンフィア",
+     "key": "0700-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "starmie",
+     "ja": "スターミー",
+     "key": "0121-00",
+     "item": "Starminite"
+    }
+   ]
+  },
+  {
+   "rank": 10,
+   "rating": 2579.19,
+   "team": [
+    {
+     "id": "lucario",
+     "ja": "ルカリオ",
+     "key": "0448-00",
+     "item": "Lucarionite"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "rotomwash",
+     "ja": "ウォッシュロトム",
+     "key": "0479-02",
+     "item": "Leftovers"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    }
+   ]
+  },
+  {
+   "rank": 13,
+   "rating": 2570.911,
+   "team": [
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Haban Berry"
+    },
+    {
+     "id": "rotomwash",
+     "ja": "ウォッシュロトム",
+     "key": "0479-02",
+     "item": "Leftovers"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    }
+   ]
+  },
+  {
+   "rank": 17,
+   "rating": 2549.712,
+   "team": [
+    {
+     "id": "tyranitar",
+     "ja": "バンギラス",
+     "key": "0248-00",
+     "item": "Tyranitarite"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "rotomfan",
+     "ja": "スピンロトム",
+     "key": "0479-04",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "sylveon",
+     "ja": "ニンフィア",
+     "key": "0700-00",
+     "item": "Fairy Feather"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 19,
+   "rating": 2540.921,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Haban Berry"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 23,
+   "rating": 2535.111,
+   "team": [
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite X"
+    },
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "White Herb"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Spell Tag"
+    },
+    {
+     "id": "mawile",
+     "ja": "クチート",
+     "key": "0303-00",
+     "item": "Mawilite"
+    }
+   ]
+  },
+  {
+   "rank": 32,
+   "rating": 2515.789,
+   "team": [
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "clefable",
+     "ja": "ピクシー",
+     "key": "0036-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "araquanid",
+     "ja": "オニシズクモ",
+     "key": "0752-00",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    }
+   ]
+  },
+  {
+   "rank": 36,
+   "rating": 2512.469,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    }
+   ]
+  },
+  {
+   "rank": 39,
+   "rating": 2508.631,
+   "team": [
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 40,
+   "rating": 2507.67,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Metal Coat"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "rotomwash",
+     "ja": "ウォッシュロトム",
+     "key": "0479-02",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 41,
+   "rating": 2507.432,
+   "team": [
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 42,
+   "rating": 2506.523,
+   "team": [
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "meganium",
+     "ja": "メガニウム",
+     "key": "0154-00",
+     "item": "Meganiumite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "toxapex",
+     "ja": "ドヒドイデ",
+     "key": "0748-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    }
+   ]
+  },
+  {
+   "rank": 47,
+   "rating": 2501.141,
+   "team": [
+    {
+     "id": "raichu",
+     "ja": "ライチュウ",
+     "key": "0026-00",
+     "item": "Raichunite Y"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "snorlax",
+     "ja": "カビゴン",
+     "key": "0143-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Mystic Water"
+    }
+   ]
+  },
+  {
+   "rank": 48,
+   "rating": 2501.088,
+   "team": [
+    {
+     "id": "lucario",
+     "ja": "ルカリオ",
+     "key": "0448-00",
+     "item": "Lucarionite"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    },
+    {
+     "id": "snorlax",
+     "ja": "カビゴン",
+     "key": "0143-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "ceruledge",
+     "ja": "ソウブレイズ",
+     "key": "0937-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Lum Berry"
+    }
+   ]
+  },
+  {
+   "rank": 49,
+   "rating": 2500.577,
+   "team": [
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Chesto Berry"
+    }
+   ]
+  },
+  {
+   "rank": 53,
+   "rating": 2484.654,
+   "team": [
+    {
+     "id": "lucario",
+     "ja": "ルカリオ",
+     "key": "0448-00",
+     "item": "Lucarionite"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    }
+   ]
+  },
+  {
+   "rank": 58,
+   "rating": 2481.211,
+   "team": [
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "slowkinggalar",
+     "ja": "ヤドキング(ガラル)",
+     "key": "0199-01",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Chesto Berry"
+    },
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Greninjite"
+    },
+    {
+     "id": "ceruledge",
+     "ja": "ソウブレイズ",
+     "key": "0937-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 61,
+   "rating": 2479.159,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 63,
+   "rating": 2478.262,
+   "team": [
+    {
+     "id": "scolipede",
+     "ja": "ペンドラー",
+     "key": "0545-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "ceruledge",
+     "ja": "ソウブレイズ",
+     "key": "0937-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Gyaradosite"
+    },
+    {
+     "id": "meganium",
+     "ja": "メガニウム",
+     "key": "0154-00",
+     "item": "Meganiumite"
+    },
+    {
+     "id": "gardevoir",
+     "ja": "サーナイト",
+     "key": "0282-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 64,
+   "rating": 2478.235,
+   "team": [
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite X"
+    }
+   ]
+  },
+  {
+   "rank": 65,
+   "rating": 2478.231,
+   "team": [
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Black Glasses"
+    }
+   ]
+  },
+  {
+   "rank": 71,
+   "rating": 2476.265,
+   "team": [
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Expert Belt"
+    },
+    {
+     "id": "vanilluxe",
+     "ja": "バイバニラ",
+     "key": "0584-00",
+     "item": "Never-Melt Ice"
+    },
+    {
+     "id": "sneasler",
+     "ja": "オオニューラ",
+     "key": "0903-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 74,
+   "rating": 2474.715,
+   "team": [
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    },
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Spell Tag"
+    }
+   ]
+  },
+  {
+   "rank": 76,
+   "rating": 2473.923,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    },
+    {
+     "id": "venusaur",
+     "ja": "フシギバナ",
+     "key": "0003-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Roseli Berry"
+    },
+    {
+     "id": "scolipede",
+     "ja": "ペンドラー",
+     "key": "0545-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "clefable",
+     "ja": "ピクシー",
+     "key": "0036-00",
+     "item": "Clefablite"
+    }
+   ]
+  },
+  {
+   "rank": 79,
+   "rating": 2473.658,
+   "team": [
+    {
+     "id": "dragalge",
+     "ja": "ドラミドロ",
+     "key": "0691-00",
+     "item": "Dragalgite"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "volcarona",
+     "ja": "ウルガモス",
+     "key": "0637-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "starmie",
+     "ja": "スターミー",
+     "key": "0121-00",
+     "item": "Starminite"
+    }
+   ]
+  },
+  {
+   "rank": 80,
+   "rating": 2473.469,
+   "team": [
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Scope Lens"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Gyaradosite"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 84,
+   "rating": 2471.397,
+   "team": [
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "meganium",
+     "ja": "メガニウム",
+     "key": "0154-00",
+     "item": "Meganiumite"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "blaziken",
+     "ja": "バシャーモ",
+     "key": "0257-00",
+     "item": "Blazikenite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 87,
+   "rating": 2470.893,
+   "team": [
+    {
+     "id": "sceptile",
+     "ja": "ジュカイン",
+     "key": "0254-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "raichu",
+     "ja": "ライチュウ",
+     "key": "0026-00",
+     "item": "Raichunite Y"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "volcarona",
+     "ja": "ウルガモス",
+     "key": "0637-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "tyranitar",
+     "ja": "バンギラス",
+     "key": "0248-00",
+     "item": "Tyranitarite"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    }
+   ]
+  },
+  {
+   "rank": 88,
+   "rating": 2470.538,
+   "team": [
+    {
+     "id": "sceptile",
+     "ja": "ジュカイン",
+     "key": "0254-00",
+     "item": "Sceptilite"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    }
+   ]
+  },
+  {
+   "rank": 90,
+   "rating": 2469.484,
+   "team": [
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "raichu",
+     "ja": "ライチュウ",
+     "key": "0026-00",
+     "item": "Raichunite Y"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "incineroar",
+     "ja": "ガオガエン",
+     "key": "0727-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 91,
+   "rating": 2469.084,
+   "team": [
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "basculegionf",
+     "ja": "イダイトウ(F)",
+     "key": "0902-01",
+     "item": "Life Orb"
+    },
+    {
+     "id": "umbreon",
+     "ja": "ブラッキー",
+     "key": "0197-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "volcarona",
+     "ja": "ウルガモス",
+     "key": "0637-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    }
+   ]
+  },
+  {
+   "rank": 92,
+   "rating": 2469.001,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Greninjite"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "lucario",
+     "ja": "ルカリオ",
+     "key": "0448-00",
+     "item": "Lucarionite"
+    },
+    {
+     "id": "rotomwash",
+     "ja": "ウォッシュロトム",
+     "key": "0479-02",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 95,
+   "rating": 2468.474,
+   "team": [
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Dragon Fang"
+    },
+    {
+     "id": "starmie",
+     "ja": "スターミー",
+     "key": "0121-00",
+     "item": "Starminite"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Black Glasses"
+    },
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 99,
+   "rating": 2467.49,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 108,
+   "rating": 2454.857,
+   "team": [
+    {
+     "id": "blastoise",
+     "ja": "カメックス",
+     "key": "0009-00",
+     "item": "Blastoisinite"
+    },
+    {
+     "id": "victreebel",
+     "ja": "ウツボット",
+     "key": "0071-00",
+     "item": "Victreebelite"
+    },
+    {
+     "id": "vanilluxe",
+     "ja": "バイバニラ",
+     "key": "0584-00",
+     "item": "Never-Melt Ice"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Spell Tag"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 127,
+   "rating": 2433.014,
+   "team": [
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite X"
+    },
+    {
+     "id": "venusaur",
+     "ja": "フシギバナ",
+     "key": "0003-00",
+     "item": "Venusaurite"
+    },
+    {
+     "id": "raichu",
+     "ja": "ライチュウ",
+     "key": "0026-00",
+     "item": "Raichunite Y"
+    },
+    {
+     "id": "ditto",
+     "ja": "メタモン",
+     "key": "0132-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 129,
+   "rating": 2431.945,
+   "team": [
+    {
+     "id": "mawile",
+     "ja": "クチート",
+     "key": "0303-00",
+     "item": "Mawilite"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "meganium",
+     "ja": "メガニウム",
+     "key": "0154-00",
+     "item": "Meganiumite"
+    },
+    {
+     "id": "rotomheat",
+     "ja": "ヒートロトム",
+     "key": "0479-01",
+     "item": "Leftovers"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 133,
+   "rating": 2428.367,
+   "team": [
+    {
+     "id": "lucario",
+     "ja": "ルカリオ",
+     "key": "0448-00",
+     "item": "Lucarionite"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Gyaradosite"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "sylveon",
+     "ja": "ニンフィア",
+     "key": "0700-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 136,
+   "rating": 2426.064,
+   "team": [
+    {
+     "id": "pelipper",
+     "ja": "ペリッパー",
+     "key": "0279-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "swampert",
+     "ja": "ラグラージ",
+     "key": "0260-00",
+     "item": "Swampertite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    }
+   ]
+  },
+  {
+   "rank": 140,
+   "rating": 2424.479,
+   "team": [
+    {
+     "id": "banette",
+     "ja": "ジュペッタ",
+     "key": "0354-00",
+     "item": "Banettite"
+    },
+    {
+     "id": "zoroarkhisui",
+     "ja": "ゾロアーク(ヒスイ)",
+     "key": "0571-01",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Greninjite"
+    },
+    {
+     "id": "vivillonfancy",
+     "ja": "ビビヨン(ファンシーなもよう)",
+     "key": "0666-18",
+     "item": "Leftovers"
+    },
+    {
+     "id": "blaziken",
+     "ja": "バシャーモ",
+     "key": "0257-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "venusaur",
+     "ja": "フシギバナ",
+     "key": "0003-00",
+     "item": "Venusaurite"
+    }
+   ]
+  },
+  {
+   "rank": 142,
+   "rating": 2423.966,
+   "team": [
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Black Glasses"
+    },
+    {
+     "id": "staraptor",
+     "ja": "ムクホーク",
+     "key": "0398-00",
+     "item": "Staraptite"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Chesto Berry"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 160,
+   "rating": 2420.374,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 163,
+   "rating": 2419.922,
+   "team": [
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 166,
+   "rating": 2419.825,
+   "team": [
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "rotomwash",
+     "ja": "ウォッシュロトム",
+     "key": "0479-02",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Metal Coat"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Mystic Water"
+    }
+   ]
+  },
+  {
+   "rank": 170,
+   "rating": 2419.361,
+   "team": [
+    {
+     "id": "kangaskhan",
+     "ja": "ガルーラ",
+     "key": "0115-00",
+     "item": "Kangaskhanite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Black Glasses"
+    }
+   ]
+  },
+  {
+   "rank": 173,
+   "rating": 2419.174,
+   "team": [
+    {
+     "id": "torkoal",
+     "ja": "コータス",
+     "key": "0324-00",
+     "item": "Heat Rock"
+    },
+    {
+     "id": "houndoom",
+     "ja": "ヘルガー",
+     "key": "0229-00",
+     "item": "Houndoominite"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "skarmory",
+     "ja": "エアームド",
+     "key": "0227-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "whimsicott",
+     "ja": "エルフーン",
+     "key": "0547-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Greninjite"
+    }
+   ]
+  },
+  {
+   "rank": 177,
+   "rating": 2418.363,
+   "team": [
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Haban Berry"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "venusaur",
+     "ja": "フシギバナ",
+     "key": "0003-00",
+     "item": "Venusaurite"
+    }
+   ]
+  },
+  {
+   "rank": 181,
+   "rating": 2417.825,
+   "team": [
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Smooth Rock"
+    },
+    {
+     "id": "excadrill",
+     "ja": "ドリュウズ",
+     "key": "0530-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Garchompite"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 186,
+   "rating": 2417.626,
+   "team": [
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Haban Berry"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "chandelure",
+     "ja": "シャンデラ",
+     "key": "0609-00",
+     "item": "Chandelurite"
+    }
+   ]
+  },
+  {
+   "rank": 187,
+   "rating": 2417.419,
+   "team": [
+    {
+     "id": "blastoise",
+     "ja": "カメックス",
+     "key": "0009-00",
+     "item": "Blastoisinite"
+    },
+    {
+     "id": "orthworm",
+     "ja": "ミミズズ",
+     "key": "0968-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Glimmoranite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "vanilluxe",
+     "ja": "バイバニラ",
+     "key": "0584-00",
+     "item": "Never-Melt Ice"
+    }
+   ]
+  },
+  {
+   "rank": 190,
+   "rating": 2417.292,
+   "team": [
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "sylveon",
+     "ja": "ニンフィア",
+     "key": "0700-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Gyaradosite"
+    }
+   ]
+  },
+  {
+   "rank": 192,
+   "rating": 2417.209,
+   "team": [
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "gardevoir",
+     "ja": "サーナイト",
+     "key": "0282-00",
+     "item": "Gardevoirite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Shuca Berry"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 198,
+   "rating": 2416.759,
+   "team": [
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    }
+   ]
+  },
+  {
+   "rank": 203,
+   "rating": 2416.52,
+   "team": [
+    {
+     "id": "lucario",
+     "ja": "ルカリオ",
+     "key": "0448-00",
+     "item": "Lucarionite"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Dragon Fang"
+    }
+   ]
+  },
+  {
+   "rank": 204,
+   "rating": 2416.49,
+   "team": [
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "skeledirge",
+     "ja": "ラウドボーン",
+     "key": "0911-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "meganium",
+     "ja": "メガニウム",
+     "key": "0154-00",
+     "item": "Meganiumite"
+    }
+   ]
+  },
+  {
+   "rank": 207,
+   "rating": 2416.18,
+   "team": [
+    {
+     "id": "snorlax",
+     "ja": "カビゴン",
+     "key": "0143-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "pinsir",
+     "ja": "カイロス",
+     "key": "0127-00",
+     "item": "Pinsirite"
+    },
+    {
+     "id": "excadrill",
+     "ja": "ドリュウズ",
+     "key": "0530-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Greninjite"
+    },
+    {
+     "id": "dragapult",
+     "ja": "ドラパルト",
+     "key": "0887-00",
+     "item": "Expert Belt"
+    }
+   ]
+  },
+  {
+   "rank": 215,
+   "rating": 2415.105,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Black Glasses"
+    },
+    {
+     "id": "sneasler",
+     "ja": "オオニューラ",
+     "key": "0903-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    },
+    {
+     "id": "slowking",
+     "ja": "ヤドキング",
+     "key": "0199-00",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 218,
+   "rating": 2414.621,
+   "team": [
+    {
+     "id": "toxapex",
+     "ja": "ドヒドイデ",
+     "key": "0748-00",
+     "item": "Shed Shell"
+    },
+    {
+     "id": "umbreon",
+     "ja": "ブラッキー",
+     "key": "0197-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "meganium",
+     "ja": "メガニウム",
+     "key": "0154-00",
+     "item": "Meganiumite"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 219,
+   "rating": 2414.605,
+   "team": [
+    {
+     "id": "clefable",
+     "ja": "ピクシー",
+     "key": "0036-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "tyranitar",
+     "ja": "バンギラス",
+     "key": "0248-00",
+     "item": "Chesto Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "scovillain",
+     "ja": "スコヴィラン",
+     "key": "0952-00",
+     "item": "Scovillainite"
+    }
+   ]
+  },
+  {
+   "rank": 223,
+   "rating": 2414.116,
+   "team": [
+    {
+     "id": "swampert",
+     "ja": "ラグラージ",
+     "key": "0260-00",
+     "item": "Swampertite"
+    },
+    {
+     "id": "pelipper",
+     "ja": "ペリッパー",
+     "key": "0279-00",
+     "item": "Damp Rock"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "gallade",
+     "ja": "エルレイド",
+     "key": "0475-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    }
+   ]
+  },
+  {
+   "rank": 227,
+   "rating": 2413.94,
+   "team": [
+    {
+     "id": "espathra",
+     "ja": "クエスパトラ",
+     "key": "0956-00",
+     "item": "Light Clay"
+    },
+    {
+     "id": "annihilape",
+     "ja": "コノヨザル",
+     "key": "0979-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "clefable",
+     "ja": "ピクシー",
+     "key": "0036-00",
+     "item": "Clefablite"
+    },
+    {
+     "id": "incineroar",
+     "ja": "ガオガエン",
+     "key": "0727-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "mawile",
+     "ja": "クチート",
+     "key": "0303-00",
+     "item": "Mawilite"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Shuca Berry"
+    }
+   ]
+  },
+  {
+   "rank": 228,
+   "rating": 2413.662,
+   "team": [
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Scope Lens"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Spell Tag"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    }
+   ]
+  },
+  {
+   "rank": 238,
+   "rating": 2412.796,
+   "team": [
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "umbreon",
+     "ja": "ブラッキー",
+     "key": "0197-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    }
+   ]
+  },
+  {
+   "rank": 240,
+   "rating": 2412.72,
+   "team": [
+    {
+     "id": "basculegionf",
+     "ja": "イダイトウ(F)",
+     "key": "0902-01",
+     "item": "Life Orb"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Black Glasses"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Gyaradosite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 243,
+   "rating": 2412.504,
+   "team": [
+    {
+     "id": "venusaur",
+     "ja": "フシギバナ",
+     "key": "0003-00",
+     "item": "Venusaurite"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Chesto Berry"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Black Glasses"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 245,
+   "rating": 2412.436,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    },
+    {
+     "id": "sylveon",
+     "ja": "ニンフィア",
+     "key": "0700-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Greninjite"
+    },
+    {
+     "id": "ceruledge",
+     "ja": "ソウブレイズ",
+     "key": "0937-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Scope Lens"
+    }
+   ]
+  },
+  {
+   "rank": 248,
+   "rating": 2411.809,
+   "team": [
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Scope Lens"
+    }
+   ]
+  },
+  {
+   "rank": 250,
+   "rating": 2411.761,
+   "team": [
+    {
+     "id": "chimecho",
+     "ja": "チリーン",
+     "key": "0358-00",
+     "item": "Chimechite"
+    },
+    {
+     "id": "scolipede",
+     "ja": "ペンドラー",
+     "key": "0545-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "sylveon",
+     "ja": "ニンフィア",
+     "key": "0700-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Gyaradosite"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "ceruledge",
+     "ja": "ソウブレイズ",
+     "key": "0937-00",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 254,
+   "rating": 2411.03,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Expert Belt"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Black Glasses"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 261,
+   "rating": 2410.131,
+   "team": [
+    {
+     "id": "pelipper",
+     "ja": "ペリッパー",
+     "key": "0279-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "swampert",
+     "ja": "ラグラージ",
+     "key": "0260-00",
+     "item": "Swampertite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Life Orb"
+    }
+   ]
+  },
+  {
+   "rank": 266,
+   "rating": 2409.646,
+   "team": [
+    {
+     "id": "lucario",
+     "ja": "ルカリオ",
+     "key": "0448-00",
+     "item": "Lucarionite"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Spell Tag"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Mystic Water"
+    }
+   ]
+  },
+  {
+   "rank": 275,
+   "rating": 2409.362,
+   "team": [
+    {
+     "id": "typhlosion",
+     "ja": "バクフーン",
+     "key": "0157-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Greninjite"
+    },
+    {
+     "id": "venusaur",
+     "ja": "フシギバナ",
+     "key": "0003-00",
+     "item": "Venusaurite"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 280,
+   "rating": 2408.508,
+   "team": [
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Chesto Berry"
+    }
+   ]
+  },
+  {
+   "rank": 282,
+   "rating": 2408.327,
+   "team": [
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 285,
+   "rating": 2408.261,
+   "team": [
+    {
+     "id": "clefable",
+     "ja": "ピクシー",
+     "key": "0036-00",
+     "item": "Clefablite"
+    },
+    {
+     "id": "raichu",
+     "ja": "ライチュウ",
+     "key": "0026-00",
+     "item": "Raichunite Y"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "ceruledge",
+     "ja": "ソウブレイズ",
+     "key": "0937-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Black Glasses"
+    }
+   ]
+  },
+  {
+   "rank": 288,
+   "rating": 2407.791,
+   "team": [
+    {
+     "id": "raichu",
+     "ja": "ライチュウ",
+     "key": "0026-00",
+     "item": "Raichunite Y"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Black Glasses"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 290,
+   "rating": 2407.624,
+   "team": [
+    {
+     "id": "raichu",
+     "ja": "ライチュウ",
+     "key": "0026-00",
+     "item": "Raichunite Y"
+    },
+    {
+     "id": "scovillain",
+     "ja": "スコヴィラン",
+     "key": "0952-00",
+     "item": "Scovillainite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "White Herb"
+    },
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Greninjite"
+    },
+    {
+     "id": "azumarill",
+     "ja": "マリルリ",
+     "key": "0184-00",
+     "item": "Rindo Berry"
+    },
+    {
+     "id": "snorlax",
+     "ja": "カビゴン",
+     "key": "0143-00",
+     "item": "Chople Berry"
+    }
+   ]
+  },
+  {
+   "rank": 291,
+   "rating": 2407.511,
+   "team": [
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Chesto Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "umbreon",
+     "ja": "ブラッキー",
+     "key": "0197-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    }
+   ]
+  },
+  {
+   "rank": 293,
+   "rating": 2407.063,
+   "team": [
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Shuca Berry"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    }
+   ]
+  },
+  {
+   "rank": 295,
+   "rating": 2406.978,
+   "team": [
+    {
+     "id": "kangaskhan",
+     "ja": "ガルーラ",
+     "key": "0115-00",
+     "item": "Kangaskhanite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    }
+   ]
+  },
+  {
+   "rank": 300,
+   "rating": 2406.251,
+   "team": [
+    {
+     "id": "lucario",
+     "ja": "ルカリオ",
+     "key": "0448-00",
+     "item": "Lucarionite"
+    },
+    {
+     "id": "pyroar",
+     "ja": "カエンジシ",
+     "key": "0668-00",
+     "item": "Pyroarite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "rotomwash",
+     "ja": "ウォッシュロトム",
+     "key": "0479-02",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "sylveon",
+     "ja": "ニンフィア",
+     "key": "0700-00",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 301,
+   "rating": 2406.021,
+   "team": [
+    {
+     "id": "skarmory",
+     "ja": "エアームド",
+     "key": "0227-00",
+     "item": "Skarmorite"
+    },
+    {
+     "id": "empoleon",
+     "ja": "エンペルト",
+     "key": "0395-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "goodrahisui",
+     "ja": "ヌメルゴン(ヒスイ)",
+     "key": "0706-01",
+     "item": "Chople Berry"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Occa Berry"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Dragon Fang"
+    }
+   ]
+  },
+  {
+   "rank": 303,
+   "rating": 2405.915,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "umbreon",
+     "ja": "ブラッキー",
+     "key": "0197-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Gyaradosite"
+    },
+    {
+     "id": "orthworm",
+     "ja": "ミミズズ",
+     "key": "0968-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Glimmoranite"
+    }
+   ]
+  },
+  {
+   "rank": 329,
+   "rating": 2392.701,
+   "team": [
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "basculegionf",
+     "ja": "イダイトウ(F)",
+     "key": "0902-01",
+     "item": "Life Orb"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "mawile",
+     "ja": "クチート",
+     "key": "0303-00",
+     "item": "Mawilite"
+    }
+   ]
+  },
+  {
+   "rank": 337,
+   "rating": 2380.451,
+   "team": [
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    }
+   ]
+  },
+  {
+   "rank": 344,
+   "rating": 2374.628,
+   "team": [
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 349,
+   "rating": 2371.539,
+   "team": [
+    {
+     "id": "torkoal",
+     "ja": "コータス",
+     "key": "0324-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "diggersby",
+     "ja": "ホルード",
+     "key": "0660-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "venusaur",
+     "ja": "フシギバナ",
+     "key": "0003-00",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 351,
+   "rating": 2371.154,
+   "team": [
+    {
+     "id": "toucannon",
+     "ja": "ドデカバシ",
+     "key": "0733-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "sylveon",
+     "ja": "ニンフィア",
+     "key": "0700-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    }
+   ]
+  },
+  {
+   "rank": 363,
+   "rating": 2362.369,
+   "team": [
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "rotomwash",
+     "ja": "ウォッシュロトム",
+     "key": "0479-02",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "lucario",
+     "ja": "ルカリオ",
+     "key": "0448-00",
+     "item": "Lucarionite"
+    }
+   ]
+  },
+  {
+   "rank": 376,
+   "rating": 2355.409,
+   "team": [
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 390,
+   "rating": 2348.089,
+   "team": [
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "volcarona",
+     "ja": "ウルガモス",
+     "key": "0637-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "clefable",
+     "ja": "ピクシー",
+     "key": "0036-00",
+     "item": "Clefablite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    }
+   ]
+  },
+  {
+   "rank": 400,
+   "rating": 2344.265,
+   "team": [
+    {
+     "id": "sneasler",
+     "ja": "オオニューラ",
+     "key": "0903-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "meganium",
+     "ja": "メガニウム",
+     "key": "0154-00",
+     "item": "Meganiumite"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Black Glasses"
+    },
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "dragapult",
+     "ja": "ドラパルト",
+     "key": "0887-00",
+     "item": "Life Orb"
+    }
+   ]
+  },
+  {
+   "rank": 401,
+   "rating": 2344.239,
+   "team": [
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "meganium",
+     "ja": "メガニウム",
+     "key": "0154-00",
+     "item": "Meganiumite"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "pyroar",
+     "ja": "カエンジシ",
+     "key": "0668-00",
+     "item": "Pyroarite"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Spell Tag"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "White Herb"
+    }
+   ]
+  },
+  {
+   "rank": 402,
+   "rating": 2343.918,
+   "team": [
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Dragon Fang"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Black Glasses"
+    }
+   ]
+  },
+  {
+   "rank": 411,
+   "rating": 2338.197,
+   "team": [
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Smooth Rock"
+    },
+    {
+     "id": "excadrill",
+     "ja": "ドリュウズ",
+     "key": "0530-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "scovillain",
+     "ja": "スコヴィラン",
+     "key": "0952-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Garchompite"
+    }
+   ]
+  },
+  {
+   "rank": 413,
+   "rating": 2337.399,
+   "team": [
+    {
+     "id": "victreebel",
+     "ja": "ウツボット",
+     "key": "0071-00",
+     "item": "Victreebelite"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    },
+    {
+     "id": "sharpedo",
+     "ja": "サメハダー",
+     "key": "0319-00",
+     "item": "Sharpedonite"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "vanilluxe",
+     "ja": "バイバニラ",
+     "key": "0584-00",
+     "item": "Never-Melt Ice"
+    }
+   ]
+  },
+  {
+   "rank": 415,
+   "rating": 2336.965,
+   "team": [
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    },
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 442,
+   "rating": 2327.572,
+   "team": [
+    {
+     "id": "pelipper",
+     "ja": "ペリッパー",
+     "key": "0279-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "swampert",
+     "ja": "ラグラージ",
+     "key": "0260-00",
+     "item": "Swampertite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "rotomheat",
+     "ja": "ヒートロトム",
+     "key": "0479-01",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    }
+   ]
+  },
+  {
+   "rank": 451,
+   "rating": 2324.679,
+   "team": [
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    },
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Life Orb"
+    }
+   ]
+  },
+  {
+   "rank": 457,
+   "rating": 2323.228,
+   "team": [
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "umbreon",
+     "ja": "ブラッキー",
+     "key": "0197-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "starmie",
+     "ja": "スターミー",
+     "key": "0121-00",
+     "item": "Starminite"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 459,
+   "rating": 2322.514,
+   "team": [
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Gyaradosite"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "White Herb"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 481,
+   "rating": 2315.662,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Dragon Fang"
+    }
+   ]
+  },
+  {
+   "rank": 488,
+   "rating": 2314.262,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Gyaradosite"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "White Herb"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 489,
+   "rating": 2314.188,
+   "team": [
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "White Herb"
+    },
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "umbreon",
+     "ja": "ブラッキー",
+     "key": "0197-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "volcarona",
+     "ja": "ウルガモス",
+     "key": "0637-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 490,
+   "rating": 2314.124,
+   "team": [
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "blaziken",
+     "ja": "バシャーモ",
+     "key": "0257-00",
+     "item": "Blazikenite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Chesto Berry"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Life Orb"
+    }
+   ]
+  },
+  {
+   "rank": 494,
+   "rating": 2313.973,
+   "team": [
+    {
+     "id": "pelipper",
+     "ja": "ペリッパー",
+     "key": "0279-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "swampert",
+     "ja": "ラグラージ",
+     "key": "0260-00",
+     "item": "Swampertite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "snorlax",
+     "ja": "カビゴン",
+     "key": "0143-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "dragapult",
+     "ja": "ドラパルト",
+     "key": "0887-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "mawile",
+     "ja": "クチート",
+     "key": "0303-00",
+     "item": "Mawilite"
+    }
+   ]
+  },
+  {
+   "rank": 499,
+   "rating": 2313.706,
+   "team": [
+    {
+     "id": "sneasler",
+     "ja": "オオニューラ",
+     "key": "0903-00",
+     "item": "White Herb"
+    },
+    {
+     "id": "zoroarkhisui",
+     "ja": "ゾロアーク(ヒスイ)",
+     "key": "0571-01",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "decidueyehisui",
+     "ja": "ジュナイパー(ヒスイ)",
+     "key": "0724-01",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "overqwil",
+     "ja": "ハリーマン",
+     "key": "0904-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "goodrahisui",
+     "ja": "ヌメルゴン(ヒスイ)",
+     "key": "0706-01",
+     "item": "Shuca Berry"
+    }
+   ]
+  },
+  {
+   "rank": 515,
+   "rating": 2311.795,
+   "team": [
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Greninjite"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Chesto Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "rotomheat",
+     "ja": "ヒートロトム",
+     "key": "0479-01",
+     "item": "Leftovers"
+    },
+    {
+     "id": "staraptor",
+     "ja": "ムクホーク",
+     "key": "0398-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    }
+   ]
+  },
+  {
+   "rank": 516,
+   "rating": 2311.741,
+   "team": [
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Black Glasses"
+    },
+    {
+     "id": "sinistcha",
+     "ja": "ヤバソチャ",
+     "key": "1013-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "staraptor",
+     "ja": "ムクホーク",
+     "key": "0398-00",
+     "item": "Staraptite"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 522,
+   "rating": 2311.469,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Garchompite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "meganium",
+     "ja": "メガニウム",
+     "key": "0154-00",
+     "item": "Meganiumite"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Smooth Rock"
+    },
+    {
+     "id": "excadrill",
+     "ja": "ドリュウズ",
+     "key": "0530-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Mystic Water"
+    }
+   ]
+  },
+  {
+   "rank": 527,
+   "rating": 2310.837,
+   "team": [
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "vanilluxe",
+     "ja": "バイバニラ",
+     "key": "0584-00",
+     "item": "Never-Melt Ice"
+    },
+    {
+     "id": "kangaskhan",
+     "ja": "ガルーラ",
+     "key": "0115-00",
+     "item": "Kangaskhanite"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 540,
+   "rating": 2309.321,
+   "team": [
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "venusaur",
+     "ja": "フシギバナ",
+     "key": "0003-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "blastoise",
+     "ja": "カメックス",
+     "key": "0009-00",
+     "item": "Blastoisinite"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "torkoal",
+     "ja": "コータス",
+     "key": "0324-00",
+     "item": "Heat Rock"
+    },
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    }
+   ]
+  },
+  {
+   "rank": 550,
+   "rating": 2308.181,
+   "team": [
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Expert Belt"
+    },
+    {
+     "id": "gourgeistsmall",
+     "ja": "パンプジン(ちいさいサイズ)",
+     "key": "0711-01",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "venusaur",
+     "ja": "フシギバナ",
+     "key": "0003-00",
+     "item": "Venusaurite"
+    },
+    {
+     "id": "scovillain",
+     "ja": "スコヴィラン",
+     "key": "0952-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "victreebel",
+     "ja": "ウツボット",
+     "key": "0071-00",
+     "item": "Victreebelite"
+    },
+    {
+     "id": "whimsicott",
+     "ja": "エルフーン",
+     "key": "0547-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 557,
+   "rating": 2307.819,
+   "team": [
+    {
+     "id": "whimsicott",
+     "ja": "エルフーン",
+     "key": "0547-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "torkoal",
+     "ja": "コータス",
+     "key": "0324-00",
+     "item": "Heat Rock"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "venusaur",
+     "ja": "フシギバナ",
+     "key": "0003-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    },
+    {
+     "id": "blastoise",
+     "ja": "カメックス",
+     "key": "0009-00",
+     "item": "Blastoisinite"
+    }
+   ]
+  },
+  {
+   "rank": 558,
+   "rating": 2307.76,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "lucario",
+     "ja": "ルカリオ",
+     "key": "0448-00",
+     "item": "Lucarionite"
+    },
+    {
+     "id": "spiritomb",
+     "ja": "ミカルゲ",
+     "key": "0442-00",
+     "item": "Chesto Berry"
+    },
+    {
+     "id": "roserade",
+     "ja": "ロズレイド",
+     "key": "0407-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "milotic",
+     "ja": "ミロカロス",
+     "key": "0350-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "kommoo",
+     "ja": "ジャラランガ",
+     "key": "0784-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 568,
+   "rating": 2306.993,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "meganium",
+     "ja": "メガニウム",
+     "key": "0154-00",
+     "item": "Meganiumite"
+    },
+    {
+     "id": "toxapex",
+     "ja": "ドヒドイデ",
+     "key": "0748-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Black Glasses"
+    }
+   ]
+  },
+  {
+   "rank": 570,
+   "rating": 2306.97,
+   "team": [
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Chesto Berry"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 576,
+   "rating": 2306.567,
+   "team": [
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Roseli Berry"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Wide Lens"
+    },
+    {
+     "id": "blaziken",
+     "ja": "バシャーモ",
+     "key": "0257-00",
+     "item": "Blazikenite"
+    }
+   ]
+  },
+  {
+   "rank": 579,
+   "rating": 2306.374,
+   "team": [
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    },
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "rotomwash",
+     "ja": "ウォッシュロトム",
+     "key": "0479-02",
+     "item": "Chesto Berry"
+    },
+    {
+     "id": "volcarona",
+     "ja": "ウルガモス",
+     "key": "0637-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 585,
+   "rating": 2305.664,
+   "team": [
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "vaporeon",
+     "ja": "シャワーズ",
+     "key": "0134-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "diggersby",
+     "ja": "ホルード",
+     "key": "0660-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Glimmoranite"
+    },
+    {
+     "id": "orthworm",
+     "ja": "ミミズズ",
+     "key": "0968-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 588,
+   "rating": 2305.58,
+   "team": [
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Chesto Berry"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 589,
+   "rating": 2305.535,
+   "team": [
+    {
+     "id": "leafeon",
+     "ja": "リーフィア",
+     "key": "0470-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Greninjite"
+    },
+    {
+     "id": "dragapult",
+     "ja": "ドラパルト",
+     "key": "0887-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "volcarona",
+     "ja": "ウルガモス",
+     "key": "0637-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Black Glasses"
+    },
+    {
+     "id": "slowkinggalar",
+     "ja": "ヤドキング(ガラル)",
+     "key": "0199-01",
+     "item": "Shuca Berry"
+    }
+   ]
+  },
+  {
+   "rank": 595,
+   "rating": 2305.112,
+   "team": [
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "weavile",
+     "ja": "マニューラ",
+     "key": "0461-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Chesto Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 605,
+   "rating": 2303.754,
+   "team": [
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "blaziken",
+     "ja": "バシャーモ",
+     "key": "0257-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "dragapult",
+     "ja": "ドラパルト",
+     "key": "0887-00",
+     "item": "Light Clay"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Gyaradosite"
+    }
+   ]
+  },
+  {
+   "rank": 607,
+   "rating": 2303.632,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite X"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "raichu",
+     "ja": "ライチュウ",
+     "key": "0026-00",
+     "item": "Raichunite Y"
+    }
+   ]
+  },
+  {
+   "rank": 610,
+   "rating": 2303.206,
+   "team": [
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Gyaradosite"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "sylveon",
+     "ja": "ニンフィア",
+     "key": "0700-00",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 644,
+   "rating": 2300.286,
+   "team": [
+    {
+     "id": "pelipper",
+     "ja": "ペリッパー",
+     "key": "0279-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "swampert",
+     "ja": "ラグラージ",
+     "key": "0260-00",
+     "item": "Swampertite"
+    },
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "mawile",
+     "ja": "クチート",
+     "key": "0303-00",
+     "item": "Mawilite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "venusaur",
+     "ja": "フシギバナ",
+     "key": "0003-00",
+     "item": "Venusaurite"
+    }
+   ]
+  },
+  {
+   "rank": 696,
+   "rating": 2290.746,
+   "team": [
+    {
+     "id": "scovillain",
+     "ja": "スコヴィラン",
+     "key": "0952-00",
+     "item": "Scovillainite"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Expert Belt"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "gallade",
+     "ja": "エルレイド",
+     "key": "0475-00",
+     "item": "Galladite"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 698,
+   "rating": 2290.201,
+   "team": [
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    }
+   ]
+  },
+  {
+   "rank": 705,
+   "rating": 2288.639,
+   "team": [
+    {
+     "id": "mawile",
+     "ja": "クチート",
+     "key": "0303-00",
+     "item": "Mawilite"
+    },
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "vanilluxe",
+     "ja": "バイバニラ",
+     "key": "0584-00",
+     "item": "Never-Melt Ice"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    }
+   ]
+  },
+  {
+   "rank": 709,
+   "rating": 2288.261,
+   "team": [
+    {
+     "id": "glaceon",
+     "ja": "グレイシア",
+     "key": "0471-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "mawile",
+     "ja": "クチート",
+     "key": "0303-00",
+     "item": "Mawilite"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "basculegionf",
+     "ja": "イダイトウ(F)",
+     "key": "0902-01",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    }
+   ]
+  },
+  {
+   "rank": 711,
+   "rating": 2288.147,
+   "team": [
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Mental Herb"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    },
+    {
+     "id": "tinkaton",
+     "ja": "デカヌチャン",
+     "key": "0959-00",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 715,
+   "rating": 2287.687,
+   "team": [
+    {
+     "id": "swampert",
+     "ja": "ラグラージ",
+     "key": "0260-00",
+     "item": "Swampertite"
+    },
+    {
+     "id": "raichu",
+     "ja": "ライチュウ",
+     "key": "0026-00",
+     "item": "Raichunite Y"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "pelipper",
+     "ja": "ペリッパー",
+     "key": "0279-00",
+     "item": "Damp Rock"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 722,
+   "rating": 2286.583,
+   "team": [
+    {
+     "id": "meganium",
+     "ja": "メガニウム",
+     "key": "0154-00",
+     "item": "Meganiumite"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite X"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    }
+   ]
+  },
+  {
+   "rank": 723,
+   "rating": 2286.555,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "dragapult",
+     "ja": "ドラパルト",
+     "key": "0887-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "tinkaton",
+     "ja": "デカヌチャン",
+     "key": "0959-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 724,
+   "rating": 2286.439,
+   "team": [
+    {
+     "id": "staraptor",
+     "ja": "ムクホーク",
+     "key": "0398-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    },
+    {
+     "id": "swampert",
+     "ja": "ラグラージ",
+     "key": "0260-00",
+     "item": "Swampertite"
+    },
+    {
+     "id": "zoroarkhisui",
+     "ja": "ゾロアーク(ヒスイ)",
+     "key": "0571-01",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "White Herb"
+    }
+   ]
+  },
+  {
+   "rank": 725,
+   "rating": 2286.36,
+   "team": [
+    {
+     "id": "mamoswine",
+     "ja": "マンムー",
+     "key": "0473-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Light Clay"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Gyaradosite"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "emboar",
+     "ja": "エンブオー",
+     "key": "0500-00",
+     "item": "Emboarite"
+    },
+    {
+     "id": "staraptor",
+     "ja": "ムクホーク",
+     "key": "0398-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 748,
+   "rating": 2284.397,
+   "team": [
+    {
+     "id": "swampert",
+     "ja": "ラグラージ",
+     "key": "0260-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "pelipper",
+     "ja": "ペリッパー",
+     "key": "0279-00",
+     "item": "Damp Rock"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "starmie",
+     "ja": "スターミー",
+     "key": "0121-00",
+     "item": "Starminite"
+    },
+    {
+     "id": "ninetalesalola",
+     "ja": "キュウコン(アローラ)",
+     "key": "0038-01",
+     "item": "Light Clay"
+    },
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    }
+   ]
+  },
+  {
+   "rank": 753,
+   "rating": 2283.827,
+   "team": [
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Shuca Berry"
+    },
+    {
+     "id": "manectric",
+     "ja": "ライボルト",
+     "key": "0310-00",
+     "item": "Manectite"
+    },
+    {
+     "id": "rotomwash",
+     "ja": "ウォッシュロトム",
+     "key": "0479-02",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "umbreon",
+     "ja": "ブラッキー",
+     "key": "0197-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "excadrill",
+     "ja": "ドリュウズ",
+     "key": "0530-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 755,
+   "rating": 2283.634,
+   "team": [
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "skeledirge",
+     "ja": "ラウドボーン",
+     "key": "0911-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "venusaur",
+     "ja": "フシギバナ",
+     "key": "0003-00",
+     "item": "Venusaurite"
+    }
+   ]
+  },
+  {
+   "rank": 757,
+   "rating": 2283.516,
+   "team": [
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Gyaradosite"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Leftovers"
+    }
+   ]
+  },
+  {
+   "rank": 767,
+   "rating": 2282.793,
+   "team": [
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Scope Lens"
+    },
+    {
+     "id": "staraptor",
+     "ja": "ムクホーク",
+     "key": "0398-00",
+     "item": "Staraptite"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Greninjite"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 767,
+   "rating": 2282.793,
+   "team": [
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Lum Berry"
+    }
+   ]
+  },
+  {
+   "rank": 783,
+   "rating": 2281.572,
+   "team": [
+    {
+     "id": "umbreon",
+     "ja": "ブラッキー",
+     "key": "0197-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Spell Tag"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Wacan Berry"
+    }
+   ]
+  },
+  {
+   "rank": 785,
+   "rating": 2281.403,
+   "team": [
+    {
+     "id": "meganium",
+     "ja": "メガニウム",
+     "key": "0154-00",
+     "item": "Meganiumite"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "umbreon",
+     "ja": "ブラッキー",
+     "key": "0197-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "sylveon",
+     "ja": "ニンフィア",
+     "key": "0700-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 788,
+   "rating": 2281.134,
+   "team": [
+    {
+     "id": "pelipper",
+     "ja": "ペリッパー",
+     "key": "0279-00",
+     "item": "Damp Rock"
+    },
+    {
+     "id": "swampert",
+     "ja": "ラグラージ",
+     "key": "0260-00",
+     "item": "Swampertite"
+    },
+    {
+     "id": "goodrahisui",
+     "ja": "ヌメルゴン(ヒスイ)",
+     "key": "0706-01",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "meganium",
+     "ja": "メガニウム",
+     "key": "0154-00",
+     "item": "Meganiumite"
+    },
+    {
+     "id": "sneasler",
+     "ja": "オオニューラ",
+     "key": "0903-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "annihilape",
+     "ja": "コノヨザル",
+     "key": "0979-00",
+     "item": "Light Ball"
+    }
+   ]
+  },
+  {
+   "rank": 793,
+   "rating": 2281.014,
+   "team": [
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "slowkinggalar",
+     "ja": "ヤドキング(ガラル)",
+     "key": "0199-01",
+     "item": "Leftovers"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Chesto Berry"
+    }
+   ]
+  },
+  {
+   "rank": 796,
+   "rating": 2280.879,
+   "team": [
+    {
+     "id": "starmie",
+     "ja": "スターミー",
+     "key": "0121-00",
+     "item": "Starminite"
+    },
+    {
+     "id": "volcarona",
+     "ja": "ウルガモス",
+     "key": "0637-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "diggersby",
+     "ja": "ホルード",
+     "key": "0660-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "raichu",
+     "ja": "ライチュウ",
+     "key": "0026-00",
+     "item": "Raichunite Y"
+    },
+    {
+     "id": "orthworm",
+     "ja": "ミミズズ",
+     "key": "0968-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "dragapult",
+     "ja": "ドラパルト",
+     "key": "0887-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 799,
+   "rating": 2280.647,
+   "team": [
+    {
+     "id": "zoroarkhisui",
+     "ja": "ゾロアーク(ヒスイ)",
+     "key": "0571-01",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "ditto",
+     "ja": "メタモン",
+     "key": "0132-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "pyroar",
+     "ja": "カエンジシ",
+     "key": "0668-00",
+     "item": "Pyroarite"
+    },
+    {
+     "id": "toucannon",
+     "ja": "ドデカバシ",
+     "key": "0733-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": null,
+     "ja": "４ひきかぞく",
+     "key": "0925-01",
+     "item": "Wide Lens"
+    }
+   ]
+  },
+  {
+   "rank": 803,
+   "rating": 2280.413,
+   "team": [
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Black Glasses"
+    }
+   ]
+  },
+  {
+   "rank": 804,
+   "rating": 2280.391,
+   "team": [
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    },
+    {
+     "id": "mawile",
+     "ja": "クチート",
+     "key": "0303-00",
+     "item": "Mawilite"
+    },
+    {
+     "id": "gallade",
+     "ja": "エルレイド",
+     "key": "0475-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "sinistcha",
+     "ja": "ヤバソチャ",
+     "key": "1013-00",
+     "item": "Colbur Berry"
+    },
+    {
+     "id": "audino",
+     "ja": "タブンネ",
+     "key": "0531-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "basculegionf",
+     "ja": "イダイトウ(F)",
+     "key": "0902-01",
+     "item": "Life Orb"
+    }
+   ]
+  },
+  {
+   "rank": 805,
+   "rating": 2280.377,
+   "team": [
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "umbreon",
+     "ja": "ブラッキー",
+     "key": "0197-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "mamoswine",
+     "ja": "マンムー",
+     "key": "0473-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "victreebel",
+     "ja": "ウツボット",
+     "key": "0071-00",
+     "item": "Victreebelite"
+    }
+   ]
+  },
+  {
+   "rank": 806,
+   "rating": 2280.352,
+   "team": [
+    {
+     "id": "slowking",
+     "ja": "ヤドキング",
+     "key": "0199-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "grimmsnarl",
+     "ja": "オーロンゲ",
+     "key": "0861-00",
+     "item": "Black Glasses"
+    },
+    {
+     "id": "orthworm",
+     "ja": "ミミズズ",
+     "key": "0968-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "raichu",
+     "ja": "ライチュウ",
+     "key": "0026-00",
+     "item": "Raichunite Y"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Chesto Berry"
+    },
+    {
+     "id": "scolipede",
+     "ja": "ペンドラー",
+     "key": "0545-00",
+     "item": "Scolipite"
+    }
+   ]
+  },
+  {
+   "rank": 807,
+   "rating": 2280.323,
+   "team": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Black Glasses"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Life Orb"
+    }
+   ]
+  },
+  {
+   "rank": 808,
+   "rating": 2280.314,
+   "team": [
+    {
+     "id": "pelipper",
+     "ja": "ペリッパー",
+     "key": "0279-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "swampert",
+     "ja": "ラグラージ",
+     "key": "0260-00",
+     "item": "Swampertite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "mawile",
+     "ja": "クチート",
+     "key": "0303-00",
+     "item": "Mawilite"
+    },
+    {
+     "id": "musharna",
+     "ja": "ムシャーナ",
+     "key": "0518-00",
+     "item": "Kasib Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 810,
+   "rating": 2280.239,
+   "team": [
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "umbreon",
+     "ja": "ブラッキー",
+     "key": "0197-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "basculegionf",
+     "ja": "イダイトウ(F)",
+     "key": "0902-01",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "volcarona",
+     "ja": "ウルガモス",
+     "key": "0637-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 821,
+   "rating": 2279.777,
+   "team": [
+    {
+     "id": "kangaskhan",
+     "ja": "ガルーラ",
+     "key": "0115-00",
+     "item": "Kangaskhanite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "White Herb"
+    }
+   ]
+  },
+  {
+   "rank": 823,
+   "rating": 2279.743,
+   "team": [
+    {
+     "id": "blastoise",
+     "ja": "カメックス",
+     "key": "0009-00",
+     "item": "Blastoisinite"
+    },
+    {
+     "id": "ninetalesalola",
+     "ja": "キュウコン(アローラ)",
+     "key": "0038-01",
+     "item": "Light Clay"
+    },
+    {
+     "id": "ceruledge",
+     "ja": "ソウブレイズ",
+     "key": "0937-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "venusaur",
+     "ja": "フシギバナ",
+     "key": "0003-00",
+     "item": "Venusaurite"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 826,
+   "rating": 2279.588,
+   "team": [
+    {
+     "id": "scovillain",
+     "ja": "スコヴィラン",
+     "key": "0952-00",
+     "item": "Scovillainite"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Expert Belt"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "gallade",
+     "ja": "エルレイド",
+     "key": "0475-00",
+     "item": "Galladite"
+    }
+   ]
+  },
+  {
+   "rank": 834,
+   "rating": 2279.328,
+   "team": [
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Expert Belt"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "tyranitar",
+     "ja": "バンギラス",
+     "key": "0248-00",
+     "item": "Tyranitarite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Wise Glasses"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    }
+   ]
+  },
+  {
+   "rank": 835,
+   "rating": 2279.304,
+   "team": [
+    {
+     "id": "vivillonfancy",
+     "ja": "ビビヨン(ファンシーなもよう)",
+     "key": "0666-18",
+     "item": "Leftovers"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "audino",
+     "ja": "タブンネ",
+     "key": "0531-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Greninjite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "White Herb"
+    },
+    {
+     "id": "mawile",
+     "ja": "クチート",
+     "key": "0303-00",
+     "item": "Mawilite"
+    }
+   ]
+  },
+  {
+   "rank": 835,
+   "rating": 2279.304,
+   "team": [
+    {
+     "id": "pelipper",
+     "ja": "ペリッパー",
+     "key": "0279-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "swampert",
+     "ja": "ラグラージ",
+     "key": "0260-00",
+     "item": "Swampertite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Life Orb"
+    }
+   ]
+  },
+  {
+   "rank": 844,
+   "rating": 2278.718,
+   "team": [
+    {
+     "id": "skarmory",
+     "ja": "エアームド",
+     "key": "0227-00",
+     "item": "Skarmorite"
+    },
+    {
+     "id": "ninetalesalola",
+     "ja": "キュウコン(アローラ)",
+     "key": "0038-01",
+     "item": "Light Clay"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "ceruledge",
+     "ja": "ソウブレイズ",
+     "key": "0937-00",
+     "item": "Passho Berry"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "White Herb"
+    },
+    {
+     "id": "araquanid",
+     "ja": "オニシズクモ",
+     "key": "0752-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 849,
+   "rating": 2278.29,
+   "team": [
+    {
+     "id": "swampert",
+     "ja": "ラグラージ",
+     "key": "0260-00",
+     "item": "Swampertite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "pelipper",
+     "ja": "ペリッパー",
+     "key": "0279-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Damp Rock"
+    },
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    }
+   ]
+  },
+  {
+   "rank": 855,
+   "rating": 2278.094,
+   "team": [
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "raichu",
+     "ja": "ライチュウ",
+     "key": "0026-00",
+     "item": "Raichunite Y"
+    }
+   ]
+  },
+  {
+   "rank": 867,
+   "rating": 2277.443,
+   "team": [
+    {
+     "id": "pelipper",
+     "ja": "ペリッパー",
+     "key": "0279-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "swampert",
+     "ja": "ラグラージ",
+     "key": "0260-00",
+     "item": "Swampertite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Chesto Berry"
+    },
+    {
+     "id": "krookodile",
+     "ja": "ワルビアル",
+     "key": "0553-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "starmie",
+     "ja": "スターミー",
+     "key": "0121-00",
+     "item": "Starminite"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Black Glasses"
+    }
+   ]
+  },
+  {
+   "rank": 868,
+   "rating": 2277.414,
+   "team": [
+    {
+     "id": "pyroar",
+     "ja": "カエンジシ",
+     "key": "0668-00",
+     "item": "Pyroarite"
+    },
+    {
+     "id": "floetteeternal",
+     "ja": "フラエッテ(えいえんのはな)",
+     "key": "0670-05",
+     "item": "Floettite"
+    },
+    {
+     "id": "toxapex",
+     "ja": "ドヒドイデ",
+     "key": "0748-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 873,
+   "rating": 2277.146,
+   "team": [
+    {
+     "id": "mamoswine",
+     "ja": "マンムー",
+     "key": "0473-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "starmie",
+     "ja": "スターミー",
+     "key": "0121-00",
+     "item": "Starminite"
+    },
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    }
+   ]
+  },
+  {
+   "rank": 879,
+   "rating": 2276.522,
+   "team": [
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Glimmoranite"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Spell Tag"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "staraptor",
+     "ja": "ムクホーク",
+     "key": "0398-00",
+     "item": "Staraptite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 889,
+   "rating": 2275.8,
+   "team": [
+    {
+     "id": "meganium",
+     "ja": "メガニウム",
+     "key": "0154-00",
+     "item": "Meganiumite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Mystic Water"
+    },
+    {
+     "id": "delphox",
+     "ja": "マフォクシー",
+     "key": "0655-00",
+     "item": "Delphoxite"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    }
+   ]
+  },
+  {
+   "rank": 891,
+   "rating": 2275.678,
+   "team": [
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "chesnaught",
+     "ja": "ブリガロン",
+     "key": "0652-00",
+     "item": "Chesnaughtite"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "slowkinggalar",
+     "ja": "ヤドキング(ガラル)",
+     "key": "0199-01",
+     "item": "Leftovers"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 897,
+   "rating": 2275.413,
+   "team": [
+    {
+     "id": "clefable",
+     "ja": "ピクシー",
+     "key": "0036-00",
+     "item": "Clefablite"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー",
+     "key": "1000-00",
+     "item": "Spell Tag"
+    },
+    {
+     "id": "toxapex",
+     "ja": "ドヒドイデ",
+     "key": "0748-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "umbreon",
+     "ja": "ブラッキー",
+     "key": "0197-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "scovillain",
+     "ja": "スコヴィラン",
+     "key": "0952-00",
+     "item": "Scovillainite"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 899,
+   "rating": 2275.257,
+   "team": [
+    {
+     "id": "raichu",
+     "ja": "ライチュウ",
+     "key": "0026-00",
+     "item": "Raichunite Y"
+    },
+    {
+     "id": "vileplume",
+     "ja": "ラフレシア",
+     "key": "0045-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "vanilluxe",
+     "ja": "バイバニラ",
+     "key": "0584-00",
+     "item": "Never-Melt Ice"
+    },
+    {
+     "id": "emboar",
+     "ja": "エンブオー",
+     "key": "0500-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "diggersby",
+     "ja": "ホルード",
+     "key": "0660-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "slowbro",
+     "ja": "ヤドラン",
+     "key": "0080-00",
+     "item": "Slowbronite"
+    }
+   ]
+  },
+  {
+   "rank": 911,
+   "rating": 2274.858,
+   "team": [
+    {
+     "id": "charizard",
+     "ja": "リザードン",
+     "key": "0006-00",
+     "item": "Charizardite Y"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Spell Tag"
+    },
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 916,
+   "rating": 2274.648,
+   "team": [
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "blaziken",
+     "ja": "バシャーモ",
+     "key": "0257-00",
+     "item": "Blazikenite"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア",
+     "key": "0823-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "sylveon",
+     "ja": "ニンフィア",
+     "key": "0700-00",
+     "item": "Chesto Berry"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Choice Scarf"
+    }
+   ]
+  },
+  {
+   "rank": 919,
+   "rating": 2274.56,
+   "team": [
+    {
+     "id": "blaziken",
+     "ja": "バシャーモ",
+     "key": "0257-00",
+     "item": "Blazikenite"
+    },
+    {
+     "id": "dragapult",
+     "ja": "ドラパルト",
+     "key": "0887-00",
+     "item": "Light Clay"
+    },
+    {
+     "id": "orthworm",
+     "ja": "ミミズズ",
+     "key": "0968-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Gyaradosite"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Gengarite"
+    }
+   ]
+  },
+  {
+   "rank": 924,
+   "rating": 2274.31,
+   "team": [
+    {
+     "id": "staraptor",
+     "ja": "ムクホーク",
+     "key": "0398-00",
+     "item": "Staraptite"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Black Glasses"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "overqwil",
+     "ja": "ハリーマン",
+     "key": "0904-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 937,
+   "rating": 2273.68,
+   "team": [
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Greninjite"
+    },
+    {
+     "id": "sableye",
+     "ja": "ヤミラミ",
+     "key": "0302-00",
+     "item": "Light Clay"
+    },
+    {
+     "id": "incineroar",
+     "ja": "ガオガエン",
+     "key": "0727-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "krookodile",
+     "ja": "ワルビアル",
+     "key": "0553-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "grimmsnarl",
+     "ja": "オーロンゲ",
+     "key": "0861-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "kingambit",
+     "ja": "ドドゲザン",
+     "key": "0983-00",
+     "item": "Black Glasses"
+    }
+   ]
+  },
+  {
+   "rank": 942,
+   "rating": 2273.495,
+   "team": [
+    {
+     "id": "venusaur",
+     "ja": "フシギバナ",
+     "key": "0003-00",
+     "item": "Venusaurite"
+    },
+    {
+     "id": "scovillain",
+     "ja": "スコヴィラン",
+     "key": "0952-00",
+     "item": "Scovillainite"
+    },
+    {
+     "id": "gengar",
+     "ja": "ゲンガー",
+     "key": "0094-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "starmie",
+     "ja": "スターミー",
+     "key": "0121-00",
+     "item": "Starminite"
+    },
+    {
+     "id": "overqwil",
+     "ja": "ハリーマン",
+     "key": "0904-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "toucannon",
+     "ja": "ドデカバシ",
+     "key": "0733-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 945,
+   "rating": 2273.299,
+   "team": [
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Spell Tag"
+    },
+    {
+     "id": "venusaur",
+     "ja": "フシギバナ",
+     "key": "0003-00",
+     "item": "Venusaurite"
+    },
+    {
+     "id": "umbreon",
+     "ja": "ブラッキー",
+     "key": "0197-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "gyarados",
+     "ja": "ギャラドス",
+     "key": "0130-00",
+     "item": "Gyaradosite"
+    }
+   ]
+  },
+  {
+   "rank": 946,
+   "rating": 2273.086,
+   "team": [
+    {
+     "id": "metagross",
+     "ja": "メタグロス",
+     "key": "0376-00",
+     "item": "Metagrossite"
+    },
+    {
+     "id": "sylveon",
+     "ja": "ニンフィア",
+     "key": "0700-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "mamoswine",
+     "ja": "マンムー",
+     "key": "0473-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Scope Lens"
+    }
+   ]
+  },
+  {
+   "rank": 954,
+   "rating": 2272.593,
+   "team": [
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "raichu",
+     "ja": "ライチュウ",
+     "key": "0026-00",
+     "item": "Raichunite Y"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Glimmoranite"
+    },
+    {
+     "id": "orthworm",
+     "ja": "ミミズズ",
+     "key": "0968-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 965,
+   "rating": 2272.037,
+   "team": [
+    {
+     "id": "blastoise",
+     "ja": "カメックス",
+     "key": "0009-00",
+     "item": "Blastoisinite"
+    },
+    {
+     "id": "victreebel",
+     "ja": "ウツボット",
+     "key": "0071-00",
+     "item": "Victreebelite"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "vanilluxe",
+     "ja": "バイバニラ",
+     "key": "0584-00",
+     "item": "Never-Melt Ice"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Spell Tag"
+    },
+    {
+     "id": "aegislash",
+     "ja": "ギルガルド",
+     "key": "0681-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 976,
+   "rating": 2271.452,
+   "team": [
+    {
+     "id": "scizor",
+     "ja": "ハッサム",
+     "key": "0212-00",
+     "item": "Scizorite"
+    },
+    {
+     "id": "scovillain",
+     "ja": "スコヴィラン",
+     "key": "0952-00",
+     "item": "Scovillainite"
+    },
+    {
+     "id": "dragapult",
+     "ja": "ドラパルト",
+     "key": "0887-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "staraptor",
+     "ja": "ムクホーク",
+     "key": "0398-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン",
+     "key": "0450-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    }
+   ]
+  },
+  {
+   "rank": 977,
+   "rating": 2271.367,
+   "team": [
+    {
+     "id": "lopunny",
+     "ja": "ミミロップ",
+     "key": "0428-00",
+     "item": "Lopunnite"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "White Herb"
+    },
+    {
+     "id": "ceruledge",
+     "ja": "ソウブレイズ",
+     "key": "0937-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ",
+     "key": "0908-00",
+     "item": "Expert Belt"
+    },
+    {
+     "id": "milotic",
+     "ja": "ミロカロス",
+     "key": "0350-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    }
+   ]
+  },
+  {
+   "rank": 978,
+   "rating": 2271.359,
+   "team": [
+    {
+     "id": "ampharos",
+     "ja": "デンリュウ",
+     "key": "0181-00",
+     "item": "Ampharosite"
+    },
+    {
+     "id": "skarmory",
+     "ja": "エアームド",
+     "key": "0227-00",
+     "item": "Skarmorite"
+    },
+    {
+     "id": "glimmora",
+     "ja": "キラフロル",
+     "key": "0970-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ",
+     "key": "0730-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Lum Berry"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス",
+     "key": "0445-00",
+     "item": "Focus Sash"
+    }
+   ]
+  },
+  {
+   "rank": 984,
+   "rating": 2271.092,
+   "team": [
+    {
+     "id": "sableye",
+     "ja": "ヤミラミ",
+     "key": "0302-00",
+     "item": "Sablenite"
+    },
+    {
+     "id": "samurotthisui",
+     "ja": "ダイケンキ(ヒスイ)",
+     "key": "0503-01",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "slowbro",
+     "ja": "ヤドラン",
+     "key": "0080-00",
+     "item": "Slowbronite"
+    },
+    {
+     "id": "snorlax",
+     "ja": "カビゴン",
+     "key": "0143-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "toxapex",
+     "ja": "ドヒドイデ",
+     "key": "0748-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "chesnaught",
+     "ja": "ブリガロン",
+     "key": "0652-00",
+     "item": "Chesnaughtite"
+    }
+   ]
+  },
+  {
+   "rank": 990,
+   "rating": 2270.709,
+   "team": [
+    {
+     "id": "blaziken",
+     "ja": "バシャーモ",
+     "key": "0257-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "greninja",
+     "ja": "ゲッコウガ",
+     "key": "0658-00",
+     "item": "Greninjite"
+    },
+    {
+     "id": "snorlax",
+     "ja": "カビゴン",
+     "key": "0143-00",
+     "item": "Chople Berry"
+    },
+    {
+     "id": "hydreigon",
+     "ja": "サザンドラ",
+     "key": "0635-00",
+     "item": "Black Glasses"
+    },
+    {
+     "id": "espathra",
+     "ja": "クエスパトラ",
+     "key": "0956-00",
+     "item": "Focus Sash"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Scope Lens"
+    }
+   ]
+  },
+  {
+   "rank": 993,
+   "rating": 2270.476,
+   "team": [
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Choice Scarf"
+    },
+    {
+     "id": "dragonite",
+     "ja": "カイリュー",
+     "key": "0149-00",
+     "item": "Dragoninite"
+    },
+    {
+     "id": "clefable",
+     "ja": "ピクシー",
+     "key": "0036-00",
+     "item": "Leftovers"
+    },
+    {
+     "id": "scovillain",
+     "ja": "スコヴィラン",
+     "key": "0952-00",
+     "item": "Scovillainite"
+    },
+    {
+     "id": "toxapex",
+     "ja": "ドヒドイデ",
+     "key": "0748-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "snorlax",
+     "ja": "カビゴン",
+     "key": "0143-00",
+     "item": "Chesto Berry"
+    }
+   ]
+  },
+  {
+   "rank": 999,
+   "rating": 2270.241,
+   "team": [
+    {
+     "id": "victreebel",
+     "ja": "ウツボット",
+     "key": "0071-00",
+     "item": "Victreebelite"
+    },
+    {
+     "id": "blastoise",
+     "ja": "カメックス",
+     "key": "0009-00",
+     "item": "Blastoisinite"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ",
+     "key": "0778-00",
+     "item": "Life Orb"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス",
+     "key": "1018-00",
+     "item": "Sitrus Berry"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ",
+     "key": "0902-00",
+     "item": "Spell Tag"
+    },
+    {
+     "id": "vanilluxe",
+     "ja": "バイバニラ",
+     "key": "0584-00",
+     "item": "Never-Melt Ice"
+    }
+   ]
+  }
+ ]
+}

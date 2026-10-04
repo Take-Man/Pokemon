@@ -1,0 +1,202 @@
+[
+ {
+  "id": "adamant",
+  "en": "Adamant",
+  "ja": "いじっぱり",
+  "plus": "atk",
+  "minus": "spa",
+  "label": "A↑C↓"
+ },
+ {
+  "id": "bashful",
+  "en": "Bashful",
+  "ja": "てれや",
+  "plus": null,
+  "minus": null,
+  "label": "無補正"
+ },
+ {
+  "id": "bold",
+  "en": "Bold",
+  "ja": "ずぶとい",
+  "plus": "def",
+  "minus": "atk",
+  "label": "B↑A↓"
+ },
+ {
+  "id": "brave",
+  "en": "Brave",
+  "ja": "ゆうかん",
+  "plus": "atk",
+  "minus": "spe",
+  "label": "A↑S↓"
+ },
+ {
+  "id": "calm",
+  "en": "Calm",
+  "ja": "おだやか",
+  "plus": "spd",
+  "minus": "atk",
+  "label": "D↑A↓"
+ },
+ {
+  "id": "careful",
+  "en": "Careful",
+  "ja": "しんちょう",
+  "plus": "spd",
+  "minus": "spa",
+  "label": "D↑C↓"
+ },
+ {
+  "id": "docile",
+  "en": "Docile",
+  "ja": "すなお",
+  "plus": null,
+  "minus": null,
+  "label": "無補正"
+ },
+ {
+  "id": "gentle",
+  "en": "Gentle",
+  "ja": "おとなしい",
+  "plus": "spd",
+  "minus": "def",
+  "label": "D↑B↓"
+ },
+ {
+  "id": "hardy",
+  "en": "Hardy",
+  "ja": "がんばりや",
+  "plus": null,
+  "minus": null,
+  "label": "無補正"
+ },
+ {
+  "id": "hasty",
+  "en": "Hasty",
+  "ja": "せっかち",
+  "plus": "spe",
+  "minus": "def",
+  "label": "S↑B↓"
+ },
+ {
+  "id": "impish",
+  "en": "Impish",
+  "ja": "わんぱく",
+  "plus": "def",
+  "minus": "spa",
+  "label": "B↑C↓"
+ },
+ {
+  "id": "jolly",
+  "en": "Jolly",
+  "ja": "ようき",
+  "plus": "spe",
+  "minus": "spa",
+  "label": "S↑C↓"
+ },
+ {
+  "id": "lax",
+  "en": "Lax",
+  "ja": "のうてんき",
+  "plus": "def",
+  "minus": "spd",
+  "label": "B↑D↓"
+ },
+ {
+  "id": "lonely",
+  "en": "Lonely",
+  "ja": "さみしがり",
+  "plus": "atk",
+  "minus": "def",
+  "label": "A↑B↓"
+ },
+ {
+  "id": "mild",
+  "en": "Mild",
+  "ja": "おっとり",
+  "plus": "spa",
+  "minus": "def",
+  "label": "C↑B↓"
+ },
+ {
+  "id": "modest",
+  "en": "Modest",
+  "ja": "ひかえめ",
+  "plus": "spa",
+  "minus": "atk",
+  "label": "C↑A↓"
+ },
+ {
+  "id": "naive",
+  "en": "Naive",
+  "ja": "むじゃき",
+  "plus": "spe",
+  "minus": "spd",
+  "label": "S↑D↓"
+ },
+ {
+  "id": "naughty",
+  "en": "Naughty",
+  "ja": "やんちゃ",
+  "plus": "atk",
+  "minus": "spd",
+  "label": "A↑D↓"
+ },
+ {
+  "id": "quiet",
+  "en": "Quiet",
+  "ja": "れいせい",
+  "plus": "spa",
+  "minus": "spe",
+  "label": "C↑S↓"
+ },
+ {
+  "id": "quirky",
+  "en": "Quirky",
+  "ja": "きまぐれ",
+  "plus": null,
+  "minus": null,
+  "label": "無補正"
+ },
+ {
+  "id": "rash",
+  "en": "Rash",
+  "ja": "うっかりや",
+  "plus": "spa",
+  "minus": "spd",
+  "label": "C↑D↓"
+ },
+ {
+  "id": "relaxed",
+  "en": "Relaxed",
+  "ja": "のんき",
+  "plus": "def",
+  "minus": "spe",
+  "label": "B↑S↓"
+ },
+ {
+  "id": "sassy",
+  "en": "Sassy",
+  "ja": "なまいき",
+  "plus": "spd",
+  "minus": "spe",
+  "label": "D↑S↓"
+ },
+ {
+  "id": "serious",
+  "en": "Serious",
+  "ja": "まじめ",
+  "plus": null,
+  "minus": null,
+  "label": "無補正"
+ },
+ {
+  "id": "timid",
+  "en": "Timid",
+  "ja": "おくびょう",
+  "plus": "spe",
+  "minus": "atk",
+  "label": "S↑A↓"
+ }
+]

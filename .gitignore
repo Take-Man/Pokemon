@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+state/*.json
+state/*.jsonl
+state/current.md
+data/snapshots/_raw/
+*.tmp
+.DS_Store
+.pytest_cache/
+state/battle.md

@@ -1,0 +1,7 @@
+{
+  "_note": "PokeAPIに日本語名が無いものを手で補う。キーは英語名。build_static.py の最後に適用される",
+  "items": {"Leek": "ながねぎ", "Roseli Berry": "ロゼルのみ"},
+  "abilities": {},
+  "moves": {},
+  "pokemon": {}
+}
