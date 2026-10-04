@@ -308,9 +308,9 @@ def _residual(st: str, dfd: Side) -> str:
         return f"毎ターン最大HPの1/16（{max(1, mx // 16)}）のダメージ、物理技の威力が半分"
     if st == "par":
         spe = dfd.build.stats()["spe"]
-        return f"素早さ半分（{spe}→{spe // 2}、ランク補正前）、25%で行動できない"
+        return f"素早さ半分（{spe}→{spe // 2}、ランク補正前）、1/8（12.5%）で行動できない（チャンピオンズの仕様）"
     if st == "slp":
-        return "1〜3ターン行動できない"
+        return "1〜2ターン行動できない（2ターン目に起きる確率1/3、3ターン目には必ず起きる。チャンピオンズの仕様）"
     return ""
 
 

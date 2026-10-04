@@ -18,7 +18,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Optional
 
-from .damage import Field, Options, Side, calc
+from .damage import SPECIAL_PHYSICAL_DEF, Field, Options, Result, Side, calc
 from .data import STATS, dex, to_id
 from .sets import MonSet, load_snapshot
 from .stats import SP_MAX, SP_TOTAL, calc_stat
@@ -183,8 +183,21 @@ def _field(c: Cond) -> Field:
     return Field(c.weather or None, c.terrain or None)
 
 
-def _observed_ok(rolls: list[int], hp: int, r: Record, c: Cond, as_percent: bool) -> bool:
-    if not rolls or max(rolls) == 0:
+def _totals(att: Side, dfd: Side, move_id: str, c: Cond) -> tuple[list[int], int]:
+    """記録の条件で計算し、1回で出うる合計ダメージの一覧（連続技は1発ごとに乱数が独立）と受けた側の最大HPを返す。
+
+    連続技の回数が未入力なら、ありうる回数をすべて含める。
+    """
+    mh = dex().moves[move_id].get("multihit")
+    counts = [c.hits] if c.hits else (list(range(mh[0], mh[1] + 1)) if isinstance(mh, list) else [None])
+    results: list[Result] = [calc(att, dfd, move_id, _field(c), Options(crit=bool(c.crit), hits=n)) for n in counts]
+    totals = {x for res in results for x in (res.outcomes() if res.hit_rolls else res.rolls)}
+    return sorted(totals), results[0].defender_hp
+
+
+def _observed_ok(totals: list[int], hp: int, r: Record, c: Cond, as_percent: bool) -> bool:
+    """観測したダメージが totals（_totals の結果）のどれかで出るか。hp は受けた側の最大HP。"""
+    if not totals or totals[-1] == 0:
         return False
     if r.after is not None and float(r.after) <= 0:
         c = Cond(**{**c.__dict__, "ko": True})  # 残り0は倒れた扱い（ダメージは残りHP以上）
@@ -193,17 +206,14 @@ def _observed_ok(rolls: list[int], hp: int, r: Record, c: Cond, as_percent: bool
         after = float(r.after or 0)
         tol = 1.0 if before >= 100 else 2.0
         if c.ko:
-            return max(rolls) / hp * 100 >= before - tol
+            return totals[-1] / hp * 100 >= before - tol
         target = before - after
-        return any(abs(x / hp * 100 - target) <= tol for x in rolls)
-    before = int(r.before) if r.before is not None else None
+        return any(abs(x / hp * 100 - target) <= tol for x in totals)
+    before = int(r.before) if r.before is not None else hp  # 受ける前のHPの既定は最大HP
     after = int(r.after or 0)
     if c.ko:
-        return before is None or max(rolls) >= before
-    dmg = (before if before is not None else 0) - after
-    if (c.hits or 1) > 1:
-        return min(rolls) - 2 <= dmg <= max(rolls) + 2
-    return dmg in rolls
+        return totals[-1] >= before
+    return before - after in totals
 
 
 def feasible_taken(r: Record, items: list[str], abilities: list[str], mega: bool) -> tuple[str, set]:
@@ -218,7 +228,7 @@ def feasible_taken(r: Record, items: list[str], abilities: list[str], mega: bool
     from .matchup import as_side
 
     dfd = as_side(me)
-    dfd.boosts = {("def" if mv["category"] == "Physical" else "spd"): c.def_boost or 0}
+    dfd.boosts = {("def" if mv["category"] == "Physical" or mv["id"] in SPECIAL_PHYSICAL_DEF else "spd"): c.def_boost or 0}
     dfd.reflect = dfd.light_screen = bool(c.screen)
     dfd.status = c.d_status()
     if r.before is not None:
@@ -231,8 +241,8 @@ def feasible_taken(r: Record, items: list[str], abilities: list[str], mega: bool
                 for sp in range(SP_MAX + 1):
                     b = MonSet(sp_species, _nature_for(stat, cls), {stat: sp}, ab, None if item == OTHER else item)
                     att = Side(b.build(), boosts={stat: c.atk_boost or 0}, status=c.a_status())
-                    res = calc(att, dfd, mv["id"], _field(c), Options(crit=bool(c.crit), hits=c.hits))
-                    if _observed_ok(res.rolls, res.defender_hp, r, c, as_percent=False):
+                    totals, my_hp = _totals(att, dfd, mv["id"], c)
+                    if _observed_ok(totals, my_hp, r, c, as_percent=False):
                         out.add((cls, item, ab, sp))
     return stat, out
 
@@ -244,7 +254,7 @@ def feasible_dealt(r: Record, items: list[str], abilities: list[str], mega: bool
     mv = D.moves[r.move]
     if mv["category"] == "Status":
         return "", set()
-    stat = "def" if mv["category"] == "Physical" or mv["id"] in {"psyshock", "psystrike", "secretsword"} else "spd"
+    stat = "def" if mv["category"] == "Physical" or mv["id"] in SPECIAL_PHYSICAL_DEF else "spd"
     me = MonSet.from_dict(r.my)
     from .matchup import as_side
 
@@ -263,10 +273,10 @@ def feasible_dealt(r: Record, items: list[str], abilities: list[str], mega: bool
                     b = MonSet(sp_species, _nature_for(stat, cls), {stat: dsp}, ab, None if item == OTHER else item)
                     d = Side(b.build(), boosts={stat: c.def_boost or 0}, reflect=bool(c.screen), status=c.d_status(),
                              light_screen=bool(c.screen), hp_percent=100.0 if (r.before is None or r.before >= 100) else 99.0)
-                    res = calc(att, d, mv["id"], _field(c), Options(crit=bool(c.crit), hits=c.hits))
+                    totals, _ = _totals(att, d, mv["id"], c)
                     for hsp in range(SP_MAX + 1):
                         hp = calc_stat(base["hp"], hsp, "hp")
-                        if _observed_ok(res.rolls, hp, r, c, as_percent=True):
+                        if _observed_ok(totals, hp, r, c, as_percent=True):
                             out.add((cls, item, ab, hsp, dsp))
     return stat, out
 
@@ -304,7 +314,7 @@ def infer(opp: str, records: list[Record], snap: Optional[dict] = None, mega_hin
         else:
             stat, F = feasible_dealt(r, items, abilities, mega)
         unk = Cond.from_dict(r.cond).unknowns()
-        per.append({"record": r, "stat": stat, "F": F})
+        per.append({"record": r, "stat": stat, "F": F, "idx": _index(r.kind, F)})
         if not stat:
             notes.append(f"{D.ja('moves', r.move)}: 逆算に使えない技")
         elif not F:
@@ -373,22 +383,33 @@ def _item_rate(item: str, rates: dict) -> float:
     return rates.get(item, 1.0)
 
 
+def _index(kind: str, F: set) -> dict:
+    """可能集合を (補正, 持ち物, 特性) で引けるようにする。taken: SPの集合 / dealt: {HPのSP: 防御のSPの集合}"""
+    idx: dict = {}
+    for t in F:
+        key = t[:3]
+        if kind == "taken":
+            idx.setdefault(key, set()).add(t[3])
+        else:
+            idx.setdefault(key, {}).setdefault(t[3], set()).add(t[4])
+    return idx
+
+
 def _joint(per: list[dict], nature: str, item: str, ab: str) -> Optional[dict]:
     """性格・持ち物・特性を固定したとき、全記録を満たすSPの範囲。満たせなければ None。"""
     atk_allowed: dict[str, set] = {}
-    def_pairs: dict[str, list[set]] = {}
+    def_pairs: dict[str, list[dict]] = {}
     for p in per:
         cls = nature_class(nature, p["stat"])
+        hit = p["idx"].get((cls, item, ab))
         if p["record"].kind == "taken":
-            vals = {t[3] for t in p["F"] if t[0] == cls and t[1] == item and t[2] == ab}
-            atk_allowed[p["stat"]] = atk_allowed.get(p["stat"], set(range(SP_MAX + 1))) & vals
+            atk_allowed[p["stat"]] = atk_allowed.get(p["stat"], set(range(SP_MAX + 1))) & (hit or set())
             if not atk_allowed[p["stat"]]:
                 return None
         else:
-            pairs = {(t[3], t[4]) for t in p["F"] if t[0] == cls and t[1] == item and t[2] == ab}
-            if not pairs:
+            if not hit:
                 return None
-            def_pairs.setdefault(p["stat"], []).append(pairs)
+            def_pairs.setdefault(p["stat"], []).append(hit)
     ranges: dict[str, list[int]] = {}
     for s, v in atk_allowed.items():
         ranges[s] = [min(v), max(v)]
@@ -402,8 +423,8 @@ def _joint(per: list[dict], nature: str, item: str, ab: str) -> Optional[dict]:
             vals_here = {}
             for s, lst in def_pairs.items():
                 allowed = set(range(SP_MAX + 1))
-                for pairs in lst:
-                    allowed &= {d for h, d in pairs if h == hp}
+                for by_hp in lst:
+                    allowed &= by_hp.get(hp, set())
                 if s in atk_allowed:
                     allowed &= atk_allowed[s]
                 if not allowed:
@@ -431,8 +452,10 @@ def _joint(per: list[dict], nature: str, item: str, ab: str) -> Optional[dict]:
 
 def opponent_build(opp: str, records: list[Record], snap: Optional[dict] = None,
                    mega_hint: Optional[bool] = None) -> dict:
-    """mega_hint: True=メガシンカした / False=しなかった（メガストーン以外の型）/ None=未確定（採用率どおり）"""
-    """バトル中の相手1体の型。各項目に confirmed（確定）/ inferred（逆算）/ usage（採用率）/ estimate を付ける。"""
+    """バトル中の相手1体の型。各項目に confirmed（確定）/ inferred（逆算）/ usage（採用率）/ estimate を付ける。
+
+    mega_hint: True=メガシンカした / False=しなかった（メガストーン以外の型）/ None=未確定（採用率どおり）
+    """
     from .sets import likely_set
 
     D = dex()

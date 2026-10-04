@@ -262,3 +262,17 @@ def test_duel_real_hp_for_me():
     assert r["me"]["current_hp"] == 76
     body["me"]["hp"] = 999
     assert c.post("/api/calc/duel", json=body).json()["me"]["current_hp"] == c.post("/api/calc/duel", json=body).json()["me"]["stats"]["hp"]
+
+
+def test_taken_without_before_uses_max_hp():
+    rec = _taken()
+    rec.before = None  # 受ける前のHPを空欄にしたら満タンとして扱う
+    res = infer("garchomp", [rec], SNAP)
+    assert res["feasible"] and res["items"][0]["id"] == "lifeorb"
+
+
+def test_duel_walls_are_even():
+    from engine.matchup import duel
+    a = MonSet("hippowdon", "impish", {"hp": 32, "def": 32}, "Sand Stream", None, ["slackoff"])
+    b = MonSet("garchomp", "jolly", {"atk": 32}, "Rough Skin", None, ["swordsdance"])
+    assert duel(a, b)["score"] == 0.5

@@ -6,7 +6,8 @@ D = dex()
 random.seed(int(sys.argv[2]) if len(sys.argv) > 2 else 0)
 N = int(sys.argv[1]) if len(sys.argv) > 1 else 300
 items = ["", "Life Orb", "Expert Belt", "Charcoal", "Mystic Water", "Silk Scarf", "Muscle Band", "Wise Glasses",
-         "Leftovers", "Focus Sash", "Choice Scarf", "Occa Berry", "Yache Berry", "Shuca Berry", "Chilan Berry", "Black Glasses", "Dragon Fang", "Fairy Feather"]
+         "Leftovers", "Focus Sash", "Choice Scarf", "Occa Berry", "Yache Berry", "Shuca Berry", "Chilan Berry", "Black Glasses", "Dragon Fang", "Fairy Feather",
+         "Air Balloon", "Iron Ball", "Light Ball", "Magnet", "Never-Melt Ice", "Hard Stone", "Soft Sand", "Spell Tag", "Passho Berry", "Babiri Berry"]
 SKIP = {"payback","assurance","avalanche","revenge","fling","endeavor","counter","mirrorcoat","metalburst","finalgambit","fissure","sheercold","guillotine","horndrill","superfang","ruination","comeuppance","terrainpulse","lashout","stompingtantrum","temperflare","ragefist","boltbeak","fishiousrend","beatup","present","magnitude","naturalgift","spitup","trumpcard","punishment","wringout","crushgrip","hardpress","retaliate","round","echoedvoice","furycutter","iceball","rollout","triplekick","tripleaxel","populationbomb","dragondarts","suckerpunch","upperhand","focuspunch","shelltrap","beakblast","synchronoise","dreameater","belch","lastrespects","ficklebeam","solarbeam","solarblade","electroshot","meteorbeam","skyattack","razorwind","skullbash","hyperbeam","gigaimpact"}
 mons = [p for p in D.pokemon.rows if p["searchable"]]
 natures = [n["en"] for n in D.natures.rows]

@@ -91,7 +91,9 @@ def duel(a: MonSet, b: MonSet, b_boosts: Optional[dict] = None) -> dict:
     na, nb = hits_to_ko(ha), hits_to_ko(hb)
     sa, sb = speed_of(a), speed_of(b, (b_boosts or {}).get("spe", 0))
     faster = sa > sb
-    if na < nb or (na == nb and faster):
+    if na == nb == 99:  # どちらも倒せない
+        score = 0.5
+    elif na < nb or (na == nb and faster):
         score = 1.0
     elif na == nb and sa == sb:
         score = 0.5
@@ -100,7 +102,8 @@ def duel(a: MonSet, b: MonSet, b_boosts: Optional[dict] = None) -> dict:
     # 確定数が大きく離れていない不利は少し救う
     if score == 0.0 and na <= nb + 1 and na < 99:
         score = 0.25
-    if score == 1.0 and nb <= na and not faster:
+    # 後攻で、確定数の差が1しかない有利（先に殴られて削られる）は少し割り引く
+    if score == 1.0 and not faster and nb <= na + 1:
         score = 0.75
     return {
         "score": score, "a_hits": na, "b_hits": nb, "a_speed": sa, "b_speed": sb,

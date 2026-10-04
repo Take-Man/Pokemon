@@ -39,7 +39,7 @@ python -m pytest -q
 
 ## データの再生成（レギュレーションが変わったとき）
 
-固定データは Pokémon Showdown の champions mod と PokeAPI から作っている。
+固定データは Pokémon Showdown の champions mod と PokeAPI から作っている。Showdown のビルドには Node.js 22 以上が必要。
 
 ```
 git clone --depth 1 https://github.com/smogon/pokemon-showdown.git ../pokemon-showdown

@@ -32,6 +32,8 @@ function oneRoll(c, k) {
   battle.randomChance = () => false;
   let move = battle.dex.getActiveMove(c.move);
   if (c.crit) move.willCrit = true;
+  // こだわり系の ModifyMove が使用中の技を参照する
+  battle.activeMove = move; battle.activePokemon = src; battle.activeTarget = tgt;
   battle.singleEvent('ModifyType', move, null, src, tgt, move, move);
   battle.singleEvent('ModifyMove', move, null, src, tgt, move, move);
   move = battle.runEvent('ModifyType', src, tgt, move, move);

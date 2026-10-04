@@ -1,6 +1,6 @@
 """ダメージ計算（第9世代の計算式、シングル前提）。
 
-対応範囲は docs/damage_spec.md を参照。対応外の効果は bp_override / 補正倍率の手入力で吸収する。
+対応範囲は docs/spec.md の「ダメージ計算」を参照。対応外の効果は bp_override / 補正倍率の手入力で吸収する。
 """
 from __future__ import annotations
 
@@ -97,6 +97,8 @@ IMMUNITY_ABILITIES = {
 BREAKABLE_IGNORED_BY_MOLD = True
 MOLD_BREAKERS = {"moldbreaker", "teravolt", "turboblaze"}
 WEIGHT_BP_TARGET = [(200, 120), (100, 100), (50, 80), (25, 60), (10, 40), (0, 20)]  # くさむすび/けたぐり
+BURN_IMMUNE_ABILITIES = {"waterveil", "waterbubble", "thermalexchange"}
+MIMICRY_TYPE = {"electric": "Electric", "grassy": "Grass", "misty": "Fairy", "psychic": "Psychic"}
 FIXED_UNSUPPORTED = {"endeavor", "counter", "mirrorcoat", "metalburst", "comeuppance", "bide", "fling",
                      "fissure", "sheercold", "guillotine", "horndrill", "naturesmadness", "psywave"}
 SPECIAL_PHYSICAL_DEF = {"psyshock", "psystrike", "secretsword"}
@@ -118,6 +120,19 @@ class Result:
     base_power: int
     notes: list[str]
     hits: int = 1
+    hit_rolls: Optional[list[list[int]]] = None  # 1発ごとの16乱数（連続技・おやこあい）。None なら rolls が1発分
+
+    def outcomes(self) -> dict[int, float]:
+        """1回使ったときの合計ダメージの分布（1発ごとに乱数を独立に引く）。"""
+        dist = {0: 1.0}
+        for hr in self.hit_rolls or [self.rolls]:
+            p = 1 / len(hr)
+            nd: dict[int, float] = {}
+            for s, w in dist.items():
+                for r in hr:
+                    nd[s + r] = nd.get(s + r, 0) + w * p
+            dist = nd
+        return dist
 
     @property
     def min(self) -> int:
@@ -131,18 +146,18 @@ class Result:
         return (round(self.min / self.defender_hp * 100, 1), round(self.max / self.defender_hp * 100, 1))
 
     def ko_chance(self, n: int, current_hp: Optional[int] = None) -> float:
-        """n発で倒せる確率（乱数の組み合わせを全列挙。回復・急所ブレは考慮しない）。"""
+        """n回使って倒せる確率（乱数の組み合わせを全列挙。回復・急所ブレは考慮しない）。"""
         hp = current_hp if current_hp is not None else self.defender_hp
         if not self.rolls or self.max == 0:
             return 0.0
+        one = self.outcomes()
         dist = {0: 1.0}
-        p = 1 / len(self.rolls)
         for _ in range(n):
             nd: dict[int, float] = {}
             for s, w in dist.items():
-                for r in self.rolls:
+                for r, q in one.items():
                     k = min(s + r, hp)
-                    nd[k] = nd.get(k, 0) + w * p
+                    nd[k] = nd.get(k, 0) + w * q
             dist = nd
         return sum(w for s, w in dist.items() if s >= hp)
 
@@ -181,20 +196,64 @@ def type_effectiveness(move_type: str, def_types: list[str]) -> float:
 
 
 def _item(side: Side) -> str:
-    return "" if side.item_consumed or not side.build.item else to_id(side.build.item)
+    """効果を発揮する持ち物。ぶきよう（Klutz）なら持ち物の効果は無い。"""
+    if side.item_consumed or not side.build.item or _ability(side) == "klutz":
+        return ""
+    return to_id(side.build.item)
 
 
 def _ability(side: Side) -> str:
     return to_id(side.build.ability) if side.build.ability and side.ability_active else ""
 
 
-def _speed(side: Side, fld: "Field") -> int:
+WEATHER_NEGATE = {"cloudnine", "airlock"}
+
+
+def _weather(fld: "Field", *sides: Side) -> Optional[str]:
+    """ノーてんきの場合は天候なし。"""
+    if any(_ability(s) in WEATHER_NEGATE for s in sides):
+        return None
+    return fld.weather
+
+
+def battle_speed(side: Side, fld: Optional["Field"] = None, foe: Optional[Side] = None) -> int:
+    """場の状態込みの素早さ（ランク・スカーフ・まひ・天候/フィールドの特性・かるわざ・はやあし）。"""
     from .stats import effective_speed
+    fld = fld or Field()
     ab, it = _ability(side), _item(side)
-    x2 = (ab == "swiftswim" and fld.weather == "rain") or (ab == "chlorophyll" and fld.weather == "sun") \
-        or (ab == "sandrush" and fld.weather == "sand") or (ab == "slushrush" and fld.weather == "snow")
+    w = _weather(fld, side, *([foe] if foe else []))
+    x2 = (ab == "swiftswim" and w == "rain") or (ab == "chlorophyll" and w == "sun") \
+        or (ab == "sandrush" and w == "sand") or (ab == "slushrush" and w == "snow") \
+        or (ab == "surgesurfer" and fld.terrain == "electric") \
+        or (ab == "unburden" and side.item_consumed and bool(side.build.item))
+    quick = ab == "quickfeet" and bool(side.status)
     return effective_speed(side.build.stats()["spe"], side.boosts.get("spe", 0), scarf=it == "choicescarf",
-                           paralysis=side.status == "par", ability_x2=x2)
+                           paralysis=side.status == "par" and not quick, ability_x2=x2, quick_feet=quick,
+                           iron_ball=it == "ironball")
+
+
+def _speed(side: Side, fld: "Field") -> int:
+    return battle_speed(side, fld)
+
+
+FORECAST_FORME = {"sun": "castformsunny", "rain": "castformrainy", "snow": "castformsnowy"}
+
+
+def _types(side: Side, fld: "Field") -> list[str]:
+    """ぎたい: フィールドに合わせたタイプ1つになる。"""
+    if _ability(side) == "mimicry" and fld.terrain in MIMICRY_TYPE:
+        return [MIMICRY_TYPE[fld.terrain]]
+    return side.build.species_data()["types"]
+
+
+def _forecast(side: Side, fld: "Field") -> Side:
+    """てんきや: ポワルンは天候に合わせた姿（タイプ）で計算する。"""
+    if _ability(side) != "forecast" or side.build.species_data()["baseSpecies"] != "Castform":
+        return side
+    forme = FORECAST_FORME.get(fld.weather or "", "castform")
+    if side.build.species_data()["id"] == forme:
+        return side
+    return Side(**{**side.__dict__, "build": Build(**{**side.build.__dict__, "species": forme})})
 
 
 def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None,
@@ -209,10 +268,17 @@ def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None
             and to_id(attacker.build.ability or "") == "stancechange":
         attacker = Side(**{**attacker.__dict__, "build": Build(**{**attacker.build.__dict__, "species": "aegislashblade"})})
         notes.append("バトルスイッチ: ブレードフォルムで計算")
-    if attacker.status == "brn" and "Fire" in attacker.build.species_data()["types"]:
+    if attacker.status == "brn" and ("Fire" in attacker.build.species_data()["types"]
+                                     or _ability(attacker) in BURN_IMMUNE_ABILITIES):
         attacker = Side(**{**attacker.__dict__, "status": None})
+    # ノーてんき: 天候の効果を消す（メガソルの「自分の攻撃は晴れ扱い」は残る）
+    if fld.weather and _weather(fld, attacker, defender) is None:
+        fld = Field(None, fld.terrain)
+        notes.append("ノーてんき: 天候の効果なし")
+    attacker, defender = _forecast(attacker, fld), _forecast(defender, fld)
     atk_sp = attacker.build.species_data()
     def_sp = defender.build.species_data()
+    a_types, d_types = _types(attacker, fld), _types(defender, fld)
     a_stats = attacker.build.stats()
     d_stats = defender.build.stats()
     a_abil, d_abil = _ability(attacker), _ability(defender)
@@ -224,9 +290,12 @@ def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None
             notes.append("かたやぶり: 防御側特性を無視")
     else:
         d_abil_eff = d_abil
-    crit = (opt.crit or bool(move.get("willCrit"))) and d_abil_eff not in {"shellarmor", "battlearmor"}
-    if (opt.crit or move.get("willCrit")) and not crit:
+    want_crit = opt.crit or bool(move.get("willCrit")) or (a_abil == "merciless" and defender.status in {"psn", "tox"})
+    crit = want_crit and d_abil_eff not in {"shellarmor", "battlearmor"}
+    if want_crit and not crit:
         notes.append("シェルアーマー系: 急所に当たらない")
+    elif crit and not opt.crit and a_abil == "merciless":
+        notes.append("ひとでなし: どく状態の相手には急所")
     category = move["category"]
     if category == "Status":
         return Result([0] * 16, d_stats["hp"], move, move["type"], category, 0, 0, ["変化技"])
@@ -234,8 +303,10 @@ def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None
     # ---- タイプ決定 --------------------------------------------------------
     mtype = opt.type_override or move["type"]
     ate_boost = False
-    if mid == "weatherball" and fld.weather:
-        mtype = {"sun": "Fire", "rain": "Water", "sand": "Rock", "snow": "Ice"}[fld.weather]
+    # メガソル: 自分の技は晴れとして扱う（ウェザーボール・天候の補正）
+    a_weather = "sun" if a_abil == "megasol" else fld.weather
+    if mid == "weatherball" and a_weather:
+        mtype = {"sun": "Fire", "rain": "Water", "sand": "Rock", "snow": "Ice"}[a_weather]
     if mid == "terrainpulse" and fld.terrain:
         mtype = {"electric": "Electric", "grassy": "Grass", "psychic": "Psychic", "misty": "Fairy"}[fld.terrain]
     if mid == "ragingbull" and atk_sp["en"].startswith("Tauros-Paldea"):
@@ -249,19 +320,26 @@ def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None
         mtype = "Water"
 
     # ---- 相性 --------------------------------------------------------------
-    def_types = def_sp["types"]
+    def_types = d_types
+    contact = bool(move["flags"].get("contact")) and a_abil != "longreach" \
+        and not (a_item == "punchingglove" and move["flags"].get("punch"))
+    grounded_def = d_item == "ironball" or ("Flying" not in def_types and d_abil_eff not in {"levitate", "eelevate"}
+                                            and d_item != "airballoon")
     eff = type_effectiveness(mtype, def_types)
     if mid == "freezedry" and "Water" in def_types:
         eff = eff / D.type_chart["Ice"]["Water"] * 2
     if mid == "flyingpress":
         eff *= type_effectiveness("Flying", def_types)
+    if mtype == "Ground" and d_item == "ironball" and "Flying" in def_types:
+        eff = 1.0  # くろいてっきゅう: ひこうタイプにはじめん技が等倍で当たる（Showdown と同じ）
     if mtype == "Ground" and d_item == "airballoon":
         eff = 0
         notes.append("ふうせん")
     if a_abil == "scrappy" or a_abil == "mindseye":
         if mtype in ("Normal", "Fighting") and "Ghost" in def_types:
             eff = type_effectiveness(mtype, [t for t in def_types if t != "Ghost"])
-    if d_abil_eff in IMMUNITY_ABILITIES and IMMUNITY_ABILITIES[d_abil_eff] == mtype:
+    if d_abil_eff in IMMUNITY_ABILITIES and IMMUNITY_ABILITIES[d_abil_eff] == mtype \
+            and not (mtype == "Ground" and d_item == "ironball"):
         eff = 0
         notes.append(f"特性で無効: {D.ja('abilities', defender.build.ability)}")
     if d_abil_eff == "soundproof" and move["flags"].get("sound"):
@@ -274,6 +352,11 @@ def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None
         eff = 0
     if d_abil_eff == "wonderguard" and eff <= 1:
         eff = 0
+    prio = (move.get("priority") or 0) + (1 if a_abil == "galewings" and mtype == "Flying"
+                                           and attacker.hp_percent >= 100 else 0)
+    if fld.terrain == "psychic" and prio > 0 and grounded_def and eff != 0:
+        eff = 0
+        notes.append("サイコフィールド: 地面にいる相手に先制技は当たらない")
     if mid in {"seismictoss", "nightshade"}:
         dmg = 50 if eff != 0 else 0
         return Result([dmg] * 16, d_stats["hp"], move, mtype, category, eff, 0, notes + ["固定ダメージ"])
@@ -312,7 +395,7 @@ def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None
     elif mid == "electroball":
         r = _speed(attacker, fld) / max(_speed(defender, fld), 1)
         bp = 150 if r >= 4 else 120 if r >= 3 else 80 if r >= 2 else 60 if r >= 1 else 40
-    elif mid == "weatherball" and fld.weather:
+    elif mid == "weatherball" and a_weather:
         bp = 100
     elif mid == "terrainpulse" and fld.terrain:
         bp = 100
@@ -320,26 +403,28 @@ def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None
         bp *= 2
     elif mid in {"hex", "infernalparade"} and defender.status:
         bp *= 2
-    elif mid == "facade" and attacker.status in {"brn", "par", "psn", "tox"}:
+    elif mid == "facade" and attacker.status and attacker.status != "slp":
         bp *= 2
-    elif mid == "acrobatics" and not a_item:
+    elif mid == "acrobatics" and not (attacker.build.item and not attacker.item_consumed):  # ぶきようでも持っていれば等倍
         bp *= 2
     elif mid == "brine" and defender.hp_percent <= 50:
         bp *= 2
     elif mid == "lastrespects":
         bp = 50 + 50 * attacker.supreme_overlord
-    _grounded_a = "Flying" not in atk_sp["types"] and to_id(attacker.build.ability or "") not in {"levitate", "eelevate"} \
+    _grounded_a = "Flying" not in a_types and to_id(attacker.build.ability or "") not in {"levitate", "eelevate"} \
         and _item(attacker) != "airballoon"
-    if mid == "expandingforce" and fld.terrain == "psychic" and _grounded_a:
-        bp = bp * 3 // 2
-    if mid == "mistyexplosion" and fld.terrain == "misty" and _grounded_a:
-        bp = bp * 3 // 2
-    if mid == "risingvoltage" and fld.terrain == "electric":
+    if mid == "risingvoltage" and fld.terrain == "electric" and grounded_def:
         bp *= 2
 
     bp_mods: list[int] = []
-    has_item = (opt.defender_has_item if opt.defender_has_item is not None else bool(d_item))
-    d_item_row = D.items.get(d_item) if d_item else None
+    if mid == "expandingforce" and fld.terrain == "psychic" and _grounded_a:
+        bp_mods.append(6144)
+    if mid == "mistyexplosion" and fld.terrain == "misty" and _grounded_a:
+        bp_mods.append(6144)
+    # はたきおとす: ぶきようで効果が無い持ち物でも、持っていれば威力が上がる
+    d_item_raw = "" if defender.item_consumed or not defender.build.item else to_id(defender.build.item)
+    has_item = (opt.defender_has_item if opt.defender_has_item is not None else bool(d_item_raw))
+    d_item_row = D.items.get(d_item_raw) if d_item_raw else None
     if d_item_row and d_item_row.get("megaStone"):
         has_item = False  # メガストーンははたき落とせない
     if mid == "knockoff" and has_item:
@@ -351,7 +436,7 @@ def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None
         bp_mods.append(3072 if "aurabreak" in auras else 5448)
     if a_abil == "technician" and bp <= 60:
         bp_mods.append(6144)
-    if a_abil == "toughclaws" and move["flags"].get("contact"):
+    if a_abil == "toughclaws" and contact:
         bp_mods.append(5325)
     if a_abil == "ironfist" and move["flags"].get("punch"):
         bp_mods.append(4915)
@@ -370,14 +455,10 @@ def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None
         bp_mods.append(5325)
     if a_abil == "sandforce" and fld.weather == "sand" and mtype in ("Rock", "Ground", "Steel"):
         bp_mods.append(5325)
-    if a_abil == "rockypayload" and mtype == "Rock":
-        bp_mods.append(6144)
     if a_abil == "supremeoverlord" and attacker.supreme_overlord:
         bp_mods.append([4096, 4506, 4915, 5325, 5734, 6144][min(attacker.supreme_overlord, 5)])
     if d_abil_eff == "dryskin" and mtype == "Fire":
         bp_mods.append(5120)
-    if d_abil_eff == "heatproof" and mtype == "Fire":
-        bp_mods.append(2048)
     if a_item in TYPE_ITEMS and TYPE_ITEMS[a_item] == mtype:
         bp_mods.append(4915)
     if a_item == "muscleband" and category == "Physical":
@@ -388,8 +469,7 @@ def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None
         bp_mods.append(4506)
     if a_item == "normalgem" and mtype == "Normal":
         bp_mods.append(5325)
-    grounded_atk = "Flying" not in atk_sp["types"] and a_abil not in {"levitate", "eelevate"} and a_item != "airballoon"
-    grounded_def = "Flying" not in def_types and d_abil_eff not in {"levitate", "eelevate"} and d_item != "airballoon"
+    grounded_atk = "Flying" not in a_types and a_abil not in {"levitate", "eelevate"} and a_item != "airballoon"
     if fld.terrain == "electric" and mtype == "Electric" and grounded_atk:
         bp_mods.append(5325)
     if fld.terrain == "grassy" and mtype == "Grass" and grounded_atk:
@@ -433,10 +513,13 @@ def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None
     atk_v = int(atk_raw * rank_mult(atk_stage))
     def_v = int(def_raw * rank_mult(def_stage))
     atk_mods: list[int] = []
-    if atk_src is attacker:
+    # 攻撃側の補正は技の使い手にかかる（イカサマでも自分の特性・持ち物）。ボディプレスは防御なので対象外
+    if a_stat_key != "def":
+        if a_abil == "hustle" and physical:
+            atk_v = apply_mod(atk_v, 6144)  # はりきりは他の補正と連結せず直接かける
         if a_abil in {"hugepower", "purepower"} and a_stat_key == "atk":
             atk_mods.append(8192)
-        if a_abil == "hustle" and physical:
+        if a_abil == "rockypayload" and mtype == "Rock":
             atk_mods.append(6144)
         if a_abil == "guts" and attacker.status and physical:
             atk_mods.append(6144)
@@ -466,12 +549,14 @@ def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None
             atk_mods.append(6144)
         if a_item == "lightball" and atk_sp["baseSpecies"] == "Pikachu":
             atk_mods.append(8192)
-    if d_abil_eff == "thickfat" and mtype in ("Fire", "Ice"):
-        atk_mods.append(2048)
-    if d_abil_eff == "waterbubble" and mtype == "Fire":
-        atk_mods.append(2048)
-    if d_abil_eff == "purifyingsalt" and mtype == "Ghost":
-        atk_mods.append(2048)
+        if d_abil_eff == "thickfat" and mtype in ("Fire", "Ice"):
+            atk_mods.append(2048)
+        if d_abil_eff == "waterbubble" and mtype == "Fire":
+            atk_mods.append(2048)
+        if d_abil_eff == "purifyingsalt" and mtype == "Ghost":
+            atk_mods.append(2048)
+        if d_abil_eff == "heatproof" and mtype == "Fire":
+            atk_mods.append(2048)
     if atk_mods:
         atk_v = apply_mod(atk_v, chain(atk_mods))
 
@@ -498,26 +583,22 @@ def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None
     level = 50
     base = ((2 * level // 5 + 2) * bp_final * atk_v // def_v) // 50 + 2
 
-    # 天候
-    weather = fld.weather
-    sunlike = weather == "sun" or a_abil == "megasol"
-    if sunlike and mtype == "Fire":
-        base = apply_mod(base, 6144)
-    elif sunlike and mtype == "Water" and mid != "hydrosteam":
-        base = apply_mod(base, 2048)
-    elif weather == "rain" and mtype == "Water":
-        base = apply_mod(base, 6144)
-    elif weather == "rain" and mtype == "Fire":
-        base = apply_mod(base, 2048)
-    if a_abil == "megasol" and weather != "sun" and mtype in ("Fire", "Water"):
+    # 天候（メガソルの攻撃は晴れ扱い。ハイドロスチームは晴れで1.5倍）
+    weather_mod = 4096
+    if a_weather == "sun" and (mtype == "Fire" or mid == "hydrosteam"):
+        weather_mod = 6144
+    elif a_weather == "sun" and mtype == "Water":
+        weather_mod = 2048
+    elif a_weather == "rain" and mtype == "Water":
+        weather_mod = 6144
+    elif a_weather == "rain" and mtype == "Fire":
+        weather_mod = 2048
+    if a_abil == "megasol" and fld.weather != "sun" and mtype in ("Fire", "Water"):
         notes.append("メガソル: 自分の攻撃は晴れ扱い")
-
-    crit_mult = 1.5
     if crit:
-        base = int(base * crit_mult)
         notes.append("急所")
 
-    stab = mtype in atk_sp["types"] or a_abil in {"protean", "libero"}
+    stab = mtype in a_types or a_abil in {"protean", "libero"}
     stab_mod = 8192 if (stab and a_abil == "adaptability") else 6144 if stab else 4096
 
     final_mods: list[int] = []
@@ -530,11 +611,11 @@ def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None
         final_mods.append(2048)
     if d_abil_eff in {"filter", "solidrock", "prismarmor"} and eff > 1:
         final_mods.append(3072)
-    if d_abil_eff == "fluffy" and move["flags"].get("contact"):
+    if d_abil_eff == "fluffy" and contact:
         final_mods.append(2048)
     if d_abil_eff == "fluffy" and mtype == "Fire":
         final_mods.append(8192)
-    if d_abil_eff == "auraguard" and move["flags"].get("contact"):
+    if d_abil_eff == "auraguard" and contact:
         final_mods.append(2048)
     if d_abil_eff == "icescales" and not physical:
         final_mods.append(2048)
@@ -551,8 +632,9 @@ def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None
     if a_item == "lifeorb":
         final_mods.append(5324)
     if d_item in RESIST_BERRIES and RESIST_BERRIES[d_item] == mtype and (eff > 1 or mtype == "Normal"):
-        final_mods.append(2048)
-        notes.append(f"{D.ja('items', defender.build.item)}で半減")
+        ripen = d_abil == "ripen"  # じゅくせい: 効果2倍（1/4）
+        final_mods.append(1024 if ripen else 2048)
+        notes.append(f"{D.ja('items', defender.build.item)}で{'1/4（じゅくせい）' if ripen else '半減'}")
     if mid == "collisioncourse" or mid == "electrodrift":
         if eff > 1:
             final_mods.append(5461)
@@ -560,33 +642,49 @@ def calc(attacker: Side, defender: Side, move_key: str, fld: Field | None = None
         final_mods.append(round(4096 * opt.extra_final_mod))
     final_mod = chain(final_mods)
 
-    rolls = []
-    for r in range(85, 101):
-        d = base * r // 100
-        d = apply_mod(d, stab_mod)
-        d = int(d * eff)
-        if attacker.status == "brn" and physical and a_abil != "guts" and mid != "facade":
-            d = apply_mod(d, 2048)
-        d = apply_mod(d, final_mod)
-        rolls.append(max(1, d))
+    burn = attacker.status == "brn" and physical and a_abil != "guts" and mid != "facade"
+
+    def one_hit(b: int) -> list[int]:
+        """基本ダメージ（+2済み）から16乱数。Showdown の modifyDamage と同じ順。"""
+        b = apply_mod(b, weather_mod) if weather_mod != 4096 else b
+        if crit:
+            b = int(b * 1.5)
+        out = []
+        for r in range(85, 101):
+            d = b * r // 100
+            d = apply_mod(d, stab_mod)
+            d = int(d * eff)
+            if burn:
+                d = apply_mod(d, 2048)
+            d = apply_mod(d, final_mod)
+            out.append(max(1, d))
+        return out
+
+    rolls = one_hit(base)
 
     # ---- 連続技 ------------------------------------------------------------
+    # 1発ごとに乱数を独立に引く。rolls は同じ乱数どうしの合計（最小・最大は正確）、確定数は全組み合わせで出す
     hits = 1
     mh = move.get("multihit")
-    if opt.hits:
+    bond = a_abil == "parentalbond" and not mh
+    if bond:
+        hits = 1 if opt.hits == 1 else 2  # おやこあいの回数は当たった発数（1発目で倒した等なら1）
+    elif opt.hits:
         hits = opt.hits
     elif mh:
         if isinstance(mh, list):
             hits = mh[1] if a_abil == "skilllink" else (4 if a_item == "loadeddice" else 3 if mh == [2, 5] else mh[0])
         else:
             hits = mh
-    if a_abil == "parentalbond" and not mh:
-        # 2発目は1/4
-        second = [max(1, apply_mod(x, 1024)) for x in rolls]
-        rolls = sorted(a + b for a, b in zip(rolls, second))
-        notes.append("おやこあい（2発目1/4、同乱数近似）")
-    if hits > 1:
-        rolls = sorted(x * hits for x in rolls)
-        notes.append(f"{hits}回ヒット（同乱数近似）")
+    hit_rolls = None
+    if bond and hits == 2:
+        hit_rolls = [rolls, one_hit(apply_mod(base, 1024))]  # 2発目は基本ダメージの1/4
+        notes.append("おやこあい（2発目は1/4）")
+    elif hits > 1:
+        hit_rolls = [rolls] * hits
+        notes.append(f"{hits}回ヒット")
+    if hit_rolls:
+        rolls = [sum(x) for x in zip(*hit_rolls)]
 
-    return Result(sorted(rolls), d_stats["hp"], move, mtype, category, eff, bp_final, notes, hits)
+    return Result(sorted(rolls), d_stats["hp"], move, mtype, category, eff, bp_final, notes, hits,
+                  hit_rolls=hit_rolls)

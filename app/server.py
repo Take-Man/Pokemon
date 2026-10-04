@@ -476,7 +476,7 @@ def opp_move_list(species: str, set_moves: Optional[list[str]] = None, min_rate:
 @app.post("/api/calc/duel")
 def post_duel(c: DuelIn):
     """自分→相手（自分の技4つ）と、相手→自分（相手の採用率上位の技）を同時に計算する。"""
-    from engine.stats import effective_speed
+    from engine.damage import battle_speed
 
     D = dex()
     me, op = _side(c.me), _side(c.opp)
@@ -504,15 +504,11 @@ def post_duel(c: DuelIn):
     for r, m in zip(to_me, omoves):
         r["rate"], r["src"] = m["rate"], m["src"]
 
-    def spd(side: Side, item):
-        return effective_speed(side.build.stats()["spe"], side.boosts.get("spe", 0),
-                               scarf=to_id(item or "") == "choicescarf", paralysis=side.status == "par")
-
     res = {
         "me": {"ja": D.pokemon[me.build.species]["ja"], "stats": me.build.stats(), "current_hp": my_hp,
-               "speed": spd(me, c.me.item)},
+               "speed": battle_speed(me, fld, op)},
         "opp": {"ja": D.pokemon[op.build.species]["ja"], "stats": op.build.stats(), "current_hp": opp_hp,
-                "speed": spd(op, c.opp.item)},
+                "speed": battle_speed(op, fld, me)},
         "to_opp": to_opp, "to_me": to_me,
     }
     if c.log and (to_opp or to_me):

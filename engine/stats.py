@@ -87,14 +87,17 @@ def rank_mult(stage: int) -> float:
 
 
 def effective_speed(spe: int, stage: int = 0, *, scarf: bool = False, tailwind: bool = False,
-                    paralysis: bool = False, ability_x2: bool = False) -> int:
+                    paralysis: bool = False, ability_x2: bool = False, quick_feet: bool = False,
+                    iron_ball: bool = False) -> int:
+    """Showdown と同じく、ランク→補正の連結（四捨五入、0.5は切り捨て）→まひ半減（切り捨て）の順。"""
     v = int(spe * rank_mult(stage))
-    if scarf:
-        v = v * 6144 // 4096
-    if ability_x2:  # すいすい・ようりょくそ・すなかき・ゆきかき・かるわざ 等
-        v *= 2
-    if tailwind:
-        v *= 2
+    mod = 4096
+    for on, m in ((scarf, 6144), (iron_ball, 2048), (quick_feet, 6144), (ability_x2, 8192), (tailwind, 8192)):
+        if on:  # ability_x2: すいすい・ようりょくそ・すなかき・ゆきかき・サーフテール・かるわざ
+            mod = (mod * m + 2048) >> 12
+    if mod != 4096:
+        x = v * mod / 4096
+        v = int(x) + (1 if x - int(x) > 0.5 else 0)
     if paralysis:
-        v //= 2
+        v = v * 50 // 100
     return v
