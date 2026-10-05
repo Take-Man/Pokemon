@@ -6,7 +6,7 @@
  "rule": "single",
  "source_updated": "2026/10/4 08:15",
  "list_fetched_at": "2026-10-04T19:28:19+09:00",
- "fetched_at": "2026-10-04T19:28:29+09:00",
+ "fetched_at": "2026-10-05T13:50:36+09:00",
  "ranking": [
   {
    "rank": 1,
@@ -50809,6 +50809,776 @@
    "fetched_at": "2026-10-04T19:28:29+09:00",
    "url": "https://champs.pokedb.tokyo/pokemon/show/0707-00?season=6&rule=0",
    "key": "0707-00"
+  },
+  "pyroar": {
+   "moves": [
+    {
+     "id": "flamethrower",
+     "ja": "かえんほうしゃ",
+     "rate": 92.8
+    },
+    {
+     "id": "overheat",
+     "ja": "オーバーヒート",
+     "rate": 77.1
+    },
+    {
+     "id": "yawn",
+     "ja": "あくび",
+     "rate": 55.9
+    },
+    {
+     "id": "hypervoice",
+     "ja": "ハイパーボイス",
+     "rate": 36.2
+    },
+    {
+     "id": "protect",
+     "ja": "まもる",
+     "rate": 32.6
+    },
+    {
+     "id": "scorchingsands",
+     "ja": "ねっさのだいち",
+     "rate": 18.8
+    },
+    {
+     "id": "darkpulse",
+     "ja": "あくのはどう",
+     "rate": 11.8
+    },
+    {
+     "id": "flamecharge",
+     "ja": "ニトロチャージ",
+     "rate": 11.5
+    },
+    {
+     "id": "substitute",
+     "ja": "みがわり",
+     "rate": 10.7
+    },
+    {
+     "id": "willowisp",
+     "ja": "おにび",
+     "rate": 10.4
+    }
+   ],
+   "abilities": [
+    {
+     "id": "unnerve",
+     "ja": "きんちょうかん",
+     "rate": 78.6
+    },
+    {
+     "id": "moxie",
+     "ja": "じしんかじょう",
+     "rate": 12.1
+    },
+    {
+     "id": "rivalry",
+     "ja": "とうそうしん",
+     "rate": 9.3
+    }
+   ],
+   "natures": [
+    {
+     "id": "timid",
+     "ja": "おくびょう",
+     "rate": 56.7
+    },
+    {
+     "id": "modest",
+     "ja": "ひかえめ",
+     "rate": 41.2
+    },
+    {
+     "id": "hasty",
+     "ja": "せっかち",
+     "rate": 0.5
+    },
+    {
+     "id": "bold",
+     "ja": "ずぶとい",
+     "rate": 0.4
+    },
+    {
+     "id": "mild",
+     "ja": "おっとり",
+     "rate": 0.4
+    },
+    {
+     "id": "calm",
+     "ja": "おだやか",
+     "rate": 0.3
+    },
+    {
+     "id": "adamant",
+     "ja": "いじっぱり",
+     "rate": 0.1
+    },
+    {
+     "id": "jolly",
+     "ja": "ようき",
+     "rate": 0.1
+    },
+    {
+     "id": "naive",
+     "ja": "むじゃき",
+     "rate": 0.1
+    },
+    {
+     "id": "rash",
+     "ja": "うっかりや",
+     "rate": 0.1
+    }
+   ],
+   "items": [
+    {
+     "id": "pyroarite",
+     "ja": "カエンジシナイト",
+     "rate": 96.2
+    },
+    {
+     "id": "focussash",
+     "ja": "きあいのタスキ",
+     "rate": 1.0
+    },
+    {
+     "id": "lifeorb",
+     "ja": "いのちのたま",
+     "rate": 0.6
+    },
+    {
+     "id": "choicescarf",
+     "ja": "こだわりスカーフ",
+     "rate": 0.6
+    },
+    {
+     "id": "sitrusberry",
+     "ja": "オボンのみ",
+     "rate": 0.2
+    },
+    {
+     "id": "airballoon",
+     "ja": "ふうせん",
+     "rate": 0.2
+    },
+    {
+     "id": "expertbelt",
+     "ja": "たつじんのおび",
+     "rate": 0.1
+    },
+    {
+     "id": "charcoal",
+     "ja": "もくたん",
+     "rate": 0.1
+    },
+    {
+     "id": "shucaberry",
+     "ja": "シュカのみ",
+     "rate": 0.1
+    },
+    {
+     "id": "leftovers",
+     "ja": "たべのこし",
+     "rate": 0.1
+    }
+   ],
+   "teammates": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ"
+    },
+    {
+     "id": "rillaboom",
+     "ja": "ゴリランダー"
+    },
+    {
+     "id": "baxcalibur",
+     "ja": "セグレイブ"
+    },
+    {
+     "id": "salamence",
+     "ja": "ボーマンダ"
+    },
+    {
+     "id": "corviknight",
+     "ja": "アーマーガア"
+    },
+    {
+     "id": "meowscarada",
+     "ja": "マスカーニャ"
+    },
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー"
+    },
+    {
+     "id": "golisopod",
+     "ja": "グソクムシャ"
+    }
+   ],
+   "ko_pokemon": [
+    {
+     "id": "archaludon",
+     "ja": "ブリジュラス"
+    },
+    {
+     "id": "baxcalibur",
+     "ja": "セグレイブ"
+    },
+    {
+     "id": "golisopod",
+     "ja": "グソクムシャ"
+    },
+    {
+     "id": "hippowdon",
+     "ja": "カバルドン"
+    },
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス"
+    },
+    {
+     "id": "salamence",
+     "ja": "ボーマンダ"
+    },
+    {
+     "id": "gholdengo",
+     "ja": "サーフゴー"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン"
+    },
+    {
+     "id": "mimikyu",
+     "ja": "ミミッキュ"
+    }
+   ],
+   "ko_moves": [
+    {
+     "id": "flamethrower",
+     "ja": "かえんほうしゃ",
+     "rate": 61.9
+    },
+    {
+     "id": "overheat",
+     "ja": "オーバーヒート",
+     "rate": 21.2
+    },
+    {
+     "id": "hypervoice",
+     "ja": "ハイパーボイス",
+     "rate": 6.7
+    },
+    {
+     "id": "fireblast",
+     "ja": "だいもんじ",
+     "rate": 2.0
+    },
+    {
+     "id": "scorchingsands",
+     "ja": "ねっさのだいち",
+     "rate": 1.8
+    },
+    {
+     "id": "flamecharge",
+     "ja": "ニトロチャージ",
+     "rate": 1.6
+    },
+    {
+     "id": "darkpulse",
+     "ja": "あくのはどう",
+     "rate": 1.3
+    },
+    {
+     "id": "hyperbeam",
+     "ja": "はかいこうせん",
+     "rate": 1.0
+    },
+    {
+     "id": "solarbeam",
+     "ja": "ソーラービーム",
+     "rate": 1.0
+    },
+    {
+     "id": "heatwave",
+     "ja": "ねっぷう",
+     "rate": 0.8
+    }
+   ],
+   "koed_by_pokemon": [
+    {
+     "id": "garchomp",
+     "ja": "ガブリアス"
+    },
+    {
+     "id": "primarina",
+     "ja": "アシレーヌ"
+    },
+    {
+     "id": "salamence",
+     "ja": "ボーマンダ"
+    },
+    {
+     "id": "baxcalibur",
+     "ja": "セグレイブ"
+    },
+    {
+     "id": "lucario",
+     "ja": "ルカリオ"
+    },
+    {
+     "id": "golisopod",
+     "ja": "グソクムシャ"
+    },
+    {
+     "id": "basculegion",
+     "ja": "イダイトウ"
+    },
+    {
+     "id": "sneasler",
+     "ja": "オオニューラ"
+    },
+    {
+     "id": "cinderace",
+     "ja": "エースバーン"
+    },
+    {
+     "id": "charizard",
+     "ja": "リザードン"
+    }
+   ],
+   "koed_by_moves": [
+    {
+     "id": "earthquake",
+     "ja": "じしん",
+     "rate": 19.3
+    },
+    {
+     "id": "closecombat",
+     "ja": "インファイト",
+     "rate": 6.5
+    },
+    {
+     "id": "sparklingaria",
+     "ja": "うたかたのアリア",
+     "rate": 6.4
+    },
+    {
+     "id": "aurasphere",
+     "ja": "はどうだん",
+     "rate": 6.1
+    },
+    {
+     "id": "earthpower",
+     "ja": "だいちのちから",
+     "rate": 2.7
+    },
+    {
+     "id": "surf",
+     "ja": "なみのり",
+     "rate": 2.4
+    },
+    {
+     "id": "aquajet",
+     "ja": "アクアジェット",
+     "rate": 2.4
+    },
+    {
+     "id": "highjumpkick",
+     "ja": "とびひざげり",
+     "rate": 2.3
+    },
+    {
+     "id": "wavecrash",
+     "ja": "ウェーブタックル",
+     "rate": 2.2
+    },
+    {
+     "id": "suckerpunch",
+     "ja": "ふいうち",
+     "rate": 2.2
+    }
+   ],
+   "sp": [
+    {
+     "spread": {
+      "hp": 2,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 0,
+      "spe": 32
+     },
+     "rate": 46.6,
+     "label": "CS + h"
+    },
+    {
+     "spread": {
+      "hp": 10,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 0,
+      "spe": 24
+     },
+     "rate": 15.6,
+     "label": "CS + h"
+    },
+    {
+     "spread": {
+      "hp": 0,
+      "atk": 0,
+      "def": 2,
+      "spa": 32,
+      "spd": 0,
+      "spe": 32
+     },
+     "rate": 5.5,
+     "label": "CS + b"
+    },
+    {
+     "spread": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 2,
+      "spe": 32
+     },
+     "rate": 4.5,
+     "label": "CS + d"
+    },
+    {
+     "spread": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 0,
+      "spe": 30
+     },
+     "rate": 4.0,
+     "label": "CS + h"
+    },
+    {
+     "spread": {
+      "hp": 7,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 0,
+      "spe": 27
+     },
+     "rate": 1.6,
+     "label": "CS + h"
+    },
+    {
+     "spread": {
+      "hp": 0,
+      "atk": 0,
+      "def": 1,
+      "spa": 32,
+      "spd": 1,
+      "spe": 32
+     },
+     "rate": 1.3,
+     "label": "CS + bd"
+    },
+    {
+     "spread": {
+      "hp": 6,
+      "atk": 0,
+      "def": 1,
+      "spa": 32,
+      "spd": 0,
+      "spe": 27
+     },
+     "rate": 0.9,
+     "label": "CS + hb"
+    },
+    {
+     "spread": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 0,
+      "spe": 32
+     },
+     "rate": 0.9,
+     "label": "CS"
+    },
+    {
+     "spread": {
+      "hp": 4,
+      "atk": 0,
+      "def": 1,
+      "spa": 32,
+      "spd": 0,
+      "spe": 29
+     },
+     "rate": 0.9,
+     "label": "CS + hb"
+    },
+    {
+     "spread": {
+      "hp": 14,
+      "atk": 0,
+      "def": 1,
+      "spa": 32,
+      "spd": 0,
+      "spe": 19
+     },
+     "rate": 0.9,
+     "label": "CS + hb"
+    },
+    {
+     "spread": {
+      "hp": 6,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 0,
+      "spe": 28
+     },
+     "rate": 0.6,
+     "label": "CS + h"
+    },
+    {
+     "spread": {
+      "hp": 32,
+      "atk": 0,
+      "def": 2,
+      "spa": 32,
+      "spd": 0,
+      "spe": 0
+     },
+     "rate": 0.6,
+     "label": "HC + b"
+    },
+    {
+     "spread": {
+      "hp": 8,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 0,
+      "spe": 26
+     },
+     "rate": 0.5,
+     "label": "CS + h"
+    },
+    {
+     "spread": {
+      "hp": 14,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 0,
+      "spe": 20
+     },
+     "rate": 0.5,
+     "label": "CS + h"
+    },
+    {
+     "spread": {
+      "hp": 8,
+      "atk": 0,
+      "def": 0,
+      "spa": 31,
+      "spd": 0,
+      "spe": 27
+     },
+     "rate": 0.5,
+     "label": "CS + h"
+    },
+    {
+     "spread": {
+      "hp": 32,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 2,
+      "spe": 0
+     },
+     "rate": 0.5,
+     "label": "HC + d"
+    },
+    {
+     "spread": {
+      "hp": 30,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 0,
+      "spe": 4
+     },
+     "rate": 0.4,
+     "label": "HC + s"
+    },
+    {
+     "spread": {
+      "hp": 32,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 0,
+      "spe": 2
+     },
+     "rate": 0.4,
+     "label": "HC + s"
+    },
+    {
+     "spread": {
+      "hp": 10,
+      "atk": 0,
+      "def": 0,
+      "spa": 29,
+      "spd": 0,
+      "spe": 27
+     },
+     "rate": 0.4,
+     "label": "CS + h"
+    },
+    {
+     "spread": {
+      "hp": 6,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 1,
+      "spe": 27
+     },
+     "rate": 0.3,
+     "label": "CS + hd"
+    },
+    {
+     "spread": {
+      "hp": 1,
+      "atk": 0,
+      "def": 1,
+      "spa": 32,
+      "spd": 0,
+      "spe": 32
+     },
+     "rate": 0.3,
+     "label": "CS + hb"
+    },
+    {
+     "spread": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 0,
+      "spe": 29
+     },
+     "rate": 0.3,
+     "label": "CS + h"
+    },
+    {
+     "spread": {
+      "hp": 25,
+      "atk": 0,
+      "def": 0,
+      "spa": 17,
+      "spd": 0,
+      "spe": 24
+     },
+     "rate": 0.2,
+     "label": "HCS"
+    },
+    {
+     "spread": {
+      "hp": 14,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 1,
+      "spe": 19
+     },
+     "rate": 0.2,
+     "label": "CS + hd"
+    },
+    {
+     "spread": {
+      "hp": 32,
+      "atk": 0,
+      "def": 1,
+      "spa": 32,
+      "spd": 1,
+      "spe": 0
+     },
+     "rate": 0.2,
+     "label": "HC + bd"
+    },
+    {
+     "spread": {
+      "hp": 0,
+      "atk": 0,
+      "def": 7,
+      "spa": 32,
+      "spd": 0,
+      "spe": 27
+     },
+     "rate": 0.2,
+     "label": "CS + b"
+    },
+    {
+     "spread": {
+      "hp": 9,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 0,
+      "spe": 25
+     },
+     "rate": 0.2,
+     "label": "CS + h"
+    },
+    {
+     "spread": {
+      "hp": 12,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 0,
+      "spe": 22
+     },
+     "rate": 0.2,
+     "label": "CS + h"
+    },
+    {
+     "spread": {
+      "hp": 17,
+      "atk": 0,
+      "def": 0,
+      "spa": 32,
+      "spd": 0,
+      "spe": 17
+     },
+     "rate": 0.2,
+     "label": "HCS"
+    }
+   ],
+   "fetched_at": "2026-10-05T13:50:36+09:00",
+   "url": "https://champs.pokedb.tokyo/pokemon/show/0668-00?season=6&rule=0",
+   "key": "0668-00"
   }
  },
  "errors": [],

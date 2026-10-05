@@ -5,7 +5,7 @@ import { STATS, STAT_JA, spGrid } from '../parts.js';
 const blank = () => ({ species: null, ja: '', nature: null, sp: {}, ability: null, item: null, item_ja: '', boosts: {}, status: 'none', hp_percent: 100, hp: null,
   max_hp: null, mega: false, reflect: false, light_screen: false, aurora_veil: false, moves: [], moves_ja: [], set_moves: [] });
 // 画面を行き来しても選んだ内容が残るようモジュールで保持する
-const C = { me: blank(), opp: blank(), weather: '', terrain: '', crit: false, myTeam: null, oppIds: null, pred: null, open: false };
+const C = { me: blank(), opp: blank(), weather: '', terrain: '', myTeam: null, oppIds: null, pred: null, open: false };
 
 const STATUS = [['none', 'なし'], ['brn', 'やけど'], ['par', 'まひ'], ['psn', 'どく'], ['tox', 'もうどく'], ['slp', 'ねむり'], ['frz', 'こおり']];
 const RANK_LABEL = { atk: 'こうげき', def: 'ぼうぎょ', spa: 'とくこう', spd: 'とくぼう', spe: 'すばやさ' };
@@ -69,7 +69,7 @@ function selectList(side) {
 
 function settingsCard() {
   const d = el('details', { class: 'card settings', open: C.open ? true : undefined, ontoggle: () => { C.open = d.open; } },
-    el('summary', {}, '場・ポケモンの状態設定 ', el('small', { class: 'muted' }, '天候・状態異常・ランク・持ち物など。そのままでも計算できる')));
+    el('summary', {}, '追加情報の入力 ', el('small', { class: 'muted' }, '天候・状態異常・ランク・持ち物など')));
   d.append(fieldBlock());
   const sides = el('div', { class: 'grid2 side-settings' });
   for (const side of ['me', 'opp']) {
@@ -141,11 +141,10 @@ function detailBody(side) {
 
 function fieldBlock() {
   const sel = (key, opts) => { const s = el('select', { onchange: () => { C[key] = s.value; run(); } }, ...opts.map(([v, t]) => el('option', { value: v, selected: C[key] === v }, t))); return s; };
-  return el('div', { class: 'field-block' }, el('h3', {}, '場'),
+  return el('div', { class: 'field-block' },
     el('div', { class: 'row' },
       el('div', { class: 'grow' }, labelled('天候', sel('weather', [['', 'なし'], ['sun', '晴れ'], ['rain', '雨'], ['sand', '砂嵐'], ['snow', '雪']]))),
-      el('div', { class: 'grow' }, labelled('フィールド', sel('terrain', [['', 'なし'], ['electric', 'エレキ'], ['grassy', 'グラス'], ['psychic', 'サイコ'], ['misty', 'ミスト']]))),
-      el('label', { class: 'check' }, el('input', { type: 'checkbox', checked: C.crit, onchange: (e) => { C.crit = e.target.checked; run(); } }), '急所に当たる', help('急所に当たったときのダメージで計算する'))));
+      el('div', { class: 'grow' }, labelled('フィールド', sel('terrain', [['', 'なし'], ['electric', 'エレキ'], ['grassy', 'グラス'], ['psychic', 'サイコ'], ['misty', 'ミスト']])))));
 }
 
 const KO_HOT = (ko) => /^(確定1|乱数1)/.test(ko);
@@ -228,7 +227,7 @@ const run = debounce(async () => {
     hp_percent: x.hp_percent, hp: isMe && x.hp != null ? x.hp : null, mega: x.mega, reflect: !!x.reflect, light_screen: !!x.light_screen, aurora_veil: !!x.aurora_veil, moves: x.set_moves || [] });
   try {
     const r = await api('/api/calc/duel', { method: 'POST', body: { me: side(me, true), opp: side(op, false), my_moves: me.moves.filter(Boolean),
-      weather: C.weather || null, terrain: C.terrain || null, crit: C.crit } });
+      weather: C.weather || null, terrain: C.terrain || null } });
     me.max_hp = r.me.stats.hp;
     const ladder = speedCard(r);
     out.innerHTML = '';

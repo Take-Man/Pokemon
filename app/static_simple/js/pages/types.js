@@ -42,6 +42,13 @@ export default {
         view.append(el('div', { class: 'card', style: 'margin-top:18px' }, el('div', { class: 'empty' }, 'タイプを選ぶと、ここに相性が出る')));
       } else {
         const F = focus;
+        // 該当ポケモン
+        const match = pokemon.filter(p => p.searchable !== false && p.types.length === F.length && F.every(t => p.types.includes(t)));
+        const mons = el('div');
+        mons.append(el('div', { class: 'muted' }, `${match.length}体`), el('div', {}, ...match.filter(p => !p.isMega).map(p => el('span', { class: 'chip' }, p.ja))));
+        const megas = match.filter(p => p.isMega);
+        if (megas.length) mons.append(el('div', { class: 'muted', style: 'margin-top:6px' }, 'メガシンカ後'), el('div', {}, ...megas.map(p => el('span', { class: 'chip' }, p.ja))));
+        view.append(el('div', { class: 'card', style: 'margin-top:18px' }, el('h2', {}, '該当ポケモン'), mons));
         // 攻撃するとき
         const atk = el('div');
         for (const a of F) {
@@ -68,13 +75,6 @@ export default {
         }
         view.append(el('div', { class: 'card', style: 'margin-top:18px' }, el('h2', {}, '弱点メタ ', help('このタイプの弱点を突いてくる相手に対して、こちらから抜群を取れるタイプ')),
           el('div', { class: 'fav-grid single' }, el('div', { class: 'fav' }, el('h3', {}, '有利なタイプ'), meta))));
-        // 該当ポケモン
-        const match = pokemon.filter(p => p.searchable !== false && p.types.length === F.length && F.every(t => p.types.includes(t)));
-        const mons = el('div');
-        mons.append(el('div', { class: 'muted' }, `${match.length}体`), el('div', {}, ...match.filter(p => !p.isMega).map(p => el('span', { class: 'chip' }, p.ja))));
-        const megas = match.filter(p => p.isMega);
-        if (megas.length) mons.append(el('div', { class: 'muted', style: 'margin-top:6px' }, 'メガシンカ後'), el('div', {}, ...megas.map(p => el('span', { class: 'chip' }, p.ja))));
-        view.append(el('div', { class: 'card', style: 'margin-top:18px' }, el('h2', {}, '該当ポケモン'), mons));
       }
 
       // 相性表（横スクロールなし。狭いときは行名も1文字表記）
