@@ -262,3 +262,15 @@ details.settings > :not(summary) { margin: 0; padding: 16px; }
 .lbadge.me { background: var(--me); } .lbadge.opp { background: var(--opp); }
 .lrow.me .lnum { color: var(--me); } .lrow.opp .lnum { color: var(--opp); }
 .ladder-sum { margin-top: 10px; padding: 8px 12px; border-radius: var(--radius-s); background: var(--surface-2); font-weight: 700; }
+
+/* ---- 画像から取り込む ---- */
+.import { margin-bottom: 18px; }
+.dropzone { padding: 22px; border: 3px dashed var(--soft-line); border-radius: var(--radius); text-align: center; cursor: pointer; }
+.dropzone.over, .dropzone:hover, .dropzone:focus { border-color: var(--pink); background: var(--surface-2); outline: none; }
+.thumbs { display: flex; gap: 10px; margin-top: 12px; }
+.thumbs img { height: 90px; border-radius: 8px; border: 2px solid var(--soft-line); }
+.imp-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 10px; margin-top: 12px; }
+.imp-mon { padding: 10px; border: 2px solid var(--soft-line); border-radius: var(--radius-s); font-size: 14px; }
+.imp-mon.warn { border-color: var(--mid); }
+.imp-head { display: flex; align-items: center; gap: 8px; font-size: 16px; }
+.imp-flag { margin-top: 4px; padding: 2px 8px; border-radius: 8px; background: color-mix(in srgb, var(--mid) 30%, var(--surface)); font-size: 12px; font-weight: 700; }

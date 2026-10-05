@@ -41,7 +41,7 @@ async function load(view) {
 function draw(view) {
   view.innerHTML = '';
   view.append(lead('1', 'パーティ'));
-  view.append(teamBar(view));
+  view.append(teamBar(view), importCard(view));
   const cards = el('div', { class: 'team-cards' });
   team.members.forEach((m, i) => cards.append(memberCard(m, i)));
   view.append(cards);
@@ -58,6 +58,7 @@ function teamBar(view) {
   return el('div', { class: 'card teambar' },
     el('div', { class: 'row' }, el('div', { class: 'grow' }, el('label', { class: 'f' }, 'パーティを選ぶ', sel)),
       act('＋ 新規', async () => { await api('/api/teams', { method: 'POST', body: { name: '' } }); toast('新しいパーティを作った'); }),
+      el('button', { class: 'btn small alt', onclick: () => { const c = $('#import-card'); c.hidden = !c.hidden; } }, '画像から取り込む'),
       act('複製', async () => { await api('/api/teams', { method: 'POST', body: { copy_from: team.id } }); toast('複製した'); }),
       act('削除', async () => { if (!confirm(`「${team.name}」を削除しますか？`)) throw new Error('cancel'); await api(`/api/teams/${team.id}`, { method: 'DELETE' }); toast('削除した'); }, 'ghost')),
     el('div', { class: 'row', style: 'margin-top:10px' },
@@ -157,3 +158,79 @@ export default {
   key: 'team', label: 'パーティ', badge: '1',
   async render(view) { await loadMeta(); await load(view); },
 };
+
+
+// ---- 画像（ゲームの「パーティ確認」画面のスクショ）から取り込む ----
+const readFile = (f) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(f); });
+
+function importCard(view) {
+  const card = el('div', { class: 'card import', id: 'import-card', hidden: true });
+  const body = el('div'), result = el('div');
+  let files = [];
+  const input = el('input', { type: 'file', accept: 'image/*', multiple: true, hidden: true, onchange: () => add([...input.files]) });
+  const drop = el('div', { class: 'dropzone', tabindex: '0', onclick: () => input.click() },
+    el('b', {}, 'スクショをここにドロップ / クリックして選択 / 貼り付け'), el('div', { class: 'muted' }, 'ゲームの「パーティ確認」画面の「能力」タブと「ステータス」タブの2枚（片方だけでも読める）'));
+  drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+  drop.addEventListener('drop', (e) => { e.preventDefault(); drop.classList.remove('over'); add([...e.dataTransfer.files]); });
+  document.addEventListener('paste', (e) => { if (!card.hidden && document.body.contains(card)) add([...(e.clipboardData ? e.clipboardData.files : [])]); });
+
+  const add = async (fs) => {
+    fs = fs.filter(f => f.type.startsWith('image/'));
+    if (!fs.length) return;
+    files = [...files, ...fs].slice(-2);
+    await analyze();
+  };
+  const analyze = async () => {
+    result.innerHTML = '';
+    body.innerHTML = '';
+    body.append(el('div', { class: 'thumbs' }, ...files.map(f => el('img', { src: URL.createObjectURL(f), alt: f.name }))), el('div', { class: 'muted' }, '読み取り中…'));
+    try {
+      const r = await api('/api/team/import-image', { method: 'POST', body: { images: await Promise.all(files.map(readFile)) } });
+      body.lastChild.remove();
+      showResult(r);
+    } catch (e) {
+      body.lastChild.remove();
+      let msg = e.message; try { msg = JSON.parse(msg).detail || msg; } catch (_) { /* そのまま */ }
+      result.append(el('div', { class: 'err' }, `読み取れなかった: ${msg}`));
+    }
+  };
+  const showResult = (r) => {
+    result.innerHTML = '';
+    const list = el('div', { class: 'imp-list' });
+    r.members.forEach((m, i) => {
+      const flags = m.flags || [];
+      list.append(el('div', { class: 'imp-mon' + (flags.length ? ' warn' : '') },
+        el('div', { class: 'imp-head' }, el('span', { class: 'idx' }, i + 1), el('b', {}, m.species_ja || '読み取れず')),
+        m.nature_ja ? el('div', { class: 'muted' }, `${m.nature_ja}　${m.sp ? STATS.map(k => `${STAT_JA[k]}${m.sp[k]}`).join(' ') : ''}`) : '',
+        m.ability_ja || m.item_ja ? el('div', { class: 'muted' }, [m.ability_ja, m.item_ja && `@${m.item_ja}`].filter(Boolean).join('　')) : '',
+        (m.moves_ja || []).length ? el('div', { class: 'muted' }, m.moves_ja.join(' / ')) : '',
+        ...flags.map(f => el('div', { class: 'imp-flag' }, f))));
+    });
+    const members = () => r.members.filter(m => m.species).map(m => {
+      const o = { species: m.species, sp: m.sp || {}, moves: m.moves || [] };
+      for (const k of ['nature', 'ability', 'item']) if (m[k]) o[k] = m[k];
+      return o;
+    });
+    const doImport = async (asNew) => {
+      const ms = members();
+      if (!ms.length) { toast('取り込める内容がない'); return; }
+      if (dirty) await saveNow();
+      let id = team.id, name = team.name, archetype = team.archetype;
+      if (asNew) { const t = await api('/api/teams', { method: 'POST', body: { name: '取り込んだパーティ' } }); id = t.id; name = t.name; archetype = t.archetype; }
+      else if (team.members.some(m => m.species) && !confirm('現在のパーティの内容を上書きします。よろしいですか？')) return;
+      // 6体の内容を丸ごと入れ替える（読み取れなかった項目は空のまま。別のポケモンの内容が混ざらない）
+      await api('/api/team', { method: 'PUT', body: { id, name, archetype, members: ms } });
+      await load($('#view'));
+      toast(asNew ? '新しいパーティとして取り込んだ' : '取り込んだ');
+    };
+    result.append(...(r.warnings || []).map(w => el('div', { class: 'imp-flag' }, w)), list,
+      el('div', { class: 'row', style: 'margin-top:12px' },
+        el('button', { class: 'btn primary', onclick: () => doImport(true) }, '新しいパーティとして取り込む'),
+        el('button', { class: 'btn', onclick: () => doImport(false) }, '現在のパーティに上書き'),
+        el('button', { class: 'btn ghost', onclick: () => { files = []; body.innerHTML = ''; result.innerHTML = ''; } }, 'やり直す')),
+      el('div', { class: 'muted', style: 'margin-top:6px;font-size:13px' }, '黄色の注意が出た項目は、取り込んだあとにパーティ画面で確認してください。'));
+  };
+  card.append(el('h2', {}, '画像から取り込む'), input, drop, body, result);
+  return card;
+}

@@ -216,6 +216,46 @@ def delete_team(tid: str):
     return {"ok": True, "active": state.active_team_id()}
 
 
+class ImportImagesIn(BaseModel):
+    images: list[str]  # 画像のbase64（data URL可）。能力タブとステータスタブの2枚（片方でも可）
+
+
+@app.post("/api/team/import-image")
+def post_import_image(body: ImportImagesIn):
+    """ゲームの「パーティ確認」画面のスクショから6体の型を読み取る（登録はしない。結果を返すだけ）。"""
+    import base64
+    import io
+
+    try:
+        from PIL import Image
+
+        from screenreader import parse_team_screens
+        from screenreader.ocr import OCRUnavailable
+    except ImportError as e:
+        raise HTTPException(503, f"画像の読み取りに必要なライブラリが無い: {e}")
+    if not body.images or len(body.images) > 4:
+        raise HTTPException(400, "画像は1〜2枚")
+    imgs = []
+    for b in body.images:
+        try:
+            imgs.append(Image.open(io.BytesIO(base64.b64decode(b.split(",", 1)[-1]))))
+        except Exception:
+            raise HTTPException(400, "画像を開けない")
+    try:
+        res = parse_team_screens(imgs)
+    except OCRUnavailable as e:
+        raise HTTPException(503, str(e))
+    D = dex()
+    for m in res["members"]:
+        if not m.get("species"):
+            continue
+        m["nature_ja"] = D.ja("natures", m.get("nature"))
+        m["ability_ja"] = D.ja("abilities", m.get("ability"))
+        m["item_ja"] = D.ja("items", m.get("item"))
+        m["moves_ja"] = [D.ja("moves", x) for x in m.get("moves", [])]
+    return res
+
+
 class AutofillIn(BaseModel):
     member: dict
 
