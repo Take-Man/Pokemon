@@ -14,7 +14,7 @@ const RANK_ROLE_JA = { ace: 'エース', breaker: '崩し', faceoff: '対面駒'
 let T = null, threats = null;
 
 const page = {
-  key: 'evaluate', label: 'パーティ評価', badge: '評', side: true,
+  key: 'evaluate', label: '評価', badge: '評', side: true,
   async render(view) {
     await loadTypes();
     T = await workingTeam();
