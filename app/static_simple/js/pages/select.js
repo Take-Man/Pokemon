@@ -146,4 +146,25 @@ function drawResult(view) {
     el('h2', {}, '1対1の相性表 ', help('縦が自分、横が相手。お互いの一番強い技で殴り合ったときの有利不利。素早さも考慮')),
     el('div', { class: 'legend' }, ...['◎ 有利', '○ やや有利', '△ 互角', '▲ やや不利', '✕ 不利'].map((t, k) => el('span', { class: 'vlegend ' + ['v-good', 'v-good2', 'v-mid', 'v-bad2', 'v-bad'][k] }, t))),
     el('div', { class: 'scroll-x' }, tbl), detail));
+
+  box.append(speedCard());
+}
+
+// ④ 素早さ比較: 自分の実際の素早さと、相手の最速スカーフ・最速・準速（メガ後の最速も）を1本に並べる
+function speedCard() {
+  const lad = el('div', { class: 'ladder' }, el('div', { class: 'muted' }, '読み込み中…'));
+  const card = el('div', { class: 'card', style: 'margin-top:18px' },
+    el('h2', {}, '素早さ比較 ', help('相手の努力値は分からないので、よくある型の素早さを並べている。大きい方が先に動く（トリックルーム中は逆）')), lad);
+  (async () => {
+    const rows = await api(`/api/speed?ids=${(opp.species || []).join(',')}`);
+    const list = rows.map(r => ({ ...r, v: r.scarf ? Math.floor(r.speed * 1.5) : r.speed,
+      label: r.side === 'me' ? (r.scarf ? 'スカーフ込み' : r.label.replace(/^自分/, '').replace(/[()（）]/g, '') || '実数値') : r.label }))
+      .sort((a, b) => b.v - a.v || (a.side === 'me' ? 1 : -1));
+    lad.innerHTML = '';
+    for (const x of list) lad.append(el('div', { class: 'lrow ' + x.side },
+      el('div', { class: 'lcell l' }, x.side === 'me' ? el('span', { class: 'lbadge me' }, el('small', {}, x.label), x.ja) : ''),
+      el('div', { class: 'lnum' }, x.v),
+      el('div', { class: 'lcell r' }, x.side === 'opp' ? el('span', { class: 'lbadge opp' }, el('small', {}, x.ja), x.label) : '')));
+  })();
+  return card;
 }
