@@ -144,7 +144,17 @@ def update_record(mid: str, rid: str, rec: dict) -> dict:
 def delete_record(mid: str, rid: str) -> None:
     m = ensure_detail(get(mid))
     m["detail"]["records"] = [r for r in m["detail"]["records"] if r["id"] != rid]
+    m["detail"]["logs"] = [r for r in m["detail"].get("logs", []) if r["id"] != rid]
     _write(m)
+
+
+def add_log(mid: str, entry: dict) -> dict:
+    """現在の対面を手で直したときの変化（項目・変化前・変化後）。逆算には使わず、記録一覧に並べるだけ。"""
+    m = ensure_detail(get(mid))
+    entry = dict(entry, id=uuid.uuid4().hex[:8], at=now_iso(), kind="log")
+    m["detail"].setdefault("logs", []).append(entry)
+    _write(m)
+    return entry
 
 
 # ---------------------------------------------------------------------------

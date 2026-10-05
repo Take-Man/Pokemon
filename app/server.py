@@ -720,14 +720,31 @@ class LiveIn(BaseModel):
     opp: dict = {}
     field: dict = {}
     active: dict = {}
+    reason: Optional[str] = None  # 変化のログに添える理由（設置技の反映など）
 
 
 @app.put("/api/battle/live")
 def put_live(p: LiveIn):
-    from . import matches
+    import copy
 
-    matches.update_live(_current_match_id(), p.model_dump())
+    from . import battle, matches
+
+    mid = _current_match_id()
+    before = copy.deepcopy(matches.live_state(matches.ensure_detail(matches.get(mid))))
+    matches.update_live(mid, p.model_dump())
+    m = matches.get(mid)
+    changes = battle.diff_live(m, before, matches.live_state(m))
+    if changes:
+        matches.add_log(mid, {"reason": p.reason, "changes": changes})
     return _bv()
+
+
+@app.get("/api/battle/hazard-preview")
+def get_hazard_preview(side: str, key: str):
+    from . import battle
+
+    _current_match_id()
+    return battle.hazard_effect(side, key)
 
 
 class RecordIn(BaseModel):

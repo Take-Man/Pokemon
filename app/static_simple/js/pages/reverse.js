@@ -6,6 +6,11 @@ let B = null;          // /api/battle の内容
 let edit = null;       // 編集中の記録
 let kind = 'taken';    // 記録の種類
 let root = null;
+let prefill = null;    // ダメ計から「記録」で飛んできたときの入力済みの内容
+let scrollForm = false;
+
+// ダメ計の技から、記録の追加フォームを埋めた状態で開く
+export function prefillRecord(p) { prefill = p; kind = p.kind; edit = null; scrollForm = true; location.hash = 'reverse'; }
 
 const STATUS = [['none', 'なし'], ['brn', 'やけど'], ['par', 'まひ'], ['psn', 'どく'], ['tox', 'もうどく'], ['slp', 'ねむり'], ['frz', 'こおり']];
 const STATUS_JA = Object.fromEntries(STATUS);
@@ -23,7 +28,7 @@ const errMsg = (e) => { try { return JSON.parse(e.message).detail; } catch (_) {
 
 const put = async (patch) => { B = await api('/api/battle', { method: 'PUT', body: patch }); draw(); };
 const livePut = (patch) => api('/api/battle/live', { method: 'PUT', body: patch }).then(v => { B = v; return v; });
-const livePutLater = debounce((patch) => livePut(patch), 400);
+const livePutLater = debounce(async (patch) => { await livePut(patch); refreshRecords(); }, 400);
 
 export default {
   key: 'reverse', label: '逆ダメ計', badge: '4',
@@ -45,6 +50,7 @@ function draw() {
   }
   root.append(headCard(), picksCard(), liveCard());
   root.append(el('div', { class: 'grid2 rv-two', style: 'margin-top:18px' }, formCard(), recordsCard()));
+  if (scrollForm) { scrollForm = false; setTimeout(() => { const f = $('#rv-form'); if (f) f.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50); }
   root.append(el('div', { class: 'grid2 rv-two', style: 'margin-top:18px' }, mineCol(), oppCol()), matrixCard());
   window.scrollTo(0, y);
 }
@@ -70,19 +76,39 @@ function picksCard() {
   const m = B.match;
   const toggle = (arr, v) => arr.includes(v) ? arr.filter(x => x !== v) : (arr.length >= 3 ? arr : [...arr, v]);
   const mine = B.my_team.map(x => el('button', { class: 'pick me' + (B.my_picks.includes(x.index) ? ' on' : ''), onclick: () => put({ my_picks: toggle(B.my_picks, x.index) }) }, monLabel(x.ja)));
-  const opp = m.opp.map((sid, k) => el('button', { class: 'pick opp' + (B.opp_picks.includes(sid) ? ' on' : ''), onclick: () => put({ opp_picks: toggle(B.opp_picks, sid) }) }, monLabel(m.opp_ja[k])));
+  const pickOpp = async (sid) => {
+    const next = toggle(B.opp_picks, sid), added = next.length > B.opp_picks.length ? sid : null;
+    B = await api('/api/battle', { method: 'PUT', body: { opp_picks: next } });
+    if (added && B.live && B.live.active.opp !== added) await switchTo('opp', added); else draw();   // 新しく選んだ相手は、そのまま場に出ている扱いにする
+  };
+  const opp = m.opp.map((sid, k) => el('button', { class: 'pick opp' + (B.opp_picks.includes(sid) ? ' on' : ''), onclick: () => pickOpp(sid) }, monLabel(m.opp_ja[k])));
   return el('div', { class: 'card', style: 'margin-top:18px' },
     el('h2', {}, '選出 ', help('見せ合いのあとに選んだ3体ずつ。相手は見えた順に選ぶ。ここで選んだ体だけが、現在の対面・記録・対面表に出る')),
     el('div', { class: 'rv-picks' }, el('b', { class: 'side-me' }, '自分'), ...mine), el('div', { class: 'rv-picks' }, el('b', { class: 'side-opp' }, '相手'), ...opp));
 }
 
 // ---- 現在の対面 ----
-function setActive(side, key) {
+// 場に出すポケモンを変える。設置技（ステルスロック等）がある場なら、その影響を反映するか確認する
+async function switchTo(side, key) {
   const lv = B.live; if (!lv || lv.active[side] === key) return;
-  lv.active[side] = key;
-  document.querySelectorAll(`.live-card${side === 'opp' ? '.opp' : ':not(.opp)'}`).forEach(c => c.classList.toggle('active', c.dataset.key === String(key)));
-  livePut({ active: { [side]: key } }).then(() => { if (!edit) refreshForm(); });
+  const patch = { active: { [side]: key } };
+  try {
+    const hz = await api(`/api/battle/hazard-preview?side=${side}&key=${encodeURIComponent(key)}`);
+    if (hz.lines.length && confirm(`${hz.name} が場に出ると、設置技の影響を受ける。\n\n・${hz.lines.join('\n・')}\n\n反映しますか？`)) {
+      const cur = lv[side][key] || {}, mon = {};
+      if (hz.hp != null) mon.hp = hz.hp;
+      if (hz.status && (cur.status || 'none') === 'none') mon.status = hz.status;
+      if (hz.boosts.spe) mon.boosts = { spe: Math.max(-6, ((cur.boosts || {}).spe || 0) + hz.boosts.spe) };
+      patch[side] = { [key]: mon };
+      if (Object.keys(hz.field).length) patch.field = hz.field;
+      patch.reason = '設置技';
+    }
+  } catch (e) { /* 反映できなくても、場の切替は行う */ }
+  prefill = null;
+  await livePut(patch);
+  draw();
 }
+const setActive = (side, key) => switchTo(side, key);
 
 function liveCard() {
   const lv = B.live;
@@ -127,10 +153,21 @@ function liveCard() {
       el('div', { class: 't' }, monLabel(o.battle_ja || o.ja), stTag(mon)), hpBar(hp / 100),
       el('div', { class: 'live-line' }, el('span', { class: 'hpin' }, 'HP', hpIn, '%'), statusSel('opp', key, mon)), ...extras, rankRow('opp', key, mon)));
   }
-  const fsel = (key, label, opts) => { const s = el('select', { onchange: () => { lv.field[key] = s.value; livePut({ field: { [key]: s.value } }); refreshSummary(); } }, ...opts.map(([v, t]) => el('option', { value: v, selected: v === lv.field[key] }, t))); return el('label', { class: 'f' }, label, s); };
+  const fsel = (key, label, opts) => { const s = el('select', { onchange: () => { lv.field[key] = s.value; livePut({ field: { [key]: s.value } }).then(refreshRecords); refreshSummary(); } }, ...opts.map(([v, t]) => el('option', { value: v, selected: v === lv.field[key] }, t))); return el('label', { class: 'f' }, label, s); };
   card.append(el('div', { class: 'rv-sidehead side-me' }, '自分'), myRow, el('div', { class: 'rv-sidehead side-opp' }, '相手'), oppRow,
-    el('div', { class: 'rv-field' }, fsel('weather', '天候', WEATHER), fsel('terrain', 'フィールド', TERRAIN), fsel('my_screen', '自分側の壁', SCREEN), fsel('opp_screen', '相手側の壁', SCREEN)));
+    el('div', { class: 'rv-field' }, fsel('weather', '天候', WEATHER), fsel('terrain', 'フィールド', TERRAIN), fsel('my_screen', '自分側の壁', SCREEN), fsel('opp_screen', '相手側の壁', SCREEN)),
+    el('div', { class: 'rv-hazards' }, hazardRow(lv, 'my_hazards', '自分側の設置', 'side-me'), hazardRow(lv, 'opp_hazards', '相手側の設置', 'side-opp')));
   return card;
+}
+
+// 設置技（出てきたポケモンへの影響は、場に出すポケモンを変えたときに確認する）
+function hazardRow(lv, key, label, cls) {
+  const h = { rocks: false, spikes: 0, tspikes: 0, web: false, ...(lv.field[key] || {}) };
+  const save = (patch) => { lv.field[key] = Object.assign(h, patch); livePut({ field: { [key]: { ...h } } }).then(refreshRecords); };
+  const num = (name, max, text) => { const s = el('select', { 'aria-label': text, onchange: () => save({ [name]: parseInt(s.value, 10) }) }, ...[...Array(max + 1).keys()].map(n => el('option', { value: n, selected: h[name] === n }, n ? `${n}層` : 'なし'))); return el('label', { class: 'f' }, text, s); };
+  const chk = (name, text) => el('label', { class: 'check' }, el('input', { type: 'checkbox', checked: h[name], onchange: (e) => save({ [name]: e.target.checked }) }), text);
+  return el('div', { class: 'hz-row' }, el('b', { class: cls }, label, ' ', help('出てきたポケモンがダメージや状態異常を受ける設置技。場に出すポケモンを変えたとき、その影響を反映するか確認する')),
+    chk('rocks', 'ステルスロック'), num('spikes', 3, 'まきびし'), num('tspikes', 2, 'どくびし'), chk('web', 'ねばねばネット'));
 }
 
 // ---- 選出カード ----
@@ -206,7 +243,7 @@ function screenOn(v, physical) { return v === 'both' || (physical ? v === 'refle
 const jaOf = async (k, id) => { if (!id) return ''; const q = await api(`/api/search?kind=${k}&q=${encodeURIComponent(id)}&limit=1&include_mega=true`); return q[0] ? q[0].ja : id; };
 
 function formCard() {
-  const card = el('div', { class: 'card' });
+  const card = el('div', { class: 'card', id: 'rv-form' });
   refreshForm = () => { card.innerHTML = ''; buildForm(card); };
   buildForm(card);
   return card;
@@ -217,9 +254,16 @@ function buildForm(box) {
   const f = edit ? JSON.parse(JSON.stringify(edit)) : { kind, cond: {} };
   f.cond = f.cond || {};
   if (!edit && lv) { f.opp = lv.active.opp; f.my_index = lv.active.my; }
+  if (!edit && prefill) {
+    const oppIds = B.opp_picks.length ? B.opp_picks : B.match.opp;
+    if (prefill.opp && oppIds.includes(prefill.opp)) f.opp = prefill.opp;
+    const mi = prefill.mySpecies ? B.my_team.findIndex(x => x.species === prefill.mySpecies) : -1;
+    if (mi >= 0 && (B.my_picks.length ? B.my_picks.includes(mi) : true)) f.my_index = mi;
+    Object.assign(f, { kind: prefill.kind, move: prefill.move, move_ja: prefill.move_ja, reveal_type: 'move', reveal_value: prefill.move, reveal_value_ja: prefill.move_ja });
+  }
   box.append(el('h2', {}, edit ? '記録を直す' : '記録を追加 ', help('被ダメ・与ダメ・判明した情報から、相手の性格・能力ポイント・持ち物・特性を逆算する')));
-  box.append(el('div', { class: 'seg wide' }, ...[['taken', '被ダメ（相手→自分）'], ['dealt', '与ダメ（自分→相手）'], ['reveal', '判明（持ち物・技・特性）']].map(([k, t]) =>
-    el('button', { class: f.kind === k ? 'on' : '', onclick: () => { if (edit) return; kind = k; refreshForm(); } }, t))));
+  box.append(el('div', { class: 'seg wide' }, ...[['taken', '被ダメ（相手→自分）'], ['dealt', '与ダメ（自分→相手）'], ['reveal', '判明（技・特性・持ち物）']].map(([k, t]) =>
+    el('button', { class: f.kind === k ? 'on' : '', onclick: () => { if (edit) return; kind = k; prefill = null; refreshForm(); } }, t))));
   const oppList = B.opp_picks.length ? B.opp_picks : B.match.opp;
   const oppName = (sid) => B.match.opp_ja[B.match.opp.indexOf(sid)];
   const oppSel = el('select', {}, ...oppList.map(sid => el('option', { value: sid, selected: sid === f.opp }, oppName(sid))));
@@ -230,14 +274,14 @@ function buildForm(box) {
   const done = async (body) => {
     try {
       B = edit ? await api(`/api/battle/records/${edit.id}`, { method: 'PUT', body }) : await api('/api/battle/records', { method: 'POST', body });
-      const was = edit; edit = null; draw(); toast(was ? '記録を更新した' : '記録を追加し、HPを反映した');
+      const was = edit; edit = null; prefill = null; draw(); toast(was ? '記録を更新した' : '記録を追加し、HPを反映した');
     } catch (e) { toast('入力を確認: ' + errMsg(e)); }
   };
   const actions = (onSubmit, hint) => el('div', { class: 'row', style: 'margin-top:12px' }, el('button', { class: 'btn primary small', onclick: onSubmit }, edit ? '更新' : '追加'),
     edit ? el('button', { class: 'btn small ghost', onclick: () => { edit = null; refreshForm(); } }, 'キャンセル') : '', hint ? el('small', { class: 'muted' }, hint) : '');
 
   if (f.kind === 'reveal') {
-    const typeSel = el('select', {}, ...[['item', '持ち物'], ['move', '技'], ['ability', '特性']].map(([v, t]) => el('option', { value: v, selected: f.reveal_type === v }, t)));
+    const typeSel = el('select', {}, ...[['move', '技'], ['ability', '特性'], ['item', '持ち物']].map(([v, t]) => el('option', { value: v, selected: f.reveal_type === v }, t)));
     const valBox = el('div'); let valPicker;
     const mk = () => { valBox.innerHTML = ''; const k = { item: 'items', move: 'moves', ability: 'abilities' }[typeSel.value];
       valPicker = picker({ kind: k, value: f.reveal_value, label: f.reveal_value_ja || '', placeholder: '名前', species: () => k === 'items' ? null : oppSel.value }); valBox.append(valPicker); };
@@ -328,11 +372,20 @@ function buildForm(box) {
 }
 
 // ---- 記録一覧 ----
-function recordsCard() {
-  const card = el('div', { class: 'card' }, el('h2', {}, '記録一覧'));
-  if (!B.records.length) { card.append(el('div', { class: 'muted' }, 'まだ記録が無い')); return card; }
+let recordsEl = null;
+function refreshRecords() {
+  if (!recordsEl || !document.body.contains(recordsEl)) return;
+  api('/api/battle').then(b => { B = b; fillRecords(); }).catch(() => {});
+}
+function recordsCard() { recordsEl = el('div', { class: 'card' }); fillRecords(); return recordsEl; }
+function fillRecords() {
+  const card = recordsEl; card.innerHTML = '';
+  card.append(el('h2', {}, '記録一覧 ', help('被ダメ・与ダメ・判明は型の逆算に使う。「ログ」は、現在の対面を手で直したときの変化（項目・変化前・変化後）で、逆算には使わない')));
+  if (!B.records.length) { card.append(el('div', { class: 'muted' }, 'まだ記録が無い')); return; }
   const list = el('div', { class: 'rec-list' });
   B.records.forEach((r, i) => {
+    const del = el('button', { class: 'btn small ghost', onclick: async () => { B = await api(`/api/battle/records/${r.id}`, { method: 'DELETE' }); draw(); toast('削除した'); } }, '削除');
+    if (r.kind === 'log') { list.append(el('div', { class: 'rec-row log' }, el('div', { class: 'rec-top' }, el('span', { class: 'n' }, i + 1), el('span', { class: 'kind kind-log' }, 'ログ')), el('div', { class: 'muted' }, r.summary), el('div', { class: 'row' }, del))); return; }
     list.append(el('div', { class: 'rec-row' + (r.feasible === 0 ? ' bad' : '') },
       el('div', { class: 'rec-top' }, el('span', { class: 'n' }, i + 1), el('span', { class: 'kind kind-' + r.kind }, r.kind_short || r.kind_ja),
         r.chip_move && moveType(r.chip_move) ? typeChip(moveType(r.chip_move), '', true) : '',
@@ -344,9 +397,7 @@ function recordsCard() {
           if (e2.my) e2.my_index = B.my_team.findIndex(x => x.species === e2.my.species);
           if (e2.move) e2.move_ja = await jaOf('moves', e2.move);
           if (e2.reveal_value) e2.reveal_value_ja = await jaOf({ item: 'items', move: 'moves', ability: 'abilities' }[e2.reveal_type], e2.reveal_value);
-          edit = e2; refreshForm(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }, '編集'),
-        el('button', { class: 'btn small ghost', onclick: async () => { B = await api(`/api/battle/records/${r.id}`, { method: 'DELETE' }); draw(); toast('削除した'); } }, '削除'))));
+          prefill = null; edit = e2; refreshForm(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }, '編集'), del)));
   });
   card.append(list);
-  return card;
 }

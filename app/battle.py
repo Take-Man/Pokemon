@@ -69,6 +69,136 @@ def record_summary(r: dict) -> str:
     return text + (f"［{c}］" if c else "")
 
 
+STATUS_JA = {"none": "なし", "brn": "やけど", "par": "まひ", "psn": "どく", "tox": "もうどく", "slp": "ねむり", "frz": "こおり"}
+SCREEN_JA = {"none": "なし", "reflect": "リフレクター", "lightscreen": "ひかりのかべ", "both": "両方・オーロラベール"}
+MEGA_JA = {"auto": "未確定", "yes": "した", "no": "しなかった"}
+RANK_JA = {"atk": "A", "def": "B", "spa": "C", "spd": "D", "spe": "S"}
+HAZARD_DEFAULT = {"rocks": False, "spikes": 0, "tspikes": 0, "web": False}
+
+
+def _hazard_text(h: dict) -> str:
+    h = {**HAZARD_DEFAULT, **(h or {})}
+    parts = (["ステルスロック"] if h["rocks"] else []) + ([f"まきびし{h['spikes']}層"] if h["spikes"] else []) + \
+        ([f"どくびし{h['tspikes']}層"] if h["tspikes"] else []) + (["ねばねばネット"] if h["web"] else [])
+    return "・".join(parts) or "なし"
+
+
+def diff_live(m: dict, before: dict, after: dict) -> list[dict]:
+    """現在の対面の変化を {who, item, before, after} の一覧にする。"""
+    D = dex()
+    team = (m.get("detail") or {}).get("my_team", [])
+    out = []
+
+    def add(who, item, b, a):
+        if b != a:
+            out.append({"who": who, "item": item, "before": b, "after": a})
+
+    for side in ("my", "opp"):
+        for key, a in after[side].items():
+            b = before[side].get(key)
+            if b is None:
+                continue
+            if side == "my":
+                sp = team[int(key)]
+                who = "自分 " + D.pokemon[sp["species"]]["ja"]
+                mx = MonSet.from_dict(sp).build().stats()["hp"]
+                hp = lambda v: str(mx if v is None else v)
+            else:
+                who = "相手 " + D.pokemon[key]["ja"]
+                hp = lambda v: f"{(100 if v is None else v):g}%"
+            add(who, "HP", hp(b.get("hp")), hp(a.get("hp")))
+            add(who, "状態異常", STATUS_JA.get(b.get("status"), b.get("status")), STATUS_JA.get(a.get("status"), a.get("status")))
+            for k, ja in RANK_JA.items():
+                x, y = (b.get("boosts") or {}).get(k, 0), (a.get("boosts") or {}).get(k, 0)
+                add(who, f"{ja}ランク", f"{x:+d}" if x else "0", f"{y:+d}" if y else "0")
+            if side == "opp":
+                add(who, "メガシンカ", MEGA_JA.get(b.get("mega_state"), "未確定"), MEGA_JA.get(a.get("mega_state"), "未確定"))
+    fb, fa = before["field"], after["field"]
+    for k, ja, tab in (("weather", "天候", WEATHER_JA), ("terrain", "フィールド", TERRAIN_JA)):
+        add("場", ja, tab.get(fb.get(k), "なし"), tab.get(fa.get(k), "なし"))
+    for k, ja in (("my_screen", "自分側の壁"), ("opp_screen", "相手側の壁")):
+        add("場", ja, SCREEN_JA.get(fb.get(k), "なし"), SCREEN_JA.get(fa.get(k), "なし"))
+    for k, ja in (("my_hazards", "自分側の設置"), ("opp_hazards", "相手側の設置")):
+        add("場", ja, _hazard_text(fb.get(k)), _hazard_text(fa.get(k)))
+    ab, aa = before["active"], after["active"]
+    if ab["my"] != aa["my"] and aa["my"] is not None:
+        nm = lambda i: D.pokemon[team[int(i)]["species"]]["ja"] if i is not None else "なし"
+        add("対面", "自分の場", nm(ab["my"]), nm(aa["my"]))
+    if ab["opp"] != aa["opp"] and aa["opp"] is not None:
+        nm = lambda s: D.pokemon[s]["ja"] if s else "なし"
+        add("対面", "相手の場", nm(ab["opp"]), nm(aa["opp"]))
+    return out
+
+
+def log_summary(entry: dict) -> str:
+    text = "、".join(f"{c['who']} {c['item']} {c['before']}→{c['after']}" for c in entry.get("changes", []))
+    return (f"［{entry['reason']}］" if entry.get("reason") else "") + text
+
+
+def hazard_effect(side: str, key: str, mid: Optional[str] = None) -> dict:
+    """設置技（ステルスロック・まきびし・どくびし・ねばねばネット）がある場に、ポケモンが出てきたときの変化。"""
+    from engine.damage import type_effectiveness
+    from engine.data import to_id
+
+    D = dex()
+    v = view(mid)
+    out = {"lines": [], "hp": None, "status": None, "boosts": {}, "field": {}, "name": ""}
+    if not v.get("match") or not v.get("live"):
+        return out
+    lv = v["live"]
+    hz = {**HAZARD_DEFAULT, **(lv["field"].get(f"{side}_hazards") or {})}
+    if side == "my":
+        x = next((q for q in v["mine"] if str(q["index"]) == str(key)), None)
+        if not x:
+            return out
+        types = D.pokemon[x["set"]["species"]]["types"]
+        item, ability, name = to_id(x["set"].get("item") or ""), to_id(x["set"].get("ability") or x["ability_id"]), x["ja"]
+        mx = x["stats"]["hp"]
+        cur = lv["my"][str(key)].get("hp")
+        cur = mx if cur is None else cur
+    else:
+        o = next((q for q in v["opp_builds"] if q["base_species"] == key), None)
+        if not o:
+            return out
+        types = D.pokemon[o["battle_species"]]["types"]
+        item = to_id(o["item"].get("id") or "") if o["item"].get("src") == "confirmed" else ""
+        ab = o["ability"]
+        abs_ = [to_id(a) for a in D.pokemon[o["battle_species"]]["abilities"] if a]
+        ability = to_id(ab.get("id") or "") if ab.get("src") == "confirmed" else (abs_[0] if len(abs_) == 1 else "")
+        name, mx = o.get("battle_ja") or o["ja"], o["stats"]["hp"]
+        pc = lv["opp"][key].get("hp")
+        cur = 100 if pc is None else pc
+    out["name"] = name
+    if (cur <= 0) or not (hz["rocks"] or hz["spikes"] or hz["tspikes"] or hz["web"]):
+        return out
+    if item == "heavydutyboots":
+        out["lines"].append("あつぞこブーツで受けない")
+        return out
+    grounded = "Flying" not in types and ability != "levitate" and item != "airballoon"
+    hits = []  # (理由, ダメージ)
+    if ability != "magicguard":
+        if hz["rocks"]:
+            hits.append(("ステルスロック", max(1, int(mx * type_effectiveness("Rock", types) / 8))))
+        if hz["spikes"] and grounded:
+            hits.append((f"まきびし{hz['spikes']}層", max(1, mx // {1: 8, 2: 6, 3: 4}[hz["spikes"]])))
+    dmg = sum(d for _, d in hits)
+    for label, d in hits:
+        out["lines"].append(f"{label} -{d}" if side == "my" else f"{label} -{round(d / mx * 100, 1):g}%")
+    if hz["tspikes"] and grounded:
+        if "Poison" in types:
+            out["field"][f"{side}_hazards"] = {**hz, "tspikes": 0}
+            out["lines"].append("どくびしを取り除く")
+        elif "Steel" not in types and ability not in ("immunity", "pastelveil"):
+            out["status"] = "tox" if hz["tspikes"] >= 2 else "psn"
+            out["lines"].append("もうどく" if hz["tspikes"] >= 2 else "どく")
+    if hz["web"] and grounded and ability not in ("clearbody", "whitesmoke", "fullmetalbody"):
+        out["boosts"] = {"spe": -1}
+        out["lines"].append("すばやさ -1")
+    if dmg:
+        out["hp"] = max(0, cur - dmg) if side == "my" else max(0, round(cur - dmg / mx * 100, 1))
+    return out
+
+
 def view(mid: Optional[str] = None) -> dict:
     D = dex()
     m = matches.get(mid)
@@ -149,7 +279,10 @@ def view(mid: Optional[str] = None) -> dict:
     for b in builds.values():
         for p in b["inference"].get("per_record", []):
             per_count[p["id"]] = p["count"]
-    for r in detail.get("records", []):
+    for r in sorted(detail.get("records", []) + detail.get("logs", []), key=lambda r: r.get("at") or ""):
+        if r.get("kind") == "log":
+            recs_out.append(dict(r, summary=log_summary(r), kind_ja="ログ", kind_short="ログ", feasible=None, chip_move=None))
+            continue
         recs_out.append(dict(r, summary=record_summary(r), feasible=per_count.get(r["id"]),
                              kind_ja=KIND_JA.get(r["kind"], r["kind"]),
                              kind_short=KIND_SHORT.get(r.get("reveal_type") if r["kind"] == "reveal" else r["kind"], "判明"),

@@ -412,3 +412,13 @@ details summary { cursor: pointer; font-weight: 700; margin-top: 8px; }
 .live-strip { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; padding: 10px 16px; }
 .live-names { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .live-side.me { color: var(--me); font-weight: 700; } .live-side.opp { color: var(--opp); font-weight: 700; }
+
+.rv-hazards { display: grid; gap: 8px; margin-top: 14px; }
+.hz-row { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; padding: 8px 12px; border: 2px dashed var(--soft-line); border-radius: var(--radius-s); }
+.hz-row > b { flex: 1 1 100%; font-size: 14px; }
+.hz-row select { min-height: 34px; padding: 2px 8px; width: 90px; }
+.rec-row.log { background: var(--surface-2); border-style: dashed; }
+.kind-log { color: var(--ink-2); }
+
+.m-name { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.rec-go { margin-left: auto; min-height: 28px; padding: 0 10px; font-size: 12px; }
