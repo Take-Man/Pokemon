@@ -1,6 +1,7 @@
 """ローカルWebアプリ（FastAPI）。起動: python -m app  →  http://127.0.0.1:8765"""
 from __future__ import annotations
 
+import os
 import threading
 from pathlib import Path
 from typing import Optional
@@ -23,7 +24,9 @@ from engine.stats import Build, speed_variants, validate_sp
 
 from . import state
 
-STATIC = Path(__file__).parent / "static"
+# 画面の切替: APP_UI=simple で新UI（app/static_simple）、未指定は現行UI（app/static）。python -m app --ui simple が設定する
+UI = os.environ.get("APP_UI", "classic")
+STATIC = Path(__file__).parent / ("static_simple" if UI == "simple" else "static")
 # 画面(app.js)とサーバのAPIの世代。app.js の APP_API_VERSION と一致しなければ画面に再起動を促す表示を出す
 API_VERSION = 10
 app = FastAPI(title="Pokemon Battle Assistant")
@@ -49,8 +52,9 @@ async def no_cache_static(request: Request, call_next):
 @app.get("/", response_class=HTMLResponse)
 def index():
     html = (STATIC / "index.html").read_text(encoding="utf-8")
-    html = html.replace("/static/app.js", f"/static/app.js?v={_file_hash('app.js')}")
-    html = html.replace("/static/style.css", f"/static/style.css?v={_file_hash('style.css')}")
+    if UI != "simple":
+        html = html.replace("/static/app.js", f"/static/app.js?v={_file_hash('app.js')}")
+        html = html.replace("/static/style.css", f"/static/style.css?v={_file_hash('style.css')}")
     return HTMLResponse(html, headers=NO_CACHE)
 
 
