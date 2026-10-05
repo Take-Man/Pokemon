@@ -120,3 +120,28 @@ table.tychart { border-collapse: collapse; font-size: 12px; }
 table.plain { border-collapse: collapse; width: 100%; }
 .plain th, .plain td { padding: 6px 8px; border-bottom: 1px solid var(--soft-line); text-align: left; }
 .plain .num { text-align: right; }
+
+/* ---- パーティ ---- */
+.teambar { margin-bottom: 18px; }
+.save-state { align-self: flex-end; padding: 4px 12px; border-radius: 999px; background: var(--surface-2); font-size: 13px; font-weight: 700; color: var(--good); }
+.save-state.dirty { color: var(--mid); }
+.tip { margin-bottom: 14px; padding: 10px 14px; border: 3px dashed var(--pink); border-radius: var(--radius-s); font-weight: 700; }
+.team-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
+.team-cards .card + .card { margin-top: 0; }
+.member-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.member-head .grow { flex: 1; }
+.idx { display: grid; place-items: center; flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--violet); color: #fff; font-weight: 700; border: 2px solid var(--line); }
+.member-types { min-height: 24px; margin-bottom: 6px; display: flex; gap: 4px; flex-wrap: wrap; }
+.member-types .tchip { margin-right: 2px; }
+.sp-head { margin: 12px 0 4px; font-size: 13px; font-weight: 700; color: var(--ink-2); }
+.sp-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.sp-cell { text-align: center; }
+.sp-cell input { padding: 4px 2px; text-align: center; min-height: 36px; }
+.sp-btns { display: flex; justify-content: center; gap: 2px; margin-top: 3px; }
+.mini { padding: 0 6px; min-height: 22px; font-size: 11px; border: 2px solid var(--soft-line); border-radius: 8px; background: var(--surface); cursor: pointer; }
+.mini:hover { background: var(--yellow); color: #1f1b3a; }
+.sp-total { margin-top: 6px; font-size: 13px; font-weight: 700; color: var(--ink-2); }
+.sp-total.over { color: var(--bad); }
+.stats-line { margin-top: 6px; font-size: 13px; color: var(--ink-2); }
+.err { color: var(--bad); font-size: 13px; font-weight: 700; }
+.moves { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
