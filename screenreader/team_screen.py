@@ -26,22 +26,28 @@ GOOD = 0.8  # これ未満の一致は「要確認」にする
 # 画面の判定・領域の切り出し
 # ---------------------------------------------------------------------------
 
-def detect_tab(img: Image.Image) -> Optional[str]:
-    """上部の黄緑のタブが左なら能力、右ならステータス。"""
-    f = L.Frame(*img.size)
-    x0, y0, x1, y1 = f.rect(*L.TAB_BAND)
-    a = np.asarray(img.convert("RGB").crop((x0, y0, x1, y1))).astype(int)
+def _cards(img: Image.Image) -> list[L.Card]:
+    """画像からカードの位置を探す。見つからなければ基準レイアウトの拡縮で代用する。"""
+    return L.find_cards(img) or L.Frame(*img.size).cards()
+
+
+def detect_tab(img: Image.Image, cards: Optional[list[L.Card]] = None) -> Optional[str]:
+    """カードの上にある黄緑のタブが、左なら能力・右ならステータス。"""
+    cards = cards or L.find_cards(img) or L.Frame(*img.size).cards()
+    top = cards[0].y0
+    a = np.asarray(img.convert("RGB").crop((0, 0, img.width, top))).astype(int)
     m = (a[..., 1] > 205) & (a[..., 0] > 140) & (a[..., 0] < 225) & (a[..., 2] < 110)
     if m.sum() < 200:
         return None
-    xs = np.nonzero(m)[1]
-    return "abilities" if xs.mean() < a.shape[1] / 2 else "stats"
+    mid = (cards[0].x1 + cards[1].x0) / 2
+    return "abilities" if np.nonzero(m)[1].mean() < mid else "stats"
 
 
-def _digits_crop(img: Image.Image, rect) -> Image.Image:
+def _digits_crop(img: Image.Image, rect, thr: int = 185, grow: int = 0) -> Image.Image:
     """白い数字だけを残して拡大する（背景の紫・オレンジのバーを落とす）。"""
+    rect = (max(0, rect[0] - grow), rect[1], min(img.width, rect[2] + grow), rect[3])
     c = np.asarray(img.convert("RGB").crop(rect)).astype(int)
-    bright = (c.min(axis=2) > 185)
+    bright = (c.min(axis=2) > thr)
     out = np.where(bright, 0, 255).astype(np.uint8)
     im = Image.fromarray(out).convert("L")
     im = im.resize((im.width * 4, im.height * 4), Image.LANCZOS)
@@ -54,9 +60,9 @@ def _arrow(img: Image.Image, rect) -> Optional[str]:
     """ラベルの右の▲（赤）・▼（青）。"""
     c = np.asarray(img.convert("RGB").crop(rect)).astype(int)
     R, G, B = c[..., 0], c[..., 1], c[..., 2]
-    red = ((R > 200) & (G < 130) & (B < 160) & (R - G > 90)).sum()
-    blue = ((B > 200) & (R < 120) & (G > 90) & (B - R > 100)).sum()
-    need = max(6, int(0.0006 * c.shape[0] * c.shape[1]))
+    red = ((R > 185) & (G < 150) & (B < 175) & (R - G > 70)).sum()
+    blue = ((B > 185) & (R < 140) & (G > 80) & (B - R > 80)).sum()
+    need = max(3, int(0.0003 * c.shape[0] * c.shape[1]))
     if red >= need and red > blue:
         return "up"
     if blue >= need and blue > red:
@@ -92,23 +98,23 @@ def _species_pool():
     return [(r["ja"], r) for r in D.pokemon.rows if not r["isMega"] and r.get("searchable", True)]
 
 
-def read_names(img: Image.Image, ocr: OCR, lines: Optional[list[Line]] = None) -> list[dict]:
-    f = L.Frame(*img.size)
+def read_names(img: Image.Image, ocr: OCR, lines: Optional[list[Line]] = None, cards: Optional[list[L.Card]] = None) -> list[dict]:
+    cards = cards or _cards(img)
     lines = lines if lines is not None else ocr.lines(img)
     pool = _species_pool()
     out = []
     for i in range(6):
-        raw = _read_text(img, ocr, lines, f.card_rect(i, L.NAME))
+        raw = _read_text(img, ocr, lines, cards[i].rel(L.NAME))
         row, sc = best(raw, pool, 0.5)
         out.append({"raw": raw, "species": row["id"] if row else None, "score": round(sc, 2)})
     return out
 
 
-def read_abilities_page(img: Image.Image, ocr: OCR, lines: Optional[list[Line]] = None) -> list[dict]:
+def read_abilities_page(img: Image.Image, ocr: OCR, lines: Optional[list[Line]] = None, cards: Optional[list[L.Card]] = None) -> list[dict]:
     D = dex()
-    f = L.Frame(*img.size)
+    cards = cards or _cards(img)
     lines = lines if lines is not None else ocr.lines(img)
-    names = read_names(img, ocr, lines)
+    names = read_names(img, ocr, lines, cards)
     items_pool = [(r["ja"], r) for r in D.items.rows]
     moves_pool = [(r["ja"], r) for r in D.moves.rows]
     abil_pool = [(r["ja"], r) for r in D.abilities.rows]
@@ -117,7 +123,7 @@ def read_abilities_page(img: Image.Image, ocr: OCR, lines: Optional[list[Line]] 
         m = {"index": i, "species": nm["species"], "species_raw": nm["raw"], "species_score": nm["score"], "flags": []}
         sp = D.pokemon.get(nm["species"]) if nm["species"] else None
         # 特性: その種族の特性に絞る（絞ってもだめなら全体から）
-        raw = _read_text(img, ocr, lines, f.card_rect(i, L.ABILITY))
+        raw = _read_text(img, ocr, lines, cards[i].rel(L.ABILITY))
         pool = [(ja, {"en": en}) for en, ja in zip(sp["abilities"], sp["abilities_ja"])] if sp else []
         hit, sc = best(raw, pool, 0.45) if pool else (None, 0.0)
         if not hit:
@@ -125,7 +131,7 @@ def read_abilities_page(img: Image.Image, ocr: OCR, lines: Optional[list[Line]] 
             hit = {"en": row["en"]} if row else None
         m["ability"], m["ability_raw"], m["ability_score"] = (hit["en"] if hit else None), raw, round(sc, 2)
         # 持ち物
-        raw = _read_text(img, ocr, lines, f.card_rect(i, L.ITEM))
+        raw = _read_text(img, ocr, lines, cards[i].rel(L.ITEM))
         row, sc = best(raw, items_pool, 0.6)
         m["item"], m["item_raw"], m["item_score"] = (row["en"] if row else None), raw, round(sc, 2)
         # 技: その種族の覚える技に絞る
@@ -134,7 +140,7 @@ def read_abilities_page(img: Image.Image, ocr: OCR, lines: Optional[list[Line]] 
         moves, mraw, mscore = [], [], []
         for k in range(4):
             y0 = L.MOVE_Y0 + L.MOVE_PITCH * k
-            raw = _read_text(img, ocr, lines, f.card_rect(i, (L.MOVE_X[0], y0, L.MOVE_X[1], y0 + L.MOVE_PITCH)))
+            raw = _read_text(img, ocr, lines, cards[i].rel((L.MOVE_X[0], y0, L.MOVE_X[1], y0 + L.MOVE_PITCH)))
             row, sc = best(raw, lpool, 0.55) if lpool else (None, 0.0)
             if not row:
                 row, sc = best(raw, moves_pool, 0.6)
@@ -150,8 +156,37 @@ def read_abilities_page(img: Image.Image, ocr: OCR, lines: Optional[list[Line]] 
 # ステータスタブ
 # ---------------------------------------------------------------------------
 
-def read_stats_page(img: Image.Image, ocr: OCR) -> list[dict]:
-    f = L.Frame(*img.size)
+# 読み取りの条件を変えて数字を読み直すときの組（しきい値, 切り出しの広げ幅）
+_RETRY = [(185, 0), (160, 0), (185, 6), (210, 0), (160, 8), (140, 4)]
+
+
+def _plausible(base: Optional[int], stat: str) -> tuple[int, int]:
+    """その種族の実数値としてありうる範囲（読み取りの検算用）。"""
+    if base is None:
+        return 0, 999
+    if stat == "hp":
+        return base + 75, base + 75 + SP_MAX
+    return (base + 20) * 90 // 100, (base + 20 + SP_MAX) * 110 // 100
+
+
+def _read_number(img: Image.Image, ocr: OCR, rect, lo: int, hi: int) -> Optional[int]:
+    """範囲 lo〜hi に収まる読み取りが得られるまで、条件を変えて読み直す。"""
+    first = None
+    for thr, grow in _RETRY:
+        v = ocr.number(_digits_crop(img, rect, thr, grow))
+        if first is None:
+            first = v
+        if v is not None and lo <= v <= hi:
+            return v
+        if v is not None and v >= 100 and lo <= int(str(v)[1:] or 0) <= hi:  # 先頭の余計な1文字
+            return int(str(v)[1:])
+    return None if first is None or not (lo <= first <= hi) else first
+
+
+def read_stats_page(img: Image.Image, ocr: OCR, cards: Optional[list[L.Card]] = None,
+                    species: Optional[list[Optional[str]]] = None) -> list[dict]:
+    cards = cards or _cards(img)
+    D = dex()
     res = []
     for i in range(6):
         arrows, values, sps = {}, {}, {}
@@ -161,9 +196,11 @@ def read_stats_page(img: Image.Image, ocr: OCR) -> list[dict]:
                 bot = top + L.STAT_ROW_H
                 if stat != "hp":
                     ax0, ax1 = col["label"] + L.ARROW_DX[0], col["label"] + L.ARROW_DX[1]
-                    arrows[stat] = _arrow(img, f.card_rect(i, (ax0, top, ax1, bot)))
-                values[stat] = ocr.number(_digits_crop(img, f.card_rect(i, (col["value"][0], top, col["value"][1], bot))))
-                sps[stat] = ocr.number(_digits_crop(img, f.card_rect(i, (col["sp"][0], top, col["sp"][1], bot))))
+                    arrows[stat] = _arrow(img, cards[i].rel((ax0, top, ax1, bot)))
+                base = D.pokemon[species[i]]["baseStats"][stat] if species and species[i] else None
+                lo, hi = _plausible(base, stat)
+                values[stat] = _read_number(img, ocr, cards[i].rel((col["value"][0], top, col["value"][1], bot)), lo, hi)
+                sps[stat] = _read_number(img, ocr, cards[i].rel((col["sp"][0], top, col["sp"][1], bot)), 0, SP_MAX)
         res.append({"index": i, "arrows": arrows, "values": values, "sp_raw": sps})
     return res
 
@@ -201,11 +238,13 @@ def solve_stats(species_id: str, arrows: dict, values: dict, sp_raw: dict) -> di
                 ks = _sp_for(base[s], s, n["id"], int(str(v)[1:]))
             if ks:
                 ok += 1
-                sps[s] = raw if raw in ks else ks[0] if len(ks) == 1 else min(ks, key=lambda k: abs(k - (raw if raw is not None else 0)))
+                sps[s] = min(ks)  # 隣り合う値は実数値が同じになる（端数切り捨て）ので、小さい方に寄せる
             else:
                 miss.append(s)
                 sps[s] = raw if raw is not None and 0 <= raw <= SP_MAX else 0
         agree = sum(1 for s in STATS if sp_raw.get(s) == sps[s])
+        if sum(sps.values()) > 66:  # 合計66を超える組み合わせはありえない
+            ok -= 10
         return ok, agree, sps, miss
 
     scored = [(fit(n), n) for n in candidates()]
@@ -231,18 +270,22 @@ def parse_team_screens(images: list[Image.Image], ocr: Optional[OCR] = None) -> 
     warnings, kinds = [], []
     for img in images:
         img = img.convert("RGB")
-        kind = detect_tab(img)
+        found = L.find_cards(img)
+        if found is None:
+            warnings.append("カードの位置を検出できなかったので、基準の配置で読んだ（読み取りが外れていないか確認してほしい）")
+        cards = found or L.Frame(*img.size).cards()
+        kind = detect_tab(img, cards)
         kinds.append(kind)
         if kind is None:
             warnings.append("パーティ確認画面（能力・ステータス）として認識できない画像がある")
             continue
         if kind == "abilities":
-            for a in read_abilities_page(img, ocr):
+            for a in read_abilities_page(img, ocr, cards=cards):
                 m = members[a["index"]]
                 m.update({k: v for k, v in a.items() if k != "index"})
         else:
-            names = read_names(img, ocr)
-            for i, st in enumerate(read_stats_page(img, ocr)):
+            names = read_names(img, ocr, cards=cards)
+            for i, st in enumerate(read_stats_page(img, ocr, cards=cards, species=[n["species"] for n in names])):
                 m = members[i]
                 if not m.get("species") and names[i]["species"]:
                     m["species"], m["species_raw"], m["species_score"] = names[i]["species"], names[i]["raw"], names[i]["score"]
