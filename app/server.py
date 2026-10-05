@@ -282,15 +282,29 @@ def post_autofill(a: AutofillIn):
 
 # ---- 構築診断・調整 --------------------------------------------------------------
 
-@app.get("/api/diagnose")
-def get_diagnose(top: int = 30):
+class DiagnoseIn(BaseModel):
+    archetype: str = "スタンダード"
+    members: list[dict]
+
+
+def _diagnose(sets: list[MonSet], archetype: str, top: int):
     from engine.roles import diagnose
 
-    t = state.load_team()
-    sets = state.team_sets()
     if not sets:
-        return {"members": [], "findings": [], "archetype": t.get("archetype")}
-    return diagnose(sets, t.get("archetype", "スタンダード"), top)
+        return {"members": [], "findings": [], "archetype": archetype}
+    return diagnose(sets, archetype, top)
+
+
+@app.get("/api/diagnose")
+def get_diagnose(top: int = 30):
+    return _diagnose(state.team_sets(), state.load_team().get("archetype", "スタンダード"), top)
+
+
+@app.post("/api/diagnose")
+def post_diagnose(d: DiagnoseIn, top: int = 30):
+    """保存していない編集中のパーティを診断する。"""
+    sets = [MonSet.from_dict(m) for m in d.members if m.get("species") and dex().pokemon.get(m["species"])]
+    return _diagnose(sets, d.archetype, top)
 
 
 @app.get("/api/threats")
@@ -319,13 +333,14 @@ class TuneIn(BaseModel):
     threshold: Optional[float] = None
     worst_case: bool = False
     opponent_set: Optional[dict] = None
+    members: Optional[list[dict]] = None  # 保存していない編集中のパーティで計算するとき
 
 
 @app.post("/api/tune")
 def post_tune(t: TuneIn):
     from engine.tuning import ko, survive, worst_case
 
-    members = state.load_team().get("members", [])
+    members = t.members if t.members is not None else state.load_team().get("members", [])
     if t.index >= len(members) or not members[t.index].get("species"):
         raise HTTPException(400, "対象のポケモンが未入力")
     me = MonSet.from_dict(members[t.index])

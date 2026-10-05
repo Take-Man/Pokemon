@@ -318,3 +318,19 @@ details.settings > :not(summary) { margin: 0; padding: 16px; }
 .confirm-slot:empty { display: none; }
 .confirm { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding: 10px 14px; border: 3px solid var(--line); border-radius: var(--radius-s); background: var(--yellow); color: #1f1b3a; font-weight: 700; }
 .confirm span { flex: 1 1 14em; }
+
+/* パーティ評価 */
+.eval-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.eval-mon { padding: 10px 12px; border: 3px solid var(--soft-line); border-radius: var(--radius-s); }
+.eval-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.eval-roles > div { margin: 3px 0; }
+.eval-weak { margin-top: 8px; padding-top: 6px; border-top: 2px dashed var(--soft-line); }
+.eval-weak .lbl { font-size: 13px; font-weight: 700; color: var(--ink-2); }
+.wk-m { margin: 0 2px 0 6px; font-size: 13px; }
+.role { display: inline-block; padding: 1px 10px; border-radius: 999px; background: var(--violet); color: #fff; font-size: 13px; font-weight: 700; }
+.finding { margin: 4px 0; padding: 6px 12px; border-left: 6px solid var(--soft-line); background: var(--surface-2); border-radius: 8px; font-size: 14px; }
+.finding.warn { border-left-color: var(--mid); }
+.finding.err { border-left-color: var(--bad); }
+table.plain th, table.plain td { padding: 6px 8px; text-align: left; border-bottom: 2px solid var(--soft-line); font-size: 14px; }
+table.plain tr.warn td { color: var(--bad); font-weight: 700; }
+.card h3 { margin: 14px 0 6px; font-size: 15px; }

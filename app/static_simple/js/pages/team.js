@@ -63,14 +63,29 @@ async function labelize(m) {
   m._moves_ja = await Promise.all(m.moves.map(x => jaOf('moves', x)));
 }
 
-async function load(view) {
-  viewEl = view;
+async function fetchTeam() {
   const t = await api('/api/team');
-  teams = await api('/api/teams');
   for (const m of t.members) await labelize(m);
   while (t.members.length < 6) t.members.push({ species: null, sp: {}, moves: pad4([]), _moves_ja: ['', '', '', ''] });
   team = t; saved = clone(t);
+}
+async function load(view) {
+  viewEl = view;
+  teams = await api('/api/teams');
+  await fetchTeam();
   draw(view);
+}
+
+// 評価画面から使う: 編集中（未保存を含む）のパーティと、そこへの反映
+export async function workingTeam() {
+  if (!team) await fetchTeam();
+  return { ...body(), unsaved: countChanges() };
+}
+export async function applySp(index, sp) {
+  if (!team) await fetchTeam();
+  const m = team.members[index];
+  m.sp = { ...sp };
+  Object.assign(m, await api('/api/member/stats', { method: 'POST', body: { member: strip(m) } }));
 }
 
 function draw(view) {
