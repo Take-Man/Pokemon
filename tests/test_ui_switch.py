@@ -21,7 +21,7 @@ def test_default_is_classic(monkeypatch):
 
 def test_simple_ui(monkeypatch):
     c = _client(monkeypatch, "simple")
-    assert "Simple UI" in c.get("/").text
+    assert "/static/js/main.js" in c.get("/").text
     assert c.get("/api/meta").status_code == 200  # APIは共通
     monkeypatch.delenv("APP_UI")
     importlib.reload(importlib.import_module("app.server"))

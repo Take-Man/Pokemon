@@ -4,8 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>対戦サポート Simple</title>
+<link rel="stylesheet" href="/static/css/tokens.css">
+<link rel="stylesheet" href="/static/css/app.css">
 </head>
 <body>
-<h1>Simple UI（準備中）</h1>
+<header class="top">
+  <div class="brand"><span class="logo">⚡</span><b>対戦サポート</b></div>
+  <nav id="nav" class="steps" aria-label="画面"></nav>
+</header>
+<div id="banner" class="banner" hidden></div>
+<main id="view"></main>
+<div id="toast" role="status"></div>
+<script type="module" src="/static/js/main.js"></script>
 </body>
 </html>
