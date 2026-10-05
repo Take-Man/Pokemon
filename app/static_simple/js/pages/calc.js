@@ -1,11 +1,11 @@
-import { $, el, api, lead, toast, picker, help, typeChip, debounce } from '../ui.js';
-import { S, dexInfo, loadMeta, loadTypes } from '../store.js';
+import { $, el, api, lead, picker, help, typeChip, debounce } from '../ui.js';
+import { S, dexInfo, loadMeta, monLabel } from '../store.js';
 import { STATS, STAT_JA, spGrid } from '../parts.js';
 
 const blank = () => ({ species: null, ja: '', nature: null, sp: {}, ability: null, item: null, item_ja: '', boosts: {}, status: 'none', hp_percent: 100, hp: null,
   max_hp: null, mega: false, reflect: false, light_screen: false, aurora_veil: false, moves: [], moves_ja: [], set_moves: [] });
 // 画面を行き来しても選んだ内容が残るようモジュールで保持する
-const C = { me: blank(), opp: blank(), weather: '', terrain: '', crit: false, myTeam: null, oppIds: null, pred: null };
+const C = { me: blank(), opp: blank(), weather: '', terrain: '', crit: false, myTeam: null, oppIds: null, pred: null, open: false };
 
 const STATUS = [['none', 'なし'], ['brn', 'やけど'], ['par', 'まひ'], ['psn', 'どく'], ['tox', 'もうどく'], ['slp', 'ねむり'], ['frz', 'こおり']];
 const RANK_LABEL = { atk: 'こうげき', def: 'ぼうぎょ', spa: 'とくこう', spd: 'とくぼう', spe: 'すばやさ' };
@@ -27,61 +27,64 @@ async function setFromSet(side, set, ja) {
 
 async function draw(view) {
   await loadMeta();
+  const y = window.scrollY;
   view.innerHTML = '';
   C.myTeam = (await api('/api/team')).members.filter(m => m.species);
   const o = await api('/api/opponent');
   C.oppIds = o.species.map((id, i) => ({ id, ja: o.ja[i] }));
   try { C.pred = await api('/api/predict'); } catch (e) { C.pred = null; }
-  view.append(lead('3', 'ダメ計', '場に出ている自分と相手のポケモンを選ぶだけ。どの技でどれくらい削れるかが、すぐ出る。'));
-  const sides = el('div', { class: 'duel' }, sideCard('me'), el('div', { class: 'vs' }, 'VS'), sideCard('opp'));
-  view.append(sides, fieldCard(), el('div', { id: 'calc-out' }));
+  view.append(lead('3', 'ダメ計'));
+  view.append(el('div', { class: 'duel' }, selectList('me'), el('div', { class: 'vs' }, 'VS'), selectList('opp')), settingsCard(), el('div', { id: 'calc-out' }));
+  window.scrollTo(0, y);
   run();
 }
 
 export default { key: 'calc', label: 'ダメ計', badge: '3', render: draw };
 
-function quickButtons(side) {
-  const box = el('div', { class: 'quick' });
-  if (side === 'me') {
-    for (const m of C.myTeam) box.append(el('button', { class: 'chip me', onclick: async () => { await setFromSet('me', m, m._ja || await jaOf('pokemon', m.species)); redraw(); } }, m._ja || m.species));
-    if (!C.myTeam.length) box.append(el('span', { class: 'muted' }, 'パーティが空: ', el('a', { href: '#team' }, '① パーティ'), 'で登録'));
-  } else {
-    for (const o of C.oppIds) box.append(el('button', { class: 'chip opp', onclick: async () => {
-      const p = C.pred && (C.pred.opponent || []).find(q => q.species === o.id);
-      if (p) await setFromSet('opp', p.set, p.ja); else { const d = await dexInfo(o.id); await setFromSet('opp', d.likely_set, d.ja); }
-      redraw();
-    } }, o.ja));
-    if (!C.oppIds.length) box.append(el('span', { class: 'muted' }, '相手の6体は ', el('a', { href: '#select' }, '② 選出'), ' で入力（ここで直接検索もできる）'));
-  }
-  return box;
-}
-
 const redraw = () => draw($('#view'));
 
-function sideCard(side) {
-  const x = C[side], isMe = side === 'me';
-  const card = el('div', { class: 'card side ' + side });
-  const sp = picker({ kind: 'pokemon', value: x.species, label: x.ja, placeholder: isMe ? '自分のポケモンを検索' : '相手のポケモンを検索',
-    onPick: async (it) => { if (!it) return; const d = await dexInfo(it.id); await setFromSet(side, d.likely_set, d.ja); redraw(); } });
-  card.append(el('h2', {}, isMe ? '🔵 自分' : '🔴 相手'), quickButtons(side), sp);
-  if (x.species) {
-    const info = el('div', { class: 'side-info' });
-    (async () => {
-      const d = await dexInfo(x.species);
-      const ja = Object.fromEntries((await loadTypes()).types.map(t => [t.id, t.ja]));
-      info.append(...d.types.map(t => typeChip(t, ja[t])));
-    })();
-    card.append(info, el('div', { class: 'muted setline' }, [x.item_ja ? `@${x.item_ja}` : null, isMe && x.moves_ja.length ? x.moves_ja.join('/') : null].filter(Boolean).join('　')));
-    card.append(detail(side));
+// ゲームの選出画面のように、6体を縦に並べて1体を選ぶ
+function selectList(side) {
+  const isMe = side === 'me', x = C[side];
+  const list = isMe ? C.myTeam.map(m => ({ key: m.species, ja: m._ja || m.species, item: m.item, set: m })) : C.oppIds.map(o => ({ key: o.id, ja: o.ja, set: null }));
+  const card = el('div', { class: 'card side ' + side }, el('h2', {}, isMe ? '自分' : '相手'));
+  if (!list.length) {
+    card.append(el('div', { class: 'muted' }, isMe ? ['パーティが空。', el('a', { href: '#team' }, 'パーティ'), 'で登録'] : ['相手の6体が未入力。', el('a', { href: '#select' }, '選出'), 'で入力']));
+    return card;
   }
+  const col = el('div', { class: 'pick-col' });
+  for (const it of list) {
+    col.append(el('button', { class: 'pick-btn' + (x.species === it.key ? ' on' : ''), onclick: async () => {
+      if (isMe) await setFromSet('me', it.set, it.ja);
+      else {
+        const p = C.pred && (C.pred.opponent || []).find(q => q.species === it.key);
+        if (p) await setFromSet('opp', p.set, p.ja); else { const d = await dexInfo(it.key); await setFromSet('opp', d.likely_set, d.ja); }
+      }
+      redraw();
+    } }, monLabel(it.ja)));
+  }
+  card.append(col);
   return card;
+}
+
+function settingsCard() {
+  const d = el('details', { class: 'card settings', open: C.open ? true : undefined, ontoggle: () => { C.open = d.open; } },
+    el('summary', {}, '場・ポケモンの状態設定 ', el('small', { class: 'muted' }, '天候・状態異常・ランク・持ち物など。そのままでも計算できる')));
+  d.append(fieldBlock());
+  const sides = el('div', { class: 'grid2 side-settings' });
+  for (const side of ['me', 'opp']) {
+    const x = C[side];
+    sides.append(el('div', { class: 'side-set ' + side }, el('h3', {}, side === 'me' ? '自分' : '相手', x.species ? ` ${x.ja}` : ''),
+      x.species ? detailBody(side) : el('div', { class: 'muted' }, 'ポケモンを選ぶと設定できる')));
+  }
+  d.append(sides);
+  return d;
 }
 
 function labelled(text, node, tip) { return el('label', { class: 'f' }, tip ? [text, help(tip)] : text, node); }
 
-function detail(side) {
+function detailBody(side) {
   const x = C[side], isMe = side === 'me';
-  const d = el('details', { class: 'detail' }, el('summary', {}, '⚙️ くわしく設定'));
   const body = el('div', { class: 'detail-body' });
   const upd = () => run();
 
@@ -96,7 +99,7 @@ function detail(side) {
     return labelled(RANK_LABEL[k], s);
   }));
   const scr = (key, label) => el('label', { class: 'check' }, el('input', { type: 'checkbox', checked: x[key], onchange: (e) => { x[key] = e.target.checked; upd(); } }), label);
-  body.append(el('h3', {}, '🔥 いまの状態'),
+  body.append(el('h3', {}, '状態'),
     el('div', { class: 'row' }, el('div', { class: 'grow' }, labelled(isMe ? '残りHP（数値）' : '残りHP（%）', hp, isMe ? '空欄なら満タン' : '相手のHPバーの%')),
       el('div', { class: 'grow' }, labelled('状態異常', status))),
     labelled('能力ランク', ranks, '技で上がり下がりした能力の段階。+1で1.5倍、+2で2倍…（−側は逆）'),
@@ -122,24 +125,23 @@ function detail(side) {
     if (dd.megas.length === 1) megaBox.append(el('label', { class: 'check' }, el('input', { type: 'checkbox', checked: !!cur, onchange: (e) => apply(e.target.checked ? dd.megas[0] : null) }), `メガシンカ後で計算（${dd.megas[0].ja}）`));
     else { const s = el('select', { onchange: () => apply(dd.megas.find(m => m.id === s.value) || null) }, el('option', { value: '' }, 'メガシンカしない'), ...dd.megas.map(m => el('option', { value: m.id, selected: cur && cur.id === m.id }, m.ja))); megaBox.append(labelled('メガシンカ', s)); }
   })();
-  body.append(el('h3', {}, '🧬 型（性格・特性・持ち物…）'),
+  body.append(el('h3', {}, '型'),
     el('div', { class: 'row' }, el('div', { class: 'grow' }, labelled('性格', nature, '上がる能力と下がる能力が決まる')), el('div', { class: 'grow' }, labelled('特性', ab))),
     labelled('持ち物', item), megaBox, spGrid(x.sp, upd));
   if (isMe) {
     const mv = el('div', { class: 'moves' });
     for (let i = 0; i < 4; i++) mv.append(picker({ kind: 'moves', value: x.moves[i], label: x.moves_ja[i] || '', placeholder: `技${i + 1}`, species: () => x.species,
       onPick: (it) => { x.moves[i] = it ? it.id : null; x.moves_ja[i] = it ? it.ja : ''; upd(); } }));
-    body.append(el('h3', {}, '⚔️ 自分の技'), mv);
+    body.append(el('h3', {}, '自分の技'), mv);
   } else {
     body.append(el('p', { class: 'muted', style: 'font-size:13px' }, '相手の技は、よく使われている技（採用率1%以上）がすべて自動で出る。'));
   }
-  d.append(body);
-  return d;
+  return body;
 }
 
-function fieldCard() {
+function fieldBlock() {
   const sel = (key, opts) => { const s = el('select', { onchange: () => { C[key] = s.value; run(); } }, ...opts.map(([v, t]) => el('option', { value: v, selected: C[key] === v }, t))); return s; };
-  return el('div', { class: 'card field' }, el('h2', {}, '🌦️ 場の状態'),
+  return el('div', { class: 'field-block' }, el('h3', {}, '場'),
     el('div', { class: 'row' },
       el('div', { class: 'grow' }, labelled('天候', sel('weather', [['', 'なし'], ['sun', '晴れ'], ['rain', '雨'], ['sand', '砂嵐'], ['snow', '雪']]))),
       el('div', { class: 'grow' }, labelled('フィールド', sel('terrain', [['', 'なし'], ['electric', 'エレキ'], ['grassy', 'グラス'], ['psychic', 'サイコ'], ['misty', 'ミスト']]))),
@@ -161,9 +163,38 @@ function moveRow(x) {
 }
 
 function statusRow(x) {
-  const e = x.effect || { text: '変化技', notes: [], fails: '' };
-  return el('div', { class: 'mrow status' + (e.fails ? ' immune' : '') }, el('div', { class: 'm-name' }, el('b', {}, x.move), el('small', { class: 'muted' }, ' 変化技')),
+  const e = x.effect || { text: '', notes: [], fails: '' };
+  return el('div', { class: 'mrow status' + (e.fails ? ' immune' : '') },
+    el('div', { class: 'm-name' }, typeChip(x.type, x.move, false), x.rate != null ? el('small', { class: 'muted' }, ` 採用率${x.rate}%`) : ''),
     el('div', {}, e.text), e.fails ? el('div', { class: 'err' }, `この対面では無効・失敗: ${e.fails}`) : '', e.notes.length ? el('div', { class: 'm-notes muted' }, e.notes.join(' / ')) : '');
+}
+
+const rankMult = (st) => st >= 0 ? (2 + st) / 2 : 2 / (2 - st);
+
+// 素早さライン: 自分の実際の素早さと、相手の最速・準速・無振り・スカーフ最速を並べる（相手の努力は断言できないため）
+async function speedLadder(r) {
+  const op = C.opp;
+  let spe = (await dexInfo(op.species)).speed;
+  if (op.mega) { const mg = (await dexInfo(op.species)).megas.find(m => m.item === op.item); if (mg) spe = (await dexInfo(mg.id)).speed; }
+  const st = (op.boosts && op.boosts.spe) || 0, par = op.status === 'par';
+  const adj = (v, scarf) => { let n = Math.floor(v * rankMult(st)); if (scarf) n = Math.floor(n * 1.5); return par ? Math.floor(n / 2) : n; };
+  const lines = [
+    { side: 'opp', label: '最速スカーフ', v: adj(spe['最速'], true), tip: '性格補正あり・能力ポイント最大＋こだわりスカーフ' },
+    { side: 'opp', label: '最速', v: adj(spe['最速']), tip: 'すばやさ↑の性格・能力ポイント最大' },
+    { side: 'opp', label: '準速', v: adj(spe['準速']), tip: '性格補正なし・能力ポイント最大' },
+    { side: 'opp', label: '無振り', v: adj(spe['無振り']), tip: '性格補正なし・能力ポイント0' },
+  ];
+  const mine = r.me.speed;
+  const rows = [...lines, { side: 'me', label: r.me.ja, v: mine }].sort((a, b) => b.v - a.v || (a.side === 'me' ? 1 : -1));
+  const beat = lines.filter(l => mine > l.v).map(l => l.label), tie = lines.filter(l => mine === l.v).map(l => l.label);
+  const summary = beat.length === lines.length ? '相手のどの型にも先に動ける'
+    : !beat.length && !tie.length ? '相手のどの型にも後攻になる' : `先に動ける: ${beat.join('・') || 'なし'}${tie.length ? `（同速: ${tie.join('・')}）` : ''}`;
+  const ladder = el('div', { class: 'ladder' }, ...rows.map(x => el('div', { class: 'lrow ' + x.side },
+    el('div', { class: 'lcell l' }, x.side === 'me' ? el('span', { class: 'lbadge me' }, monLabel(x.label)) : ''),
+    el('div', { class: 'lnum' }, x.v),
+    el('div', { class: 'lcell r', title: x.tip || '' }, x.side === 'opp' ? el('span', { class: 'lbadge opp' }, x.label) : ''))));
+  return el('div', { class: 'card speed' }, el('h2', {}, '素早さ ', help('相手の努力値は分からないので、よくある型の素早さを並べている。大きい方が先に動く（トリックルーム中は逆）。相手のランク・まひは反映済み')),
+    ladder, el('div', { class: 'ladder-sum' }, summary));
 }
 
 const run = debounce(async () => {
@@ -171,7 +202,7 @@ const run = debounce(async () => {
   const me = C.me, op = C.opp;
   if (!me.species || !op.species) {
     out.innerHTML = '';
-    out.append(el('div', { class: 'card', style: 'margin-top:18px' }, el('div', { class: 'empty' }, el('div', { class: 'big' }, '⚔️'), '自分と相手のポケモンを選ぶと、ダメージが出る')));
+    out.append(el('div', { class: 'card', style: 'margin-top:18px' }, el('div', { class: 'empty' }, '自分と相手のポケモンを選ぶと、ダメージが出る')));
     return;
   }
   const side = (x, isMe) => ({ species: x.species, nature: x.nature, sp: x.sp, ability: x.ability, item: x.item, boosts: x.boosts, status: x.status && x.status !== 'none' ? x.status : null,
@@ -180,21 +211,18 @@ const run = debounce(async () => {
     const r = await api('/api/calc/duel', { method: 'POST', body: { me: side(me, true), opp: side(op, false), my_moves: me.moves.filter(Boolean),
       weather: C.weather || null, terrain: C.terrain || null, crit: C.crit } });
     me.max_hp = r.me.stats.hp;
+    const ladder = await speedLadder(r);
     out.innerHTML = '';
-    const mf = r.me.speed, of = r.opp.speed;
-    const first = mf > of ? `${r.me.ja}が先に動く` : mf < of ? `${r.opp.ja}が先に動く` : '同じ速さ（運しだい）';
-    out.append(el('div', { class: 'speedbar' }, el('span', {}, '⚡ すばやさ'), el('b', { class: 'me-c' }, `${r.me.ja} ${mf}`), 'vs', el('b', { class: 'opp-c' }, `${r.opp.ja} ${of}`),
-      el('span', { class: 'first' }, first), help('ランク・スカーフ・まひなどを含めた、実際の素早さ。大きい方が先に動く（トリックルームは逆）')));
-    const col = (title, hpTxt, rows, empty) => {
+    const col = (cls, title, hpTxt, rows, empty) => {
       const attacks = rows.filter(x => x.category !== 'Status'), status = rows.filter(x => x.category === 'Status');
-      const c = el('div', { class: 'card res' }, el('h2', {}, title), el('div', { class: 'muted hp' }, hpTxt));
-      if (!attacks.length) c.append(el('p', { class: 'muted' }, empty));
+      const c = el('div', { class: 'card res ' + cls }, el('h2', {}, title), el('div', { class: 'muted hp' }, hpTxt));
+      if (!attacks.length && !status.length) c.append(el('p', { class: 'muted' }, empty));
       attacks.forEach(x => c.append(moveRow(x)));
-      if (status.length) c.append(el('details', {}, el('summary', {}, `変化技（${status.length}）`), ...status.map(statusRow)));
+      status.forEach(x => c.append(statusRow(x)));
       return c;
     };
-    out.append(el('div', { class: 'grid2', style: 'margin-top:18px' },
-      col(`🔵 ${r.me.ja} → ${r.opp.ja}`, `相手のHP ${r.opp.current_hp} / ${r.opp.stats.hp}`, r.to_opp, '自分の技が未設定。「くわしく設定」で技を入れよう'),
-      col(`🔴 ${r.opp.ja} → ${r.me.ja}`, `自分のHP ${r.me.current_hp} / ${r.me.stats.hp}`, r.to_me, '技のデータがない')));
+    out.append(el('div', { class: 'grid2 results', style: 'margin-top:18px' },
+      col('me', el('span', {}, monLabel(r.me.ja), ' → ', monLabel(r.opp.ja)), `相手のHP ${r.opp.current_hp} / ${r.opp.stats.hp}`, r.to_opp, '技が未設定。状態設定の「自分の技」で入れる'),
+      col('opp', el('span', {}, monLabel(r.opp.ja), ' → ', monLabel(r.me.ja)), `自分のHP ${r.me.current_hp} / ${r.me.stats.hp}`, r.to_me, '技のデータがない')), ladder);
   } catch (e) { out.textContent = '計算エラー: ' + e.message; }
 }, 200);

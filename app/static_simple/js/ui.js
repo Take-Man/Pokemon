@@ -84,5 +84,5 @@ export function picker({ kind, value = '', label = '', placeholder = '', species
   return wrap;
 }
 
-// ページ見出し（番号バッジ＋タイトル＋いま何をするかの一行）
-export const lead = (badge, title, text) => el('div', { class: 'lead' }, el('h1', {}, el('span', { class: 'badge' }, badge), title), el('p', {}, text));
+// ページ見出し（番号バッジ＋タイトル）
+export const lead = (badge, title) => el('div', { class: 'lead' }, el('h1', {}, el('span', { class: 'badge' }, badge), title));

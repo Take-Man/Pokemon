@@ -1,75 +1,91 @@
-import { $, el, lead, typeChip, TYPE_COLOR, typeFg, help } from '../ui.js';
+import { el, lead, typeChip, TYPE_COLOR, typeFg, help } from '../ui.js';
 import { loadTypes } from '../store.js';
 
 let focus = [];
 
 export default {
-  key: 'types', label: 'タイプ相性', badge: '📖', side: true,
+  key: 'types', label: 'タイプ相性', badge: '相', side: true,
   async render(view) {
     const { types, chart, pokemon } = await loadTypes();
     const ja = Object.fromEntries(types.map(t => [t.id, t.ja]));
+    const chips = (ts) => ts.map(t => typeChip(t, ja[t]));
+    const mult = (m) => el('span', { class: 'tymult m' + String(m).replace('.', '_') }, `×${m}`);
+    const eff = (atk, defs) => defs.reduce((a, d) => a * chart[atk][d], 1);
+
+    // 左=有利なタイプ、右=不利なタイプ
+    const favGrid = (fav, unfav) => el('div', { class: 'fav-grid' },
+      el('div', { class: 'fav' }, el('h3', {}, '有利なタイプ'), fav),
+      el('div', { class: 'unfav' }, el('h3', {}, '不利なタイプ'), unfav));
+    const rows = (pairs, order) => {
+      const box = el('div');
+      for (const m of order) {
+        const ts = pairs.filter(p => p[1] === m).map(p => p[0]);
+        if (ts.length) box.append(el('div', { class: 'tygroup' }, mult(m), ...chips(ts)));
+      }
+      if (!box.children.length) box.append(el('span', { class: 'muted' }, 'なし'));
+      return box;
+    };
+
     const draw = () => {
       view.innerHTML = '';
-      view.append(lead('📖', 'タイプ相性', 'タイプを選ぶ（最大2つ）と、攻撃・防御の相性が出る。'));
+      view.append(lead('相', 'タイプ相性'));
       const toggle = (t) => { focus = focus.includes(t) ? focus.filter(x => x !== t) : (focus.length >= 2 ? [focus[1], t] : [...focus, t]); draw(); };
-      const pick = el('div', { class: 'tpick-grid' }, ...types.map(t => {
-        const on = focus.includes(t.id);
-        return el('button', { class: 'tpick' + (on ? ' on' : ''), style: `background:${on ? TYPE_COLOR[t.id] : ''};color:${on ? typeFg(t.id) : ''}`, onclick: () => toggle(t.id) }, t.ja);
-      }));
-      view.append(el('div', { class: 'card' }, el('h2', {}, 'タイプを選ぶ ', help('2つ選ぶと、そのタイプを併せ持つポケモンとして調べる')),
-        pick, focus.length ? el('div', { style: 'margin-top:10px' }, el('button', { class: 'btn small ghost', onclick: () => { focus = []; draw(); } }, 'クリア')) : ''));
+      view.append(el('div', { class: 'card' }, el('h2', {}, 'タイプを選ぶ ', help('最大2つ。2つ選ぶと、そのタイプを併せ持つポケモンとして調べる')),
+        el('div', { class: 'tpick-grid' }, ...types.map(t => {
+          const on = focus.includes(t.id);
+          return el('button', { class: 'tpick' + (on ? ' on' : focus.length ? ' off' : ''), 'aria-pressed': on ? 'true' : 'false',
+            style: `--tc:${TYPE_COLOR[t.id]};--tf:${typeFg(t.id)}`, onclick: () => toggle(t.id) }, on ? '✓ ' : '', t.ja);
+        })),
+        focus.length ? el('div', { style: 'margin-top:10px' }, el('button', { class: 'btn small ghost', onclick: () => { focus = []; draw(); } }, 'クリア')) : ''));
 
-      const eff = (atk, defs) => defs.reduce((a, d) => a * chart[atk][d], 1);
-      const cls = (m) => 'm' + String(m).replace('.', '_');
-      const group = (pairs, order) => {
-        const box = el('div');
-        for (const [mult, label] of order) {
-          const ts = pairs.filter(p => p[1] === mult).map(p => p[0]);
-          if (ts.length) box.append(el('div', { class: 'tygroup' }, el('span', { class: 'tymult ' + cls(mult) }, label), ...ts.map(t => typeChip(t, ja[t]))));
-        }
-        return box;
-      };
-      if (focus.length) {
-        const F = focus;
-        const atk = el('div'), def = el('div'), ctr = el('div'), mons = el('div');
-        const AORD = [[2, '×2'], [0.5, '×0.5'], [0, '×0']];
-        for (const a of F) atk.append(el('div', { class: 'tysub' }, typeChip(a, ja[a]), ' の技で攻撃'), group(types.map(t => [t.id, chart[a][t.id]]), AORD));
-        if (F.length === 2) atk.append(el('div', { class: 'tysub' }, '一致技2つの良い方'), group(types.map(t => [t.id, Math.max(chart[F[0]][t.id], chart[F[1]][t.id])]), AORD));
-        const defPairs = types.map(t => [t.id, eff(t.id, F)]);
-        def.append(group(defPairs, [[4, '×4'], [2, '×2'], [0.5, '×0.5'], [0.25, '×0.25'], [0, '×0']]));
-        const weak = defPairs.filter(p => p[1] >= 2).map(p => p[0]);
-        if (!weak.length) ctr.append(el('p', { class: 'muted' }, '抜群を取られるタイプが無い'));
-        else {
-          ctr.append(el('div', { class: 'tygroup' }, el('span', { class: 'muted' }, '抜群を取ってくる: '), ...weak.map(t => typeChip(t, ja[t]))));
-          const rows = types.map(t => ({ t: t.id, hits: weak.filter(w => chart[t.id][w] >= 2) })).filter(r => r.hits.length).sort((a, b) => b.hits.length - a.hits.length);
-          const tb = el('table', { class: 'plain' }, el('tr', {}, el('th', {}, '返しの技'), el('th', { class: 'num' }, `抜群（/${weak.length}）`), el('th', {}, '抜群を取れる相手')));
-          for (const r of rows) tb.append(el('tr', {}, el('td', {}, typeChip(r.t, ja[r.t])), el('td', { class: 'num' }, r.hits.length), el('td', {}, ...r.hits.map(w => typeChip(w, ja[w])))));
-          ctr.append(tb);
-        }
-        const match = pokemon.filter(p => p.searchable !== false && p.types.length === F.length && F.every(t => p.types.includes(t)));
-        mons.append(el('div', {}, `${match.length}体`), el('div', {}, ...match.filter(p => !p.isMega).map(p => el('span', { class: 'chip' }, p.ja))));
-        const megas = match.filter(p => p.isMega);
-        if (megas.length) mons.append(el('div', { class: 'muted' }, 'メガシンカ後'), el('div', {}, ...megas.map(p => el('span', { class: 'chip' }, p.ja))));
-        view.append(el('div', { class: 'grid2', style: 'margin-top:18px' },
-          el('div', { class: 'card' }, el('h2', {}, '⚔️ 攻撃するとき'), atk),
-          el('div', { class: 'card' }, el('h2', {}, '🛡️ 攻撃を受けるとき'), def)),
-        el('div', { class: 'grid2', style: 'margin-top:18px' },
-          el('div', { class: 'card' }, el('h2', {}, '弱点メタ ', help('このタイプの弱点を突いてくる相手に、こちらからどのタイプの技が有効か')), ctr),
-          el('div', { class: 'card' }, el('h2', {}, '該当ポケモン'), mons)));
+      if (!focus.length) {
+        view.append(el('div', { class: 'card', style: 'margin-top:18px' }, el('div', { class: 'empty' }, 'タイプを選ぶと、ここに相性が出る')));
       } else {
-        view.append(el('div', { class: 'card', style: 'margin-top:18px' }, el('div', { class: 'empty' }, el('div', { class: 'big' }, '👆'), 'タイプを選ぶと、ここに相性が出る')));
-      }
-      const tbl = el('table', { class: 'tychart' });
-      tbl.append(el('tr', {}, el('th', {}, '攻＼防'), ...types.map(t => el('th', { class: focus.includes(t.id) ? 'focus' : '', onclick: () => toggle(t.id) }, typeChip(t.id, t.ja, true)))));
-      for (const a of types) {
-        const tr = el('tr', {}, el('th', { class: focus.includes(a.id) ? 'focus' : '', onclick: () => toggle(a.id) }, typeChip(a.id, a.ja)));
-        for (const d of types) {
-          const v = chart[a.id][d.id];
-          tr.append(el('td', { class: cls(v) + (focus.includes(a.id) || focus.includes(d.id) ? ' focus' : '') }, v === 1 ? '' : v === 2 ? '◎' : v === 0.5 ? '△' : '×'));
+        const F = focus;
+        // 攻撃するとき
+        const atk = el('div');
+        for (const a of F) {
+          const pairs = types.map(t => [t.id, chart[a][t.id]]);
+          atk.append(el('div', { class: 'tysub' }, typeChip(a, ja[a]), ' の技'), favGrid(rows(pairs, [2]), rows(pairs, [0.5, 0])));
         }
-        tbl.append(tr);
+        if (F.length === 2) {
+          const pairs = types.map(t => [t.id, Math.max(chart[F[0]][t.id], chart[F[1]][t.id])]);
+          atk.append(el('div', { class: 'tysub' }, '一致技2つの良い方'), favGrid(rows(pairs, [2]), rows(pairs, [0.5, 0])));
+        }
+        view.append(el('div', { class: 'card', style: 'margin-top:18px' }, el('h2', {}, '攻撃するとき'), atk));
+        // 防御するとき
+        const defPairs = types.map(t => [t.id, eff(t.id, F)]);
+        view.append(el('div', { class: 'card', style: 'margin-top:18px' }, el('h2', {}, '攻撃を受けるとき'),
+          favGrid(rows(defPairs, [0.25, 0.5, 0]), rows(defPairs, [4, 2]))));
+        // 弱点メタ
+        const weak = defPairs.filter(p => p[1] >= 2).map(p => p[0]);
+        const meta = el('div');
+        if (!weak.length) meta.append(el('span', { class: 'muted' }, '抜群を取られるタイプが無い'));
+        else {
+          const rs = types.map(t => ({ t: t.id, hits: weak.filter(w => chart[t.id][w] >= 2) })).filter(r => r.hits.length).sort((a, b) => b.hits.length - a.hits.length);
+          meta.append(el('div', { class: 'muted', style: 'margin-bottom:6px' }, '弱点を突いてくるタイプ: ', ...chips(weak)));
+          for (const r of rs) meta.append(el('div', { class: 'tygroup' }, typeChip(r.t, ja[r.t]), el('span', { class: 'muted' }, `→ ${r.hits.length}/${weak.length} に抜群`), ...chips(r.hits)));
+        }
+        view.append(el('div', { class: 'card', style: 'margin-top:18px' }, el('h2', {}, '弱点メタ ', help('このタイプの弱点を突いてくる相手に対して、こちらから抜群を取れるタイプ')),
+          el('div', { class: 'fav-grid single' }, el('div', { class: 'fav' }, el('h3', {}, '有利なタイプ'), meta))));
+        // 該当ポケモン
+        const match = pokemon.filter(p => p.searchable !== false && p.types.length === F.length && F.every(t => p.types.includes(t)));
+        const mons = el('div');
+        mons.append(el('div', { class: 'muted' }, `${match.length}体`), el('div', {}, ...match.filter(p => !p.isMega).map(p => el('span', { class: 'chip' }, p.ja))));
+        const megas = match.filter(p => p.isMega);
+        if (megas.length) mons.append(el('div', { class: 'muted', style: 'margin-top:6px' }, 'メガシンカ後'), el('div', {}, ...megas.map(p => el('span', { class: 'chip' }, p.ja))));
+        view.append(el('div', { class: 'card', style: 'margin-top:18px' }, el('h2', {}, '該当ポケモン'), mons));
       }
-      view.append(el('div', { class: 'card', style: 'margin-top:18px' }, el('h2', {}, 'タイプ相性表 ', help('行が攻撃側、列が防御側。◎=抜群 △=いまひとつ ×=無効')), el('div', { class: 'scroll-x' }, tbl)));
+
+      // 相性表（横スクロールなし。狭いときは行名も1文字表記）
+      const tbl = el('table', { class: 'tychart' });
+      tbl.append(el('tr', {}, el('th', { class: 'corner' }, ''), ...types.map(t => el('th', { class: focus.includes(t.id) ? 'focus' : '', onclick: () => toggle(t.id) }, typeChip(t.id, t.ja, true)))));
+      for (const a of types) {
+        tbl.append(el('tr', {}, el('th', { class: 'rowh' + (focus.includes(a.id) ? ' focus' : ''), onclick: () => toggle(a.id) },
+          el('span', { class: 'full' }, typeChip(a.id, a.ja)), el('span', { class: 'short' }, typeChip(a.id, a.ja, true))),
+        ...types.map(d => { const v = chart[a.id][d.id]; return el('td', { class: 'm' + String(v).replace('.', '_') + (focus.includes(a.id) || focus.includes(d.id) ? ' focus' : '') }, v === 1 ? '' : v === 2 ? '◎' : v === 0.5 ? '△' : '×'); })));
+      }
+      view.append(el('div', { class: 'card', style: 'margin-top:18px' }, el('h2', {}, 'タイプ相性表 ', help('行が攻撃側、列が防御側。◎=抜群 △=いまひとつ ×=無効')), tbl));
     };
     draw();
   },

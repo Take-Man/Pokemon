@@ -40,12 +40,11 @@ async function load(view) {
 
 function draw(view) {
   view.innerHTML = '';
-  view.append(lead('1', 'パーティ', '自分のポケモン6体を登録しよう。ポケモン名を入れて「おまかせ入力」を押すと、よく使われる型が自動で入る。'));
+  view.append(lead('1', 'パーティ'));
   view.append(teamBar(view));
   const cards = el('div', { class: 'team-cards' });
   team.members.forEach((m, i) => cards.append(memberCard(m, i)));
   view.append(cards);
-  if (!team.members.some(m => m.species)) view.querySelector('.team-cards').before(el('div', { class: 'tip' }, '👇 まず1体目のポケモン名を入力（例: ガブリアス）'));
 }
 
 function teamBar(view) {
@@ -123,7 +122,6 @@ function memberCard(m, idx) {
       m.species = it ? it.id : null;
       if (prev !== m.species) { m.ability = null; if (m._megaItems && m._megaItems.includes(m.item)) { m.item = null; item.setValue('', ''); } }
       await fillAbilities(); await renderMega(); await updTypes(); save();
-      if (it && prev !== m.species) toast('「おまかせ入力」で型を自動入力できる');
     } });
   const moves = el('div', { class: 'moves' });
   for (let i = 0; i < 4; i++) {
@@ -139,7 +137,7 @@ function memberCard(m, idx) {
     Object.assign(m, r.member);
     await saveNow();
     await load($('#view'));
-  } }, '✨ おまかせ入力');
+  } }, 'おまかせ入力');
   const nature = el('select', { 'aria-label': '性格', onchange: () => { m.nature = nature.value || null; save(); } }, el('option', { value: '' }, '性格を選ぶ'),
     ...S.meta.natures.map(n => el('option', { value: n.id, selected: n.id === m.nature }, `${n.ja}（${n.label}）`)));
 
