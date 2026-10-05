@@ -9,3 +9,4 @@ data/snapshots/_raw/
 .DS_Store
 .pytest_cache/
 state/battle.md
+data/user/
