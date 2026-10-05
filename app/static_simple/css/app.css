@@ -334,3 +334,12 @@ details.settings > :not(summary) { margin: 0; padding: 16px; }
 table.plain th, table.plain td { padding: 6px 8px; text-align: left; border-bottom: 2px solid var(--soft-line); font-size: 14px; }
 table.plain tr.warn td { color: var(--bad); font-weight: 700; }
 .card h3 { margin: 14px 0 6px; font-size: 15px; }
+
+/* 履歴 */
+.hist-list { display: grid; gap: 12px; margin-top: 12px; }
+.hist-row { padding: 12px 14px; border: 3px solid var(--soft-line); border-radius: var(--radius-s); }
+.hist-row.current { border-color: var(--me); }
+.hist-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.hist-mons { display: flex; flex-wrap: wrap; }
+.chip.win { background: color-mix(in srgb, var(--good) 25%, var(--surface)); border-color: var(--good); }
+.chip.lose { background: color-mix(in srgb, var(--bad) 20%, var(--surface)); border-color: var(--bad); }

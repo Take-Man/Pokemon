@@ -4,9 +4,10 @@ import team from './pages/team.js';
 import select from './pages/select.js';
 import calc from './pages/calc.js';
 import evaluate from './pages/evaluate.js';
+import history from './pages/history.js';
 import types from './pages/types.js';
 
-const pages = [team, select, calc, evaluate, types];
+const pages = [team, select, calc, evaluate, history, types];
 
 function renderNav(cur) {
   const nav = $('#nav'); nav.innerHTML = '';
