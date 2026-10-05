@@ -166,7 +166,7 @@ function speedCard() {
     for (const x of list) lad.append(el('div', { class: 'lrow ' + x.side },
       el('div', { class: 'lcell l' }, x.side === 'me' ? el('span', { class: 'lbadge me' }, el('small', {}, x.label), x.ja) : ''),
       el('div', { class: 'lnum' }, x.v),
-      el('div', { class: 'lcell r' }, x.side === 'opp' ? el('span', { class: 'lbadge opp' }, el('small', {}, x.ja), x.label) : '')));
+      el('div', { class: 'lcell r' }, x.side === 'opp' ? el('span', { class: 'lbadge opp' }, el('small', {}, x.label), x.ja) : '')));
   };
   draw();
   return card;
