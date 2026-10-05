@@ -183,8 +183,9 @@ function speedCard(r) {
     const range = el('input', { type: 'range', min: -6, max: 6, step: 1, value: x.boosts.spe || 0, 'aria-label': (side === 'me' ? '自分' : '相手') + 'の素早さランク' });
     const set = (v) => { v = Math.max(-6, Math.min(6, v)); x.boosts.spe = v; range.value = v; label.textContent = stageText(v); sync(side); refresh(); };
     range.addEventListener('input', () => set(parseInt(range.value, 10)));
-    return el('div', { class: 'sctl ' + side }, el('div', { class: 'sctl-head' }, el('span', {}, '素早さランク'), label),
-      el('div', { class: 'sctl-body' }, el('button', { class: 'mini', onclick: () => set((x.boosts.spe || 0) - 1) }, '−'), range, el('button', { class: 'mini', onclick: () => set((x.boosts.spe || 0) + 1) }, '＋')));
+    return el('div', { class: 'sctl ' + side }, el('div', { class: 'sctl-head' }, el('span', {}, 'ランク'), label),
+      el('button', { class: 'mini', 'aria-label': 'ランクを上げる', onclick: () => set((x.boosts.spe || 0) + 1) }, '＋'), range,
+      el('button', { class: 'mini', 'aria-label': 'ランクを下げる', onclick: () => set((x.boosts.spe || 0) - 1) }, '−'));
   };
   const refresh = debounce(async () => {
     const dex = await dexInfo(op.species);
@@ -211,8 +212,8 @@ function speedCard(r) {
       el('div', { class: 'lcell r', title: x.tip || '' }, x.side === 'opp' ? el('span', { class: 'lbadge opp' }, el('small', {}, op.ja), x.label) : '')));
   }, 80);
   refresh();
-  return el('div', { class: 'card speed' }, el('h2', {}, '素早さ ', help('相手の努力値は分からないので、よくある型の素早さを並べている。大きい方が先に動く（トリックルーム中は逆）。スライダーで素早さのランクを上げ下げした後の比較ができる')),
-    el('div', { class: 'sctl-row' }, ctl('me'), ctl('opp')), box);
+  return el('div', { class: 'card speed' }, el('h2', {}, '素早さ ', help('相手の努力値は分からないので、よくある型の素早さを並べている。大きい方が先に動く（トリックルーム中は逆）。左右のスライダーで素早さのランクを上げ下げした後の比較ができる')),
+    el('div', { class: 'sbody' }, ctl('me'), box, ctl('opp')));
 }
 
 const run = debounce(async () => {

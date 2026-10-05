@@ -290,15 +290,14 @@ details.settings > :not(summary) { margin: 0; padding: 16px; }
 .rec.sub .chip { font-size: 11px; padding: 0 6px; margin: 1px 2px 1px 0; }
 .rec.sub .ans-title { font-size: 12px; margin-top: 6px; }
 .rec.sub .ans { font-size: 12px; }
-.sctl-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-bottom: 14px; }
-.sctl { padding: 8px 10px; border: 3px solid var(--line); border-radius: var(--radius-s); }
+.sbody { display: grid; grid-template-columns: 64px minmax(0, 1fr) 64px; gap: 8px; align-items: stretch; }
+.sctl { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 4px; border: 3px solid var(--line); border-radius: var(--radius-s); }
 .sctl.me { border-color: var(--me); } .sctl.opp { border-color: var(--opp); }
-.sctl-head { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--ink-2); }
+.sctl-head { display: flex; flex-direction: column; align-items: center; font-size: 11px; font-weight: 700; color: var(--ink-2); }
 .sctl-head .stage { color: var(--ink); font-size: 16px; }
-.sctl-body { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
-.sctl-body input[type=range] { flex: 1; min-width: 0; min-height: 0; padding: 0; border: 0; accent-color: var(--violet); }
+.sctl input[type=range] { flex: 1; min-height: 120px; width: 24px; padding: 0; border: 0; writing-mode: vertical-lr; direction: rtl; accent-color: var(--violet); }
 .sctl.me input[type=range] { accent-color: var(--me); } .sctl.opp input[type=range] { accent-color: var(--opp); }
-.sctl-body .mini { min-width: 30px; min-height: 30px; font-size: 16px; }
+.sctl .mini { min-width: 30px; min-height: 30px; font-size: 16px; }
 .lbadge { font-size: 14px; }
 @media (max-width: 480px) { .lrow { grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1fr); } .lbadge { padding: 2px 8px; font-size: 12px; } }
 .chip { white-space: nowrap; }
