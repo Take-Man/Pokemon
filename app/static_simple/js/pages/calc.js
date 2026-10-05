@@ -1,11 +1,11 @@
-import { $, el, api, lead, picker, help, typeChip, debounce } from '../ui.js';
+import { $, el, api, lead, toast, picker, help, typeChip, debounce } from '../ui.js';
 import { S, dexInfo, loadMeta, monLabel } from '../store.js';
 import { STATS, STAT_JA, spGrid } from '../parts.js';
 
 const blank = () => ({ species: null, ja: '', nature: null, sp: {}, ability: null, item: null, item_ja: '', boosts: {}, status: 'none', hp_percent: 100, hp: null,
   max_hp: null, mega: false, reflect: false, light_screen: false, aurora_veil: false, moves: [], moves_ja: [], set_moves: [] });
 // 画面を行き来しても選んだ内容が残るようモジュールで保持する
-const C = { me: blank(), opp: blank(), weather: '', terrain: '', myTeam: null, oppIds: null, pred: null, open: false };
+const C = { me: blank(), opp: blank(), weather: '', terrain: '', myTeam: null, oppIds: null, pred: null, open: false, live: null, syncSig: null };
 
 const STATUS = [['none', 'なし'], ['brn', 'やけど'], ['par', 'まひ'], ['psn', 'どく'], ['tox', 'もうどく'], ['slp', 'ねむり'], ['frz', 'こおり']];
 const RANK_LABEL = { atk: 'こうげき', def: 'ぼうぎょ', spa: 'とくこう', spd: 'とくぼう', spe: 'すばやさ' };
@@ -33,7 +33,11 @@ async function draw(view) {
   const o = await api('/api/opponent');
   C.oppIds = o.species.map((id, i) => ({ id, ja: o.ja[i] }));
   try { C.pred = await api('/api/predict'); } catch (e) { C.pred = null; }
+  // 逆ダメ計の現在の対面が変わっていたら、ダメ計に写す。変わっていなければ、試している内容をそのまま残す
+  C.live = await battleLive();
+  if (C.live && C.live.sig !== C.syncSig) { await syncFromBattle(C.live); C.syncSig = C.live.sig; }
   view.append(lead('3', 'ダメ計'));
+  view.append(liveStrip());
   view.append(el('div', { class: 'duel' }, selectList('me'), el('div', { class: 'vs' }, 'VS'), selectList('opp')), settingsCard(), el('div', { id: 'calc-out' }));
   window.scrollTo(0, y);
   run();
@@ -42,6 +46,44 @@ async function draw(view) {
 export default { key: 'calc', label: 'ダメ計', badge: '3', render: draw };
 
 const redraw = () => draw($('#view'));
+
+// ---- 逆ダメ計の「現在の対面」 ----
+async function battleLive() {
+  let b; try { b = await api('/api/battle'); } catch (e) { return null; }
+  const lv = b && b.match && b.live; if (!lv) return null;
+  const me = (b.mine || []).find(x => x.index === lv.active.my), opp = (b.opp_builds || []).find(o => o.base_species === lv.active.opp);
+  if (!me && !opp) return null;
+  return { lv, me, opp, sig: JSON.stringify({ lv, me: me && me.set, opp: opp && opp.set }) };
+}
+
+async function syncFromBattle(a) {
+  const { lv, me, opp } = a;
+  const scr = (x, v) => { x.reflect = v === 'reflect' || v === 'both'; x.light_screen = v === 'lightscreen' || v === 'both'; x.aurora_veil = false; };
+  if (me) {
+    await setFromSet('me', me.set, me.ja);
+    const x = C.me, mon = lv.my[String(me.index)] || {};
+    x.hp = mon.hp == null ? null : mon.hp; x.max_hp = me.stats.hp; x.status = mon.status || 'none'; x.boosts = { ...(mon.boosts || {}) };
+    scr(x, lv.field.my_screen);
+  }
+  if (opp) {
+    await setFromSet('opp', opp.set, opp.ja);
+    const x = C.opp, mon = lv.opp[opp.base_species] || {};
+    x.hp_percent = Math.max(1, mon.hp == null ? 100 : mon.hp); x.status = mon.status || 'none'; x.boosts = { ...(mon.boosts || {}) };
+    scr(x, lv.field.opp_screen);
+  }
+  const f = (v) => (v && v !== 'none') ? v : '';
+  C.weather = f(lv.field.weather); C.terrain = f(lv.field.terrain);
+}
+
+// 現在の対面（2体）と、その状態へ戻すボタン
+function liveStrip() {
+  const a = C.live;
+  const side = (cls, name) => el('span', { class: 'live-side ' + cls }, name ? monLabel(name) : el('span', { class: 'muted' }, '未選択'));
+  return el('div', { class: 'card live-strip' },
+    el('div', { class: 'live-names' }, el('b', {}, '対戦の対面 ', help('逆ダメ計で場に出している2体。対面や記録が変わると、ここの設定がその状態に入れ替わる。ここで変えた内容は試すだけで、逆ダメ計には反映されない')),
+      a ? [side('me', a.me && a.me.battle_ja), el('span', { class: 'muted' }, 'VS'), side('opp', a.opp && (a.opp.battle_ja || a.opp.ja))] : el('span', { class: 'muted' }, ['なし（', el('a', { href: '#reverse' }, '逆ダメ計'), 'で選出を選ぶと出る）'])),
+    el('button', { class: 'btn small alt', disabled: !a, onclick: async () => { await syncFromBattle(a); C.syncSig = a.sig; await redraw(); toast('対戦の対面に戻した'); } }, '対戦の対面に戻す'));
+}
 
 // ゲームの選出画面のように、6体を縦に並べて1体を選ぶ
 function selectList(side) {

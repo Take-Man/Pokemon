@@ -343,3 +343,72 @@ table.plain tr.warn td { color: var(--bad); font-weight: 700; }
 .hist-mons { display: flex; flex-wrap: wrap; }
 .chip.win { background: color-mix(in srgb, var(--good) 25%, var(--surface)); border-color: var(--good); }
 .chip.lose { background: color-mix(in srgb, var(--bad) 20%, var(--surface)); border-color: var(--bad); }
+
+/* 逆ダメ計 */
+.rv-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.rv-picks { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 6px 0; }
+.rv-picks > b, .rv-sidehead { min-width: 3em; font-size: 14px; }
+.side-me { color: var(--me); } .side-opp { color: var(--opp); }
+.rv-sidehead { margin: 12px 0 4px; font-weight: 700; }
+.pick { padding: 4px 12px; border: 3px solid var(--soft-line); border-radius: 999px; background: var(--surface); cursor: pointer; font-weight: 700; }
+.pick.me.on { border-color: var(--me); background: color-mix(in srgb, var(--me) 22%, var(--surface)); }
+.pick.opp.on { border-color: var(--opp); background: color-mix(in srgb, var(--opp) 20%, var(--surface)); }
+.live-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+.live-card { padding: 10px; border: 3px solid var(--soft-line); border-radius: var(--radius-s); cursor: pointer; }
+.live-card.active { border-color: var(--me); box-shadow: 0 0 0 3px color-mix(in srgb, var(--me) 35%, transparent); }
+.live-card.opp.active { border-color: var(--opp); box-shadow: 0 0 0 3px color-mix(in srgb, var(--opp) 35%, transparent); }
+.live-card.fainted { opacity: .5; }
+.live-card .t { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-weight: 700; }
+.live-line { display: flex; gap: 8px; align-items: center; margin: 6px 0; }
+.live-line select, .live-line input { min-height: 34px; padding: 2px 8px; }
+.hpin { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; font-size: 13px; }
+.hpin input { width: 78px; }
+.hpbar { height: 10px; margin-top: 6px; border-radius: 6px; background: var(--soft-line); overflow: hidden; }
+.hpbar span { display: block; height: 100%; }
+.hp-g { background: var(--good); } .hp-y { background: var(--mid); } .hp-r { background: var(--bad); }
+.st { padding: 0 8px; border-radius: 999px; background: var(--violet); color: #fff; font-size: 12px; }
+.rv-ranks { display: grid; grid-template-columns: repeat(5, 1fr) auto; gap: 4px; align-items: end; }
+.rv-ranks label { font-size: 11px; font-weight: 700; color: var(--ink-2); }
+.rv-ranks select { min-height: 30px; padding: 0 2px; font-size: 13px; }
+.rv-ranks select.up { color: var(--good); font-weight: 700; } .rv-ranks select.down { color: var(--bad); font-weight: 700; }
+.rv-ranks .mini { min-height: 30px; min-width: 30px; font-size: 13px; }
+.rv-field { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 14px; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 6px 0; }
+.seg button { padding: 4px 12px; border: 2px solid var(--soft-line); border-radius: 999px; background: var(--surface); font-weight: 700; cursor: pointer; font-size: 13px; }
+.seg button.on { border-color: var(--pink); background: var(--pink); color: #fff; }
+.seg.wide { display: flex; margin-bottom: 10px; }
+.rv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; align-items: end; }
+.cond-summary { margin-top: 10px; padding: 8px 12px; border-radius: var(--radius-s); background: var(--surface-2); font-size: 13px; font-weight: 700; }
+.rec-list { display: grid; gap: 8px; }
+.rec-row { padding: 8px 12px; border: 2px solid var(--soft-line); border-radius: var(--radius-s); }
+.rec-row.bad { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, var(--surface)); }
+.rec-top { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+.rec-top .n { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--bg); font-size: 12px; font-weight: 700; }
+.kind { font-weight: 700; } .kind-taken { color: var(--opp); } .kind-dealt { color: var(--me); }
+.bcard { padding: 10px 12px; border: 2px solid var(--soft-line); border-radius: var(--radius-s); }
+.bcard + .bcard { margin-top: 10px; }
+.bcard.dim { opacity: .6; }
+.bcard .t { font-weight: 700; margin-bottom: 6px; }
+.kv2 { display: grid; grid-template-columns: 5.5em 1fr; gap: 4px 10px; font-size: 14px; }
+.kv2 > :nth-child(odd) { color: var(--ink-2); font-weight: 700; }
+.src { display: inline-block; margin-left: 6px; padding: 0 7px; border-radius: 999px; font-size: 11px; font-weight: 700; border: 2px solid var(--soft-line); }
+.src-confirmed { background: var(--mint); color: #1f1b3a; } .src-inferred { background: var(--violet); color: #fff; }
+.src-usage { background: var(--sky); color: #1f1b3a; } .src-estimate { background: var(--surface-2); }
+.mv { display: inline-flex; align-items: center; gap: 4px; }
+table.mx { border-collapse: separate; border-spacing: 4px; width: 100%; }
+table.mx th { font-size: 13px; text-align: center; }
+table.mx td { padding: 6px 8px; border-radius: 8px; font-size: 12px; vertical-align: top; }
+td.cell-good { background: color-mix(in srgb, var(--good) 28%, var(--surface)); }
+td.cell-bad { background: color-mix(in srgb, var(--bad) 25%, var(--surface)); }
+td.cell-mid { background: var(--surface-2); }
+.mx-line { white-space: nowrap; } .mx-who { display: inline-block; width: 1.6em; font-weight: 700; }
+details summary { cursor: pointer; font-weight: 700; margin-top: 8px; }
+.live-row { grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); }
+.live-line select { width: auto; flex: 1; min-width: 0; }
+.rv-ranks select { appearance: none; -webkit-appearance: none; text-align: center; text-align-last: center; padding: 0; min-height: 30px; width: 100%; }
+.rv-ranks .mini { align-self: end; }
+
+/* ダメ計: 対戦の対面 */
+.live-strip { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; padding: 10px 16px; }
+.live-names { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.live-side.me { color: var(--me); font-weight: 700; } .live-side.opp { color: var(--opp); font-weight: 700; }
