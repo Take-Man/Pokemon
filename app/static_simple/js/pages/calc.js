@@ -1,6 +1,7 @@
 import { $, el, api, lead, toast, picker, help, typeChip, debounce } from '../ui.js';
 import { S, dexInfo, loadMeta, monLabel } from '../store.js';
 import { STATS, STAT_JA, spGrid } from '../parts.js';
+import { prefillRecord } from './reverse.js';
 
 const blank = () => ({ species: null, ja: '', nature: null, sp: {}, ability: null, item: null, item_ja: '', boosts: {}, status: 'none', hp_percent: 100, hp: null,
   max_hp: null, mega: false, reflect: false, light_screen: false, aurora_veil: false, moves: [], moves_ja: [], set_moves: [] });
@@ -191,22 +192,30 @@ function fieldBlock() {
 
 const KO_HOT = (ko) => /^(確定1|乱数1)/.test(ko);
 
-function moveRow(x) {
+// 技の行から、逆ダメ計の記録フォームを埋めた状態で開く（与ダメ・被ダメ、相手の変化技は判明の技）
+function recordBtn(x, side) {
+  if (!C.live || (side === 'me' && x.category === 'Status')) return '';
+  const kind = side === 'me' ? 'dealt' : x.category === 'Status' ? 'reveal' : 'taken';
+  return el('button', { class: 'btn small ghost rec-go', title: kind === 'reveal' ? '相手が使った技として、逆ダメ計に記録する' : '逆ダメ計に記録する',
+    onclick: () => prefillRecord({ kind, move: x.move_id, move_ja: x.move, opp: C.opp.species, mySpecies: C.me.species }) }, '記録→');
+}
+
+function moveRow(x, side) {
   const immune = x.effectiveness === 0;
   const tag = x.rate != null ? `採用率${x.rate}%` : x.src === 'set' ? '型の技' : '';
   const effText = immune ? '' : x.effectiveness > 1 ? '効果は抜群' : x.effectiveness < 1 ? 'いまひとつ' : '';
   const ko = immune ? '効果なし' : x.ko;
   return el('div', { class: 'mrow' + (immune ? ' immune' : '') },
-    el('div', { class: 'm-name' }, typeChip(x.type, x.move, false), el('small', { class: 'muted' }, ` 威力${x.base_power}${tag ? '・' + tag : ''}`)),
+    el('div', { class: 'm-name' }, typeChip(x.type, x.move, false), el('small', { class: 'muted' }, ` 威力${x.base_power}${tag ? '・' + tag : ''}`), recordBtn(x, side)),
     immune ? '' : el('div', { class: 'm-bar', title: `${x.min}〜${x.max}ダメージ` }, el('span', { class: 'max', style: `width:${Math.min(100, x.max_pct)}%` }), el('span', { class: 'min', style: `width:${Math.min(100, x.min_pct)}%` })),
     el('div', { class: 'm-num' }, immune ? '' : el('b', {}, `${x.min_pct}〜${x.max_pct}%`), ' ', el('span', { class: 'ko' + (KO_HOT(ko) ? ' hot' : '') }, ko)),
     (effText || x.notes.length) ? el('div', { class: 'm-notes muted' }, [effText, ...x.notes].filter(Boolean).join('・')) : '');
 }
 
-function statusRow(x) {
+function statusRow(x, side) {
   const e = x.effect || { text: '', notes: [], fails: '' };
   return el('div', { class: 'mrow status' + (e.fails ? ' immune' : '') },
-    el('div', { class: 'm-name' }, typeChip(x.type, x.move, false), x.rate != null ? el('small', { class: 'muted' }, ` 採用率${x.rate}%`) : ''),
+    el('div', { class: 'm-name' }, typeChip(x.type, x.move, false), x.rate != null ? el('small', { class: 'muted' }, ` 採用率${x.rate}%`) : '', recordBtn(x, side)),
     el('div', {}, e.text), e.fails ? el('div', { class: 'err' }, `この対面では無効・失敗: ${e.fails}`) : '', e.notes.length ? el('div', { class: 'm-notes muted' }, e.notes.join(' / ')) : '');
 }
 
@@ -274,16 +283,14 @@ const run = debounce(async () => {
     me.max_hp = r.me.stats.hp;
     const ladder = speedCard(r);
     out.innerHTML = '';
-    const col = (cls, title, hpTxt, rows, empty) => {
-      const attacks = rows.filter(x => x.category !== 'Status'), status = rows.filter(x => x.category === 'Status');
+    const col = (cls, title, hpTxt, rows, empty, side) => {
       const c = el('div', { class: 'card res ' + cls }, el('h2', {}, title), el('div', { class: 'muted hp' }, hpTxt));
-      if (!attacks.length && !status.length) c.append(el('p', { class: 'muted' }, empty));
-      attacks.forEach(x => c.append(moveRow(x)));
-      status.forEach(x => c.append(statusRow(x)));
+      if (!rows.length) c.append(el('p', { class: 'muted' }, empty));
+      rows.forEach(x => c.append(x.category === 'Status' ? statusRow(x, side) : moveRow(x, side)));  // 攻撃技も変化技も、返ってきた順（採用率順）に並べる
       return c;
     };
     out.append(el('div', { class: 'grid2 results', style: 'margin-top:18px' },
-      col('me', el('span', {}, monLabel(r.me.ja), ' → ', monLabel(r.opp.ja)), `相手のHP ${r.opp.current_hp} / ${r.opp.stats.hp}`, r.to_opp, '技が未設定。状態設定の「自分の技」で入れる'),
-      col('opp', el('span', {}, monLabel(r.opp.ja), ' → ', monLabel(r.me.ja)), `自分のHP ${r.me.current_hp} / ${r.me.stats.hp}`, r.to_me, '技のデータがない')), ladder);
+      col('me', el('span', {}, monLabel(r.me.ja), ' → ', monLabel(r.opp.ja)), `相手のHP ${r.opp.current_hp} / ${r.opp.stats.hp}`, r.to_opp, '技が未設定。状態設定の「自分の技」で入れる', 'me'),
+      col('opp', el('span', {}, monLabel(r.opp.ja), ' → ', monLabel(r.me.ja)), `自分のHP ${r.me.current_hp} / ${r.me.stats.hp}`, r.to_me, '技のデータがない', 'opp')), ladder);
   } catch (e) { out.textContent = '計算エラー: ' + e.message; }
 }, 200);
