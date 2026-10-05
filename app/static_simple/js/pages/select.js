@@ -3,7 +3,7 @@ import { loadMeta, monLabel } from '../store.js';
 
 const STAT_JA = { hp: 'H', atk: 'A', def: 'B', spa: 'C', spd: 'D', spe: 'S' };
 let opp = { species: [], ja: [] }, pred = null, oppMtime = null, pollTimer = null, jobMsg = '';
-let selected = null; // 対面表で選んでいるセル {i, j}
+let selected = null, slowest = false; // 対面表で選んでいるセル {i, j}
 
 // 対面スコア → 表示
 const VERDICT = (s) => s >= 0.99 ? ['◎', '有利', 'v-good'] : s >= 0.7 ? ['○', 'やや有利', 'v-good2'] : s > 0.4 ? ['△', '互角', 'v-mid'] : s > 0.2 ? ['▲', 'やや不利', 'v-bad2'] : ['✕', '不利', 'v-bad'];
@@ -153,10 +153,12 @@ function drawResult(view) {
 // ④ 素早さ比較: 自分の実際の素早さと、相手の最速スカーフ・最速・準速（メガ後の最速も）を1本に並べる
 function speedCard() {
   const lad = el('div', { class: 'ladder' }, el('div', { class: 'muted' }, '読み込み中…'));
+  const slow = el('input', { type: 'checkbox', checked: slowest, onchange: () => { slowest = slow.checked; draw(); } });
   const card = el('div', { class: 'card', style: 'margin-top:18px' },
-    el('h2', {}, '素早さ比較 ', help('相手の努力値は分からないので、よくある型の素早さを並べている。大きい方が先に動く（トリックルーム中は逆）')), lad);
-  (async () => {
-    const rows = await api(`/api/speed?ids=${(opp.species || []).join(',')}`);
+    el('h2', {}, '素早さ比較 ', help('相手の努力値は分からないので、よくある型の素早さを並べている。大きい方が先に動く（トリックルーム中は逆）')),
+    el('label', { class: 'check', style: 'margin-bottom:10px' }, slow, '最遅も表示', help('トリックルームで先に動きたいときなど、素早さを下げた型を見る')), lad);
+  const draw = async () => {
+    const rows = await api(`/api/speed?ids=${(opp.species || []).join(',')}&slowest=${slowest}`);
     const list = rows.map(r => ({ ...r, v: r.scarf ? Math.floor(r.speed * 1.5) : r.speed,
       label: r.side === 'me' ? (r.scarf ? 'スカーフ込み' : r.label.replace(/^自分/, '').replace(/[()（）]/g, '') || '実数値') : r.label }))
       .sort((a, b) => b.v - a.v || (a.side === 'me' ? 1 : -1));
@@ -165,6 +167,7 @@ function speedCard() {
       el('div', { class: 'lcell l' }, x.side === 'me' ? el('span', { class: 'lbadge me' }, el('small', {}, x.label), x.ja) : ''),
       el('div', { class: 'lnum' }, x.v),
       el('div', { class: 'lcell r' }, x.side === 'opp' ? el('span', { class: 'lbadge opp' }, el('small', {}, x.ja), x.label) : '')));
-  })();
+  };
+  draw();
   return card;
 }

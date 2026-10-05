@@ -596,7 +596,7 @@ def post_duel(c: DuelIn):
 
 
 @app.get("/api/speed")
-def speed(ids: str):
+def speed(ids: str, slowest: bool = False):
     """相手候補の素早さ帯と、自分のパーティの実数値を並べる。"""
     D = dex()
     rows = []
@@ -613,7 +613,7 @@ def speed(ids: str):
         if not p:
             continue
         for label, v in speed_variants(p["baseStats"]["spe"]).items():
-            if label in ("最速", "準速"):
+            if label in ("最速", "準速") or (slowest and label == "最遅"):
                 rows.append({"side": "opp", "ja": p["ja"], "label": label, "speed": v})
         rows.append({"side": "opp", "ja": p["ja"], "label": "最速スカーフ",
                      "speed": speed_variants(p["baseStats"]["spe"])["最速"] * 3 // 2})
