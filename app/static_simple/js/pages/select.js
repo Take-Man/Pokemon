@@ -101,21 +101,21 @@ function drawResult(view) {
   const answerRows = (c) => Object.entries(c.answers).map(([k, v]) => el('div', { class: 'ans' },
     el('span', { class: 'chip opp' }, monLabel(k)), el('span', { class: 'arrow' }, '→'),
     v.length ? v.map(n => el('span', { class: 'chip me' }, monLabel(n))) : el('span', { class: 'err' }, '有利な駒なし')));
-  const recCard = (c, big) => el('div', { class: 'rec' + (big ? ' best' : '') },
+  const recCard = (c, big) => el('div', { class: 'rec' + (big ? ' best' : ' sub') },
     el('div', { class: 'rec-names' }, ...c.members.map(n => el('span', { class: 'rec-name' }, monLabel(n)))),
     c.mega_conflict ? el('div', { class: 'err' }, 'メガ持ちが2体いる（メガシンカできるのは1体だけ）') : '',
-    big ? el('div', { class: 'muted ans-title' }, '相手ごとの対応 ', help('左が相手、右がその相手に有利な自分のポケモン')) : '',
-    big ? answerRows(c) : '');
+    el('div', { class: 'muted ans-title' }, '相手ごとの対応 ', big ? help('左が相手、右がその相手に有利な自分のポケモン') : ''),
+    answerRows(c));
   box.append(el('div', { class: 'card result-card', style: 'margin-top:18px' },
     el('h2', {}, 'おすすめの選出 ', el('small', { class: 'muted' }, `データ: ${pred.data_source}`)),
     best ? recCard(best, true) : el('p', { class: 'muted' }, '候補なし'),
-    others.length ? el('details', {}, el('summary', {}, `ほかの候補（${others.length}）`), ...others.map(c => recCard(c, false))) : ''));
+    others.length ? el('div', { class: 'rec-pair' }, ...others.slice(0, 2).map(c => recCard(c, false))) : ''));
 
   // ② 相手の選出予想
   const oppCards = pred.opponent.map(o => {
     const threats = o.threatens || [];
     return el('div', { class: 'opp-card' },
-      el('div', { class: 'oc-head' }, el('span', { class: 'rank-badge' + (o.rank <= 3 ? ' top' : '') }, o.rank), el('b', {}, monLabel(o.ja)),
+      el('div', { class: 'oc-head' }, el('span', { class: 'rank-badge' }, o.rank), el('b', {}, monLabel(o.ja)),
         o.rank <= 3 ? el('span', { class: 'chip opp' }, '出てきそう') : ''),
       el('div', { class: 'score-line' }, el('span', { class: 'lbl' }, 'スコア ', help('相手が選出してきそうな度合い。自分のパーティへの通りの良さと、使用率から算出（高いほど出てきやすい）')),
         el('div', { class: 'meter' }, el('span', { style: `width:${Math.max(4, Math.min(100, o.score * 100))}%` })), el('b', { class: 'score-num' }, Math.round(o.score * 100))),
@@ -139,7 +139,7 @@ function drawResult(view) {
       el('div', {}, `自分の${x.a_move || '-'}: ${pct(x.a_pct)}（${x.a_hits}発で倒せる） ／ 相手の${x.b_move || '-'}: ${pct(x.b_pct)}（${x.b_hits}発で倒される）`),
       el('div', { class: 'muted' }, `素早さ ${x.a_speed} 対 ${x.b_speed} → ${first}`), x.evidence ? el('div', { class: 'muted' }, `実戦データ: ${x.evidence}`) : '');
   };
-  const tbl = el('table', { class: 'matrix' }, el('tr', {}, el('th', {}, ''), ...pred.opp.map(o => el('th', { class: 'col-opp' }, monLabel(o)))));
+  const tbl = el('table', { class: 'matrix' }, el('tr', {}, el('th', {}, ''), ...pred.opp.map(o => el('th', { class: 'col-opp' }, monLabel(o, true)))));
   pred.matrix.forEach((row, i) => tbl.append(el('tr', {}, el('th', { class: 'row-me' }, monLabel(pred.my[i])),
     ...row.map((x, j) => { const [mark, text, cls] = VERDICT(x.score); return el('td', { class: 'vcell ' + cls, title: text, tabindex: '0', onclick: () => showDetail(i, j) }, mark); }))));
   box.append(el('div', { class: 'card', style: 'margin-top:18px' },

@@ -61,7 +61,7 @@ function selectList(side) {
         if (p) await setFromSet('opp', p.set, p.ja); else { const d = await dexInfo(it.key); await setFromSet('opp', d.likely_set, d.ja); }
       }
       redraw();
-    } }, monLabel(it.ja)));
+    } }, monLabel(it.ja, true)));
   }
   card.append(col);
   return card;
@@ -94,7 +94,7 @@ function detailBody(side) {
     : el('input', { type: 'number', min: 1, max: 100, value: x.hp_percent, oninput: (e) => { x.hp_percent = parseFloat(e.target.value || '100'); upd(); } });
   const status = el('select', { onchange: (e) => { x.status = e.target.value; upd(); } }, ...STATUS.map(([v, t]) => el('option', { value: v, selected: (x.status || 'none') === v }, t)));
   const ranks = el('div', { class: 'ranks' }, ...Object.keys(RANK_LABEL).map(k => {
-    const s = el('select', { onchange: () => { x.boosts[k] = parseInt(s.value, 10); upd(); } },
+    const s = el('select', { 'data-rank': `${side}-${k}`, onchange: () => { x.boosts[k] = parseInt(s.value, 10); upd(); } },
       ...[...Array(13).keys()].map(i => 6 - i).map(v => el('option', { value: v, selected: (x.boosts[k] || 0) === v }, v > 0 ? `+${v}` : `${v}`)));
     return labelled(RANK_LABEL[k], s);
   }));
@@ -170,31 +170,50 @@ function statusRow(x) {
 }
 
 const rankMult = (st) => st >= 0 ? (2 + st) / 2 : 2 / (2 - st);
+const stageText = (v) => v > 0 ? `+${v}` : `${v}`;
 
-// 素早さライン: 自分の実際の素早さと、相手の最速・準速・無振り・スカーフ最速を並べる（相手の努力は断言できないため）
-async function speedLadder(r) {
+// 素早さライン: 自分の実際の素早さと、相手の最速スカーフ・最速・準速・無振りを並べる（相手の努力は断言できないため）。
+// 左右のスライダーで、素早さのランクを上げ下げした後の比較ができる
+function speedCard(r) {
   const op = C.opp;
-  let spe = (await dexInfo(op.species)).speed;
-  if (op.mega) { const mg = (await dexInfo(op.species)).megas.find(m => m.item === op.item); if (mg) spe = (await dexInfo(mg.id)).speed; }
-  const st = (op.boosts && op.boosts.spe) || 0, par = op.status === 'par';
-  const adj = (v, scarf) => { let n = Math.floor(v * rankMult(st)); if (scarf) n = Math.floor(n * 1.5); return par ? Math.floor(n / 2) : n; };
-  const lines = [
-    { side: 'opp', label: '最速スカーフ', v: adj(spe['最速'], true), tip: '性格補正あり・能力ポイント最大＋こだわりスカーフ' },
-    { side: 'opp', label: '最速', v: adj(spe['最速']), tip: 'すばやさ↑の性格・能力ポイント最大' },
-    { side: 'opp', label: '準速', v: adj(spe['準速']), tip: '性格補正なし・能力ポイント最大' },
-    { side: 'opp', label: '無振り', v: adj(spe['無振り']), tip: '性格補正なし・能力ポイント0' },
-  ];
-  const mine = r.me.speed;
-  const rows = [...lines, { side: 'me', label: r.me.ja, v: mine }].sort((a, b) => b.v - a.v || (a.side === 'me' ? 1 : -1));
-  const beat = lines.filter(l => mine > l.v).map(l => l.label), tie = lines.filter(l => mine === l.v).map(l => l.label);
-  const summary = beat.length === lines.length ? '相手のどの型にも先に動ける'
-    : !beat.length && !tie.length ? '相手のどの型にも後攻になる' : `先に動ける: ${beat.join('・') || 'なし'}${tie.length ? `（同速: ${tie.join('・')}）` : ''}`;
-  const ladder = el('div', { class: 'ladder' }, ...rows.map(x => el('div', { class: 'lrow ' + x.side },
-    el('div', { class: 'lcell l' }, x.side === 'me' ? el('span', { class: 'lbadge me' }, monLabel(x.label)) : ''),
-    el('div', { class: 'lnum' }, x.v),
-    el('div', { class: 'lcell r', title: x.tip || '' }, x.side === 'opp' ? el('span', { class: 'lbadge opp' }, x.label) : ''))));
-  return el('div', { class: 'card speed' }, el('h2', {}, '素早さ ', help('相手の努力値は分からないので、よくある型の素早さを並べている。大きい方が先に動く（トリックルーム中は逆）。相手のランク・まひは反映済み')),
-    ladder, el('div', { class: 'ladder-sum' }, summary));
+  const box = el('div', { class: 'ladder' });
+  const sync = (side) => { const sel = document.querySelector(`[data-rank="${side}-spe"]`); if (sel) sel.value = (C[side].boosts.spe || 0); };
+  const ctl = (side) => {
+    const x = C[side];
+    const label = el('b', { class: 'stage' }, stageText(x.boosts.spe || 0));
+    const range = el('input', { type: 'range', min: -6, max: 6, step: 1, value: x.boosts.spe || 0, 'aria-label': (side === 'me' ? '自分' : '相手') + 'の素早さランク' });
+    const set = (v) => { v = Math.max(-6, Math.min(6, v)); x.boosts.spe = v; range.value = v; label.textContent = stageText(v); sync(side); refresh(); };
+    range.addEventListener('input', () => set(parseInt(range.value, 10)));
+    return el('div', { class: 'sctl ' + side }, el('div', { class: 'sctl-head' }, el('span', {}, '素早さランク'), label),
+      el('div', { class: 'sctl-body' }, el('button', { class: 'mini', onclick: () => set((x.boosts.spe || 0) - 1) }, '−'), range, el('button', { class: 'mini', onclick: () => set((x.boosts.spe || 0) + 1) }, '＋')));
+  };
+  const refresh = debounce(async () => {
+    const dex = await dexInfo(op.species);
+    let spe = dex.speed;
+    if (op.mega) { const mg = dex.megas.find(m => m.item === op.item); if (mg) spe = (await dexInfo(mg.id)).speed; }
+    const st = (op.boosts && op.boosts.spe) || 0, par = op.status === 'par';
+    const adj = (v, scarf) => { let n = Math.floor(v * rankMult(st)); if (scarf) n = Math.floor(n * 1.5); return par ? Math.floor(n / 2) : n; };
+    // 自分の実際の素早さ（ランク・持ち物・まひ込み）はサーバで計算する
+    const me = C.me;
+    const side = (x, isMe) => ({ species: x.species, nature: x.nature, sp: x.sp, ability: x.ability, item: x.item, boosts: x.boosts, status: x.status && x.status !== 'none' ? x.status : null,
+      hp_percent: x.hp_percent, hp: isMe && x.hp != null ? x.hp : null, mega: x.mega, moves: [] });
+    const rr = await api('/api/calc/duel', { method: 'POST', body: { me: side(me, true), opp: side(op, false), my_moves: [], opp_moves: [], weather: C.weather || null, terrain: C.terrain || null, log: false } });
+    const rows = [
+      { side: 'opp', label: '最速スカーフ', v: adj(spe['最速'], true), tip: '性格補正あり・能力ポイント最大＋こだわりスカーフ' },
+      { side: 'opp', label: '最速', v: adj(spe['最速']), tip: 'すばやさ↑の性格・能力ポイント最大' },
+      { side: 'opp', label: '準速', v: adj(spe['準速']), tip: '性格補正なし・能力ポイント最大' },
+      { side: 'opp', label: '無振り', v: adj(spe['無振り']), tip: '性格補正なし・能力ポイント0' },
+      { side: 'me', label: me.ja, v: rr.me.speed },
+    ].sort((a, b) => b.v - a.v || (a.side === 'me' ? 1 : -1));
+    box.innerHTML = '';
+    for (const x of rows) box.append(el('div', { class: 'lrow ' + x.side },
+      el('div', { class: 'lcell l' }, x.side === 'me' ? el('span', { class: 'lbadge me' }, x.label) : ''),
+      el('div', { class: 'lnum' }, x.v),
+      el('div', { class: 'lcell r', title: x.tip || '' }, x.side === 'opp' ? el('span', { class: 'lbadge opp' }, el('small', {}, op.ja), x.label) : '')));
+  }, 80);
+  refresh();
+  return el('div', { class: 'card speed' }, el('h2', {}, '素早さ ', help('相手の努力値は分からないので、よくある型の素早さを並べている。大きい方が先に動く（トリックルーム中は逆）。スライダーで素早さのランクを上げ下げした後の比較ができる')),
+    el('div', { class: 'sctl-row' }, ctl('me'), ctl('opp')), box);
 }
 
 const run = debounce(async () => {
@@ -211,7 +230,7 @@ const run = debounce(async () => {
     const r = await api('/api/calc/duel', { method: 'POST', body: { me: side(me, true), opp: side(op, false), my_moves: me.moves.filter(Boolean),
       weather: C.weather || null, terrain: C.terrain || null, crit: C.crit } });
     me.max_hp = r.me.stats.hp;
-    const ladder = await speedLadder(r);
+    const ladder = speedCard(r);
     out.innerHTML = '';
     const col = (cls, title, hpTxt, rows, empty) => {
       const attacks = rows.filter(x => x.category !== 'Status'), status = rows.filter(x => x.category === 'Status');

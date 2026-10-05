@@ -31,11 +31,11 @@ export default {
       view.append(lead('相', 'タイプ相性'));
       const toggle = (t) => { focus = focus.includes(t) ? focus.filter(x => x !== t) : (focus.length >= 2 ? [focus[1], t] : [...focus, t]); draw(); };
       view.append(el('div', { class: 'card' }, el('h2', {}, 'タイプを選ぶ ', help('最大2つ。2つ選ぶと、そのタイプを併せ持つポケモンとして調べる')),
-        el('div', { class: 'tpick-grid' }, ...types.map(t => {
+        el('div', { class: 'tpick-wrap' }, el('div', { class: 'tpick-grid' }, ...types.map(t => {
           const on = focus.includes(t.id);
           return el('button', { class: 'tpick' + (on ? ' on' : focus.length ? ' off' : ''), 'aria-pressed': on ? 'true' : 'false',
-            style: `--tc:${TYPE_COLOR[t.id]};--tf:${typeFg(t.id)}`, onclick: () => toggle(t.id) }, on ? '✓ ' : '', t.ja);
-        })),
+            style: `--tc:${TYPE_COLOR[t.id]};--tf:${typeFg(t.id)}`, onclick: () => toggle(t.id) }, t.ja);
+        }))),
         focus.length ? el('div', { style: 'margin-top:10px' }, el('button', { class: 'btn small ghost', onclick: () => { focus = []; draw(); } }, 'クリア')) : ''));
 
       if (!focus.length) {

@@ -13,7 +13,8 @@ export function typesOfJa(ja) {
   if (!_byJa) { _byJa = {}; for (const p of S.types.pokemon) if (!(p.ja in _byJa) || !p.isMega) _byJa[p.ja] = p.types; }
   return _byJa[String(ja).replace(/（.*?）/g, '').trim()] || [];
 }
-// 名前＋1文字のタイプチップ
-export function monLabel(ja) {
-  return el('span', { class: 'mon' }, ja, el('span', { class: 'tchips' }, ...typesOfJa(ja).map(t => typeChip(t, t, true))));
+// 名前＋1文字のタイプチップ（stacked=true ならチップの次の行に名前）
+export function monLabel(ja, stacked = false) {
+  const chips = el('span', { class: 'tchips' }, ...typesOfJa(ja).map(t => typeChip(t, t, true)));
+  return stacked ? el('span', { class: 'mon stacked' }, chips, el('span', { class: 'mon-name' }, ja)) : el('span', { class: 'mon' }, ja, chips);
 }
