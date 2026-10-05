@@ -11,15 +11,18 @@ export function spGrid(sp, onChange) {
   const inputs = {};
   const set = (k, v) => { sp[k] = Math.max(0, Math.min(32, v)); inputs[k].value = sp[k]; upd(); onChange(); };
   const g = el('div', { class: 'sp-grid' });
+  const cells = {};
   for (const k of STATS) {
     const i = el('input', { type: 'number', min: 0, max: 32, value: sp[k] || 0, 'aria-label': STAT_TIP[k] });
     inputs[k] = i;
     i.addEventListener('input', () => set(k, parseInt(i.value || '0', 10) || 0));
-    g.append(el('div', { class: 'sp-cell' }, el('b', { title: STAT_TIP[k] }, STAT_JA[k]), i,
+    g.append(cells[k] = el('div', { class: 'sp-cell' }, el('b', { title: STAT_TIP[k] }, STAT_JA[k]), i,
       el('div', { class: 'sp-btns' },
         el('button', { class: 'mini', title: '0にする', onclick: () => set(k, 0) }, '0'),
         el('button', { class: 'mini', title: '振れる上限（32か残りポイント）', onclick: () => set(k, Math.min(32, 66 - (sum() - (sp[k] || 0)))) }, 'Max'))));
   }
   upd();
-  return el('div', {}, el('div', { class: 'sp-head' }, '能力ポイント ', help('努力値にあたる、各能力の強化ポイント。合計66・1つ32まで。H=HP A=こうげき B=ぼうぎょ C=とくこう D=とくぼう S=すばやさ')), g, total);
+  const w = el('div', {}, el('div', { class: 'sp-head' }, '能力ポイント ', help('努力値にあたる、各能力の強化ポイント。合計66・1つ32まで。H=HP A=こうげき B=ぼうぎょ C=とくこう D=とくぼう S=すばやさ')), g, total);
+  w.cells = cells;  // 項目ごとの印付け用
+  return w;
 }

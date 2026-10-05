@@ -170,6 +170,19 @@ def get_team():
     return t
 
 
+class MemberIn(BaseModel):
+    member: dict
+
+
+@app.post("/api/member/stats")
+def post_member_stats(a: MemberIn):
+    """保存せずに、編集中の1体の実数値と入力の誤りだけを返す。"""
+    m = a.member
+    if not m.get("species") or not dex().pokemon.get(m["species"]):
+        return {"_stats": None, "_errors": []}
+    return {"_stats": MonSet.from_dict(m).build().stats(), "_errors": validate_sp(m.get("sp", {}))}
+
+
 @app.put("/api/team")
 def put_team(t: TeamIn):
     members = [{k: v for k, v in m.items() if not k.startswith("_")} for m in t.members][:6]

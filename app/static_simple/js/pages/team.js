@@ -3,38 +3,73 @@ import { S, dexInfo, loadMeta, loadTypes } from '../store.js';
 
 import { STATS, STAT_JA, spGrid } from '../parts.js';
 
-let team = null, teams = [], dirty = false, saveTimer = null;
+// team = 編集中、saved = 保存済み。保存は手動のみで、保存済みと違う項目に印を付ける
+let team = null, saved = null, teams = [], viewEl = null, cardEls = [], ui = {};
 
-const strip = (m) => Object.fromEntries(Object.entries(m).filter(([k]) => !k.startsWith('_')));
+const clone = (x) => JSON.parse(JSON.stringify(x));
+const strip = (m) => ({ ...Object.fromEntries(Object.entries(m).filter(([k]) => !k.startsWith('_'))), moves: (m.moves || []).filter(Boolean) });
 const body = () => ({ id: team.id, name: team.name, archetype: team.archetype, members: team.members.map(strip) });
+const pad4 = (a) => [0, 1, 2, 3].map(i => (a || [])[i] || null);
 
-async function saveNow() {
-  clearTimeout(saveTimer);
-  await api('/api/team', { method: 'PUT', body: body() });
-  const t = await api('/api/team');
-  t.members.forEach((m, i) => { if (team.members[i]) Object.assign(team.members[i], { _stats: m._stats, _errors: m._errors, _ja: m._ja }); });
-  setDirty(false);
+// 保存済みとの違い（項目名の集合）
+function diff(i) {
+  const a = team.members[i], b = saved.members[i], out = new Set();
+  for (const k of ['species', 'nature', 'ability', 'item']) if ((a[k] || null) !== (b[k] || null)) out.add(k);
+  for (const k of STATS) if (((a.sp || {})[k] || 0) !== ((b.sp || {})[k] || 0)) out.add('sp.' + k);
+  const am = pad4(a.moves), bm = pad4(b.moves);
+  for (let j = 0; j < 4; j++) if (am[j] !== bm[j]) out.add('move' + j);
+  return out;
 }
-function setDirty(f) { dirty = f; const s = $('#save-state'); if (s) { s.textContent = f ? '保存中…' : '✓ 自動保存済み'; s.classList.toggle('dirty', f); } }
-function save() { setDirty(true); clearTimeout(saveTimer); saveTimer = setTimeout(() => saveNow().catch(e => toast('保存に失敗: ' + e.message)), 500); }
-window.addEventListener('beforeunload', () => {
-  if (dirty && team) fetch('/api/team', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body()), keepalive: true });
-});
+function countChanges() {
+  let n = (team.name || '') !== (saved.name || '') ? 1 : 0;
+  if ((team.archetype || null) !== (saved.archetype || null)) n++;
+  team.members.forEach((_, i) => { n += diff(i).size; });
+  return n;
+}
+const guard = () => !team || countChanges() === 0 || confirm('保存していない変更があります。破棄して続けますか？');
+window.addEventListener('beforeunload', (e) => { if (team && saved && countChanges() > 0) { e.preventDefault(); e.returnValue = ''; } });
+
+// 変更した項目に印を付け、保存・戻すボタンの状態を合わせる
+function paint() {
+  const mark = (node, on) => { if (node) node.classList.toggle('changed', on); };
+  mark(ui.name, (team.name || '') !== (saved.name || ''));
+  mark(ui.arch, (team.archetype || null) !== (saved.archetype || null));
+  cardEls.forEach((c, i) => { const ch = diff(i); for (const [k, node] of Object.entries(c.fields)) mark(node, ch.has(k)); });
+  const n = countChanges();
+  if (ui.state) { ui.state.textContent = n ? `変更 ${n} 項目（未保存）` : '✓ 保存済み'; ui.state.classList.toggle('dirty', n > 0); }
+  if (ui.save) ui.save.disabled = ui.revert.disabled = n === 0;
+  if (!n && ui.confirm) ui.confirm.innerHTML = '';
+}
+
+// 保存・戻すは、押したあとに1回確認してから実行する
+function ask(text, okLabel, fn, cls = 'primary') {
+  ui.confirm.innerHTML = '';
+  ui.confirm.append(el('div', { class: 'confirm', role: 'alert' }, el('span', {}, text),
+    el('button', { class: 'btn small ' + cls, onclick: async () => { ui.confirm.innerHTML = ''; await fn(); } }, okLabel),
+    el('button', { class: 'btn small ghost', onclick: () => { ui.confirm.innerHTML = ''; } }, 'やめる')));
+}
+const doSave = async () => { await api('/api/team', { method: 'PUT', body: body() }); await load(viewEl); toast('保存した'); };
+const doRevert = () => { team = clone(saved); draw(viewEl); toast('保存済みの状態に戻した'); };
 
 const jaOf = async (kind, id) => {
   if (!id) return '';
   const r = await api(`/api/search?kind=${kind}&q=${encodeURIComponent(id)}&limit=1&include_mega=true`);
   return r[0] ? r[0].ja : id;
 };
+// 表示用の日本語名（持ち物・技）を付ける。技は4枠の位置に合わせる
+async function labelize(m) {
+  m.moves = pad4(m.moves);
+  m._item_ja = await jaOf('items', m.item);
+  m._moves_ja = await Promise.all(m.moves.map(x => jaOf('moves', x)));
+}
 
 async function load(view) {
-  team = await api('/api/team');
+  viewEl = view;
+  const t = await api('/api/team');
   teams = await api('/api/teams');
-  for (const m of team.members) {
-    m._item_ja = await jaOf('items', m.item);
-    m._moves_ja = await Promise.all((m.moves || []).map(x => jaOf('moves', x)));
-  }
-  while (team.members.length < 6) team.members.push({ species: null, sp: {}, moves: [] });
+  for (const m of t.members) await labelize(m);
+  while (t.members.length < 6) t.members.push({ species: null, sp: {}, moves: pad4([]), _moves_ja: ['', '', '', ''] });
+  team = t; saved = clone(t);
   draw(view);
 }
 
@@ -43,39 +78,54 @@ function draw(view) {
   view.append(lead('1', 'パーティ'));
   view.append(teamBar(view), importCard(view));
   const cards = el('div', { class: 'team-cards' });
-  team.members.forEach((m, i) => cards.append(memberCard(m, i)));
+  cardEls = team.members.map((m, i) => { const c = memberCard(m, i); cards.append(c); return c; });
   view.append(cards);
+  paint();
 }
 
 function teamBar(view) {
-  const sel = el('select', { 'aria-label': 'パーティを選ぶ', onchange: async () => { if (dirty) await saveNow(); await api(`/api/teams/active/${sel.value}`, { method: 'PUT' }); await load(view); toast('パーティを切り替えた'); } },
+  const sel = el('select', { 'aria-label': 'パーティを選ぶ', onchange: async () => {
+    if (!guard()) { sel.value = saved.id; return; }
+    await api(`/api/teams/active/${sel.value}`, { method: 'PUT' }); await load(view); toast('パーティを切り替えた'); } },
     ...teams.map(t => el('option', { value: t.id, selected: t.id === team.id }, `${t.name || '名前なし'}（${t.members.join('・') || '空'}）`)));
-  const name = el('input', { value: team.name || '', placeholder: 'パーティ名', 'aria-label': 'パーティ名', oninput: () => { team.name = name.value; save(); } });
-  name.addEventListener('change', async () => { await saveNow(); teams = await api('/api/teams'); draw(view); });
-  const arch = el('select', { 'aria-label': '構築の型', onchange: () => { team.archetype = arch.value; save(); } },
+  const name = el('input', { value: team.name || '', placeholder: 'パーティ名', 'aria-label': 'パーティ名', oninput: () => { team.name = name.value; paint(); } });
+  const arch = el('select', { 'aria-label': '構築の型', onchange: () => { team.archetype = arch.value; paint(); } },
     ...(team.archetypes || ['スタンダード']).map(a => el('option', { value: a, selected: a === team.archetype }, a)));
-  const act = (label, fn, cls = '') => el('button', { class: 'btn small ' + cls, onclick: async () => { if (dirty) await saveNow(); await fn(); await load(view); } }, label);
+  const act = (label, fn, cls = '') => el('button', { class: 'btn small ' + cls, onclick: async () => { if (!guard()) return; await fn(); await load(view); } }, label);
+  const save = el('button', { class: 'btn small primary', onclick: () => ask(`変更した ${countChanges()} 項目を保存します。`, '保存する', doSave) }, '保存');
+  const revert = el('button', { class: 'btn small', onclick: () => ask(`変更した ${countChanges()} 項目を、保存済みの内容に戻します。入力した内容は失われます。`, '戻す', doRevert, 'alt') }, '保存済みに戻す');
+  const state = el('span', { class: 'save-state' }, '✓ 保存済み');
+  const confirmSlot = el('div', { class: 'confirm-slot' });
+  Object.assign(ui, { name, arch, save, revert, state, confirm: confirmSlot });
   return el('div', { class: 'card teambar' },
     el('div', { class: 'row' }, el('div', { class: 'grow' }, el('label', { class: 'f' }, 'パーティを選ぶ', sel)),
       act('＋ 新規', async () => { await api('/api/teams', { method: 'POST', body: { name: '' } }); toast('新しいパーティを作った'); }),
       el('button', { class: 'btn small alt', onclick: () => { const c = $('#import-card'); c.hidden = !c.hidden; } }, '画像から取り込む'),
       act('複製', async () => { await api('/api/teams', { method: 'POST', body: { copy_from: team.id } }); toast('複製した'); }),
-      act('削除', async () => { if (!confirm(`「${team.name}」を削除しますか？`)) throw new Error('cancel'); await api(`/api/teams/${team.id}`, { method: 'DELETE' }); toast('削除した'); }, 'ghost')),
+      act('削除', async () => { if (!confirm(`「${saved.name}」を削除しますか？`)) throw new Error('cancel'); await api(`/api/teams/${team.id}`, { method: 'DELETE' }); toast('削除した'); }, 'ghost')),
     el('div', { class: 'row', style: 'margin-top:10px' },
       el('div', { class: 'grow' }, el('label', { class: 'f' }, 'パーティ名', name)),
       el('div', { class: 'grow' }, el('label', { class: 'f' }, ['構築の型', help('パーティの戦い方。対面=読み合いで押す／サイクル=交代しながら有利を取る／展開=積み・設置から勝つ／受けループ=耐久で崩す')], arch)),
-      el('span', { id: 'save-state', class: 'save-state' }, '✓ 自動保存済み')));
+      el('div', { class: 'save-row' }, state, save, revert)),
+    confirmSlot);
 }
 
 
 function memberCard(m, idx) {
-  m.sp = m.sp || {}; m.moves = m.moves || [];
+  m.sp = m.sp || {}; m.moves = pad4(m.moves); m._moves_ja = m._moves_ja || ['', '', '', ''];
   const card = el('div', { class: 'card member' });
+  const fields = card.fields = {};
   const typeBox = el('span'), stats = el('div', { class: 'stats-line' }), errs = el('div', { class: 'err' });
-  const refresh = (mm) => {
-    stats.textContent = mm && mm._stats ? '実数値 ' + STATS.map(k => `${STAT_JA[k]}${mm._stats[k]}`).join(' ') : '';
-    errs.textContent = mm && mm._errors ? mm._errors.join(' / ') : '';
+  const refresh = () => {
+    stats.textContent = m._stats ? '実数値 ' + STATS.map(k => `${STAT_JA[k]}${m._stats[k]}`).join(' ') : '';
+    errs.textContent = m._errors ? m._errors.join(' / ') : '';
   };
+  // 実数値は保存せずにサーバで計算する
+  const refreshStats = debounce(async () => {
+    if (!m.species) { m._stats = null; m._errors = []; refresh(); return; }
+    try { Object.assign(m, await api('/api/member/stats', { method: 'POST', body: { member: strip(m) } })); refresh(); } catch (e) { /* 次の編集で再計算 */ }
+  }, 250);
+  const touched = () => { refreshStats(); paint(); };
   const updTypes = async () => {
     typeBox.innerHTML = '';
     if (!m.species) return;
@@ -85,7 +135,7 @@ function memberCard(m, idx) {
     if (mega) types = (await dexInfo(mega.id)).types;
     typeBox.append(...types.map(t => typeChip(t, ja[t])), mega ? el('span', { class: 'chip' }, `メガ→${mega.ja}`) : '');
   };
-  const abilitySel = el('select', { 'aria-label': '特性', onchange: () => { m.ability = abilitySel.value || null; save(); } });
+  const abilitySel = el('select', { 'aria-label': '特性', onchange: () => { m.ability = abilitySel.value || null; touched(); } });
   const fillAbilities = async () => {
     abilitySel.innerHTML = '';
     if (!m.species) return;
@@ -93,7 +143,7 @@ function memberCard(m, idx) {
     abilitySel.append(el('option', { value: '' }, '特性を選ぶ'));
     d.abilities.forEach(a => abilitySel.append(el('option', { value: a.en, selected: a.en === m.ability }, a.ja)));
   };
-  const item = picker({ kind: 'items', value: m.item, label: m._item_ja || '', placeholder: '持ち物', onPick: (it) => { m.item = it ? it.en : null; updTypes(); save(); } });
+  const item = picker({ kind: 'items', value: m.item, label: m._item_ja || '', placeholder: '持ち物', onPick: (it) => { m.item = it ? it.en : null; m._item_ja = it ? it.ja : ''; updTypes(); touched(); } });
   const megaBox = el('div');
   const renderMega = async () => {
     megaBox.innerHTML = '';
@@ -104,9 +154,9 @@ function memberCard(m, idx) {
     if (!d.megas.length) return;
     const cur = d.megas.find(x => x.item === m.item) || null;
     const apply = (mg) => {
-      if (mg) { m.item = mg.item; item.setValue(mg.item, mg.item_ja); item.input.disabled = true; }
-      else { if (m._megaItems.includes(m.item)) { m.item = null; item.setValue('', ''); } item.input.disabled = false; }
-      updTypes(); save();
+      if (mg) { m.item = mg.item; m._item_ja = mg.item_ja; item.setValue(mg.item, mg.item_ja); item.input.disabled = true; }
+      else { if (m._megaItems.includes(m.item)) { m.item = null; m._item_ja = ''; item.setValue('', ''); } item.input.disabled = false; }
+      updTypes(); touched();
     };
     if (d.megas.length === 1) {
       const cb = el('input', { type: 'checkbox', checked: !!cur, onchange: () => apply(cb.checked ? d.megas[0] : null) });
@@ -120,27 +170,30 @@ function memberCard(m, idx) {
   const sp = picker({ kind: 'pokemon', value: m.species, label: m._ja || '', placeholder: `${idx + 1}体目のポケモン名`,
     onPick: async (it) => {
       const prev = m.species;
-      m.species = it ? it.id : null;
-      if (prev !== m.species) { m.ability = null; if (m._megaItems && m._megaItems.includes(m.item)) { m.item = null; item.setValue('', ''); } }
-      await fillAbilities(); await renderMega(); await updTypes(); save();
+      m.species = it ? it.id : null; m._ja = it ? it.ja : '';
+      if (prev !== m.species) { m.ability = null; if (m._megaItems && m._megaItems.includes(m.item)) { m.item = null; m._item_ja = ''; item.setValue('', ''); } }
+      await fillAbilities(); await renderMega(); await updTypes(); touched();
     } });
   const moves = el('div', { class: 'moves' });
   for (let i = 0; i < 4; i++) {
-    moves.append(picker({ kind: 'moves', value: m.moves[i], label: (m._moves_ja || [])[i] || '', placeholder: `技${i + 1}`, species: () => m.species,
-      onPick: (it) => { m.moves[i] = it ? it.id : null; m.moves = m.moves.filter(Boolean); save(); } }));
+    fields['move' + i] = picker({ kind: 'moves', value: m.moves[i], label: m._moves_ja[i] || '', placeholder: `技${i + 1}`, species: () => m.species,
+      onPick: (it) => { m.moves[i] = it ? it.id : null; m._moves_ja[i] = it ? it.ja : ''; touched(); } });
+    moves.append(fields['move' + i]);
   }
   const fill = el('button', { class: 'btn small alt', title: '入力済みの項目は変えず、空いている項目をよく使われる型で埋める', onclick: async () => {
     if (!m.species) { toast('先にポケモンを入力してね'); return; }
-    await saveNow();
     const r = await api('/api/autofill', { method: 'POST', body: { member: strip(m) } });
     toast(r.message);
     if (!r.filled.length) return;
     Object.assign(m, r.member);
-    await saveNow();
-    await load($('#view'));
+    await labelize(m);
+    draw(viewEl);
   } }, 'おまかせ入力');
-  const nature = el('select', { 'aria-label': '性格', onchange: () => { m.nature = nature.value || null; save(); } }, el('option', { value: '' }, '性格を選ぶ'),
+  const nature = el('select', { 'aria-label': '性格', onchange: () => { m.nature = nature.value || null; touched(); } }, el('option', { value: '' }, '性格を選ぶ'),
     ...S.meta.natures.map(n => el('option', { value: n.id, selected: n.id === m.nature }, `${n.ja}（${n.label}）`)));
+  const spw = spGrid(m.sp, touched);
+  Object.assign(fields, { species: sp, nature, ability: abilitySel, item });
+  for (const k of STATS) fields['sp.' + k] = spw.cells[k];
 
   card.append(
     el('div', { class: 'member-head' }, el('span', { class: 'idx' }, idx + 1), el('div', { class: 'grow' }, sp), fill),
@@ -148,15 +201,19 @@ function memberCard(m, idx) {
     el('div', { class: 'row' }, el('div', { class: 'grow' }, el('label', { class: 'f' }, ['性格', help('上がる能力と下がる能力が決まる。（）内は 上がる↑／下がる↓')], nature)),
       el('div', { class: 'grow' }, el('label', { class: 'f' }, '特性', abilitySel))),
     el('label', { class: 'f', style: 'margin-top:8px' }, '持ち物', item),
-    spGrid(m.sp, save), stats, errs,
+    spw, stats, errs,
     el('div', { class: 'sp-head' }, '技'), moves);
-  refresh(m); fillAbilities(); renderMega(); updTypes();
+  refresh(); fillAbilities(); renderMega(); updTypes();
   return card;
 }
 
 export default {
   key: 'team', label: 'パーティ', badge: '1',
-  async render(view) { await loadMeta(); await load(view); },
+  async render(view) {
+    await loadMeta();
+    // 未保存の変更があるあいだは、他の画面から戻ってきても編集中の内容を残す
+    if (team && saved && countChanges() > 0) { viewEl = view; teams = await api('/api/teams'); draw(view); } else await load(view);
+  },
 };
 
 
@@ -215,7 +272,7 @@ function importCard(view) {
     const doImport = async (asNew) => {
       const ms = members();
       if (!ms.length) { toast('取り込める内容がない'); return; }
-      if (dirty) await saveNow();
+      if (!guard()) return;
       let id = team.id, name = team.name, archetype = team.archetype;
       if (asNew) { const t = await api('/api/teams', { method: 'POST', body: { name: '取り込んだパーティ' } }); id = t.id; name = t.name; archetype = t.archetype; }
       else if (team.members.some(m => m.species) && !confirm('現在のパーティの内容を上書きします。よろしいですか？')) return;

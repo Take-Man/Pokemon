@@ -144,7 +144,8 @@ table.plain { border-collapse: collapse; width: 100%; }
 
 /* ---- パーティ ---- */
 .teambar { margin-bottom: 18px; }
-.save-state { align-self: flex-end; padding: 4px 12px; border-radius: 999px; background: var(--surface-2); font-size: 13px; font-weight: 700; color: var(--good); }
+.save-state { padding: 4px 12px; border-radius: 999px; background: var(--surface-2); font-size: 13px; font-weight: 700; color: var(--good); }
+.save-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; align-self: flex-end; }
 .save-state.dirty { color: var(--mid); }
 .tip { margin-bottom: 14px; padding: 10px 14px; border: 3px dashed var(--pink); border-radius: var(--radius-s); font-weight: 700; }
 .team-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 18px; }
@@ -310,3 +311,10 @@ details.settings > :not(summary) { margin: 0; padding: 16px; }
 .lbadge small { display: block; font-size: 10px; font-weight: 400; opacity: .9; line-height: 1.2; }
 .lbadge { line-height: 1.25; text-align: center; }
 .lcell.r .lbadge { text-align: left; }
+
+/* 保存済みから変えた項目の印 */
+.changed { outline: 3px solid var(--yellow); outline-offset: 2px; border-radius: var(--radius-s); }
+.changed input, .changed select, input.changed, select.changed { background: color-mix(in srgb, var(--yellow) 30%, var(--surface)); }
+.confirm-slot:empty { display: none; }
+.confirm { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding: 10px 14px; border: 3px solid var(--line); border-radius: var(--radius-s); background: var(--yellow); color: #1f1b3a; font-weight: 700; }
+.confirm span { flex: 1 1 14em; }
