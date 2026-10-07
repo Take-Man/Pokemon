@@ -116,6 +116,9 @@ def test_login_required_and_local_only_routes(svc):
     assert c.get("/api/config").json()["mode"] == "service"
     assert c.post("/api/collect", headers=H_A).status_code == 404  # 外部取得はサービス版に無い
     assert c.get("/api/env", headers=H_A).status_code == 404
+    for path, title in (("/privacy", "プライバシーポリシー"), ("/terms", "利用規約")):  # 未ログインでも読める
+        r = c.get(path)
+        assert r.status_code == 200 and title in r.text and "Take-Man" in r.text and "下書き" not in r.text
 
 
 def test_full_flow_is_isolated_per_user(svc):

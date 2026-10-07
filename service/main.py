@@ -103,4 +103,14 @@ def index():
                         headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
 
 
+@app.get("/privacy", response_class=HTMLResponse)
+def privacy():
+    return HTMLResponse((STATIC / "privacy.html").read_text(encoding="utf-8"))
+
+
+@app.get("/terms", response_class=HTMLResponse)
+def terms():
+    return HTMLResponse((STATIC / "terms.html").read_text(encoding="utf-8"))
+
+
 app.mount("/static", StaticFiles(directory=STATIC), name="static")

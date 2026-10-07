@@ -53,7 +53,19 @@
    - Site URL: 手順4-3のURL
    - Redirect URLs: 同じURL（独自ドメインにしたら追加する）
 
-## 5. 動作確認
+## 5. Googleログインの公開（テスト中 → 本番環境）
+
+Google Auth Platform で設定する。ログインで使う範囲が openid・email・profile だけなので、Googleの審査は要らない。
+
+1. データアクセス: 範囲が openid・userinfo.email・userinfo.profile だけ（または空）であること
+2. ブランディング: ロゴは入れない（入れると審査が要る）。アプリのドメインに次を入れて保存する
+   - ホームページ: `https://gyakudame-note.vercel.app`
+   - プライバシーポリシー: `https://gyakudame-note.vercel.app/privacy`
+   - 利用規約: `https://gyakudame-note.vercel.app/terms`
+   - 承認済みドメインに `gyakudame-note.vercel.app` を追加（Supabase のドメインは残す）
+3. 対象: 「アプリを公開」→ 公開ステータスが「本番環境」になる
+
+## 6. 動作確認
 
 - 開くとログイン画面が出る → Google でログイン → パーティ画面が出る
 - 「アカウント」タブにメールアドレスとプラン（無料・パーティ5件・対戦履歴50件）が出る

@@ -119,7 +119,7 @@ subscriptions（将来） user_id / stripe_customer_id / status / plan / current
 | ログイン画面・アカウント画面・ローカル版だけの機能を隠す | app/static/js/auth.js、pages/account.js |
 | Vercel の設定（東京リージョン、使わないファイルを除外） | pyproject.toml、vercel.json |
 | 画像からの取り込み: OCR の呼び出しをまとめて Google Cloud Vision で読む（1回の取り込みで3〜4回の呼び出し）、24時間の回数の上限 | screenreader/ocr.py、supabase/migrations/20261008010000_* |
-| 利用規約・プライバシーポリシー（下書き） | app/static/terms.html、privacy.html |
+| 利用規約・プライバシーポリシー（運営者 Take-Man、問い合わせはGoogleフォーム。`/terms`・`/privacy`） | app/static/terms.html、privacy.html |
 | テスト: Supabase の振る舞いを真似た偽物で、ログイン・分離・上限・削除を通しで確認 | tests/test_service.py |
 
 | 次にやること | |
@@ -127,5 +127,4 @@ subscriptions（将来） user_id / stripe_customer_id / status / plan / current
 | Supabase・Google・Vercel のアカウント作成と設定 | [service-setup.md](service-setup.md) |
 | 実物の Supabase での結合確認（RLS・トリガーが偽物と同じ動きか） | |
 | 利用者ごとのリクエスト数の制限（Vercel Firewall のレート制限） | |
-| 利用規約・プライバシーポリシーの確定（運営者名・連絡先） | |
 | 取得先への使用率データの利用許可の相談 | |

@@ -33,5 +33,5 @@ export function loginView() {
       el('button', { class: 'btn primary big', onclick: go }, 'Googleでログイン'),
       err,
       el('p', { class: 'muted', style: 'font-size:13px' }, '保存する個人情報はログイン用のメールアドレスだけ。パーティと対戦履歴は本人しか見られない。'),
-      el('p', { class: 'muted', style: 'font-size:13px' }, el('a', { href: '/static/terms.html' }, '利用規約'), '・', el('a', { href: '/static/privacy.html' }, 'プライバシーポリシー'))));
+      el('p', { class: 'muted', style: 'font-size:13px' }, el('a', { href: '/terms' }, '利用規約'), '・', el('a', { href: '/privacy' }, 'プライバシーポリシー'), '・', el('a', { href: 'https://forms.gle/BZJUwgC3okBH2XrW9', target: '_blank', rel: 'noopener' }, 'お問い合わせ'))));
 }
