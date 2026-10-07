@@ -1,5 +1,6 @@
 import { el, api, lead, toast, help } from '../ui.js';
 import { monLabel } from '../store.js';
+import { evaluateTeam } from './evaluate.js';
 
 const RESULT = { win: ['勝ち', 'win'], lose: ['負け', 'lose'] };
 
@@ -24,6 +25,7 @@ export default {
           el('div', { class: 'row', style: 'margin-top:8px' },
             el('button', { class: 'btn small primary', onclick: async () => { await api(`/api/matches/${m.id}/load`, { method: 'POST' }); toast('相手の6体を呼び出した'); location.hash = 'select'; } }, '呼び出す'),
             el('button', { class: 'btn small alt', onclick: async () => { await api(`/api/matches/${m.id}/load`, { method: 'POST' }); location.hash = 'reverse'; } }, '対戦を開く'),
+            m.team_id ? el('button', { class: 'btn small ghost', title: `自分のパーティ（${m.team_name || ''}）を評価する`, onclick: () => evaluateTeam(m.team_id) }, '評価する') : '',
             el('button', { class: 'btn small ghost', onclick: async () => {
               if (!confirm(`${m.opp_ja.join('・')} の履歴を削除しますか？`)) return;
               await api(`/api/matches/${m.id}`, { method: 'DELETE' }); toast('削除した'); draw();

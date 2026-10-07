@@ -2,6 +2,7 @@ import { $, el, api, lead, toast, picker, help, typeChip, debounce } from '../ui
 import { S, dexInfo, loadMeta, loadTypes } from '../store.js';
 
 import { STATS, STAT_JA, spGrid } from '../parts.js';
+import { evaluateTeam } from './evaluate.js';
 
 // team = 編集中、saved = 保存済み。保存は手動のみで、保存済みと違う項目に印を付ける
 let team = null, saved = null, teams = [], viewEl = null, cardEls = [], ui = {};
@@ -77,15 +78,15 @@ async function load(view) {
 }
 
 // 評価画面から使う: 編集中（未保存を含む）のパーティと、そこへの反映
-export async function workingTeam() {
+export const unsavedFor = (id) => team && saved && team.id === id ? countChanges() : 0;
+// 開いているパーティの編集中の内容に能力ポイントを入れる（別のパーティなら false）
+export async function applySp(id, index, sp) {
   if (!team) await fetchTeam();
-  return { ...body(), unsaved: countChanges() };
-}
-export async function applySp(index, sp) {
-  if (!team) await fetchTeam();
+  if (team.id !== id) return false;
   const m = team.members[index];
   m.sp = { ...sp };
   Object.assign(m, await api('/api/member/stats', { method: 'POST', body: { member: strip(m) } }));
+  return true;
 }
 
 function draw(view) {
@@ -121,7 +122,7 @@ function teamBar(view) {
     el('div', { class: 'row', style: 'margin-top:10px' },
       el('div', { class: 'grow' }, el('label', { class: 'f' }, 'パーティ名', name)),
       el('div', { class: 'grow' }, el('label', { class: 'f' }, ['構築の型', help('パーティの戦い方。対面=読み合いで押す／サイクル=交代しながら有利を取る／展開=積み・設置から勝つ／受けループ=耐久で崩す')], arch)),
-      el('div', { class: 'save-row' }, state, save, revert)),
+      el('div', { class: 'save-row' }, state, save, revert, el('button', { class: 'btn small alt', title: '保存済みの内容を評価する', onclick: () => evaluateTeam(team.id) }, 'このパーティを評価'))),
     confirmSlot);
 }
 

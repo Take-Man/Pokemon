@@ -1,7 +1,7 @@
 import { $, el, api, lead, toast, help, typeChip, debounce } from '../ui.js';
 import { S, dexInfo, loadTypes, monLabel, weaknessOf } from '../store.js';
 import { STAT_JA } from '../parts.js';
-import { workingTeam, applySp } from './team.js';
+import { applySp, unsavedFor } from './team.js';
 
 const ROLE_TIP = {
   ace: '積み技で一気に押し切る役', breaker: '高い火力で相手の受けを崩す役', faceoff: '1対1で勝ちにいく役', cushion: '攻撃を受けて流す役',
@@ -11,22 +11,31 @@ const ROLE_TIP = {
 const ROLE_ORDER = ['ace', 'breaker', 'faceoff', 'cushion', 'wall_phys', 'wall_spec', 'setter', 'stopper', 'pivot', 'weather'];
 const RANK_ROLE_JA = { ace: 'エース', breaker: '崩し', faceoff: '対面駒', cushion: 'クッション', wall_phys: '物理受け', wall_spec: '特殊受け', setter: '起点作り', stopper: 'ストッパー', pivot: 'サイクル要員', weather: '天候始動' };
 
-let T = null, threats = null;
+let T = null, threats = null, targetId = null, activeId = null;
+
+// 指定したパーティ（保存済みの内容）を評価する画面へ移る
+export function evaluateTeam(id) { targetId = id; location.hash = 'evaluate'; }
 
 const page = {
   key: 'evaluate', label: '評価', badge: '評', side: true,
   async render(view) {
     await loadTypes();
-    T = await workingTeam();
+    const teams = await api('/api/teams');
+    activeId = (teams.find(t => t.active) || teams[0] || {}).id;
+    if (!targetId || !teams.some(t => t.id === targetId)) targetId = activeId;
+    T = await api(`/api/teams/${targetId}`);
     const filled = T.members.filter(m => m.species);
     view.append(lead('評', 'パーティ評価'));
+    const sel = el('select', { 'aria-label': 'パーティを選ぶ', onchange: () => { targetId = sel.value; view.innerHTML = ''; page.render(view); } },
+      ...teams.map(t => el('option', { value: t.id, selected: t.id === targetId }, `${t.name || '名前なし'}（${t.members.join('・') || '空'}）`)));
+    view.append(el('div', { class: 'card' }, el('label', { class: 'f' }, ['評価するパーティ', help('保存済みのパーティから選ぶ。パーティ画面で編集中の内容ではなく、保存してある内容を評価する')], sel),
+      unsavedFor(targetId) ? el('div', { class: 'muted', style: 'margin-top:8px;font-size:13px' }, `パーティ画面に保存していない変更（${unsavedFor(targetId)}項目）がある。評価には含まれない`) : ''));
     if (!filled.length) {
-      view.append(el('div', { class: 'card' }, el('div', { class: 'empty' }, ['パーティが空。', el('a', { href: '#team' }, 'パーティ'), 'に登録すると評価が出る'])));
+      view.append(el('div', { class: 'card' }, el('div', { class: 'empty' }, ['このパーティは空。', el('a', { href: '#team' }, 'パーティ'), 'に登録すると評価が出る'])));
       return;
     }
-    if (T.unsaved) view.append(el('div', { class: 'tip' }, `保存していない変更（${T.unsaved}項目）を含めて評価している。`));
     const d = await api('/api/diagnose', { method: 'POST', body: { archetype: T.archetype, members: T.members } });
-    view.append(await rolesCard(d, filled), findingsCard(d), overlapCard(d), await tuneCard(view));
+    view.append(await rolesCard(d, filled), findingsCard(d), overlapCard(d), await tuneCard());
   },
 };
 
@@ -78,7 +87,7 @@ function overlapCard(d) {
 }
 
 // ---- 能力ポイント調整 ----
-async function tuneCard(view) {
+async function tuneCard() {
   threats = threats || await api('/api/threats');
   const members = T.members.map((m, i) => ({ m, i })).filter(x => x.m.species);
   const jaOf = (x) => (S.types.pokemon.find(p => p.id === x.m.species) || {}).ja || x.m.species;
@@ -118,7 +127,7 @@ async function tuneCard(view) {
       out.innerHTML = '';
       const sk = STAT_JA[r.stat];
       const keep = `固定: ${Object.entries(r.keep).filter(([, v]) => v).map(([k, v]) => STAT_JA[k] + v).join(' ') || 'なし'}／使える残り ${r.budget}`;
-      const apply = async (sp, label) => { await applySp(body.index, sp); T = await workingTeam(); toast(`${label} をパーティに反映した（保存はパーティ画面で）`); view.innerHTML = ''; await page.render(view); };
+      const apply = async (sp, label) => { if (await applySp(targetId, body.index, sp)) toast(`${label} をパーティ画面に反映した（保存はパーティ画面で）`); else toast('反映できるのは、パーティ画面で開いているパーティだけ'); };
       if (surv) {
         out.append(el('div', {}, `いま: ${r.current.damage_pct[0]}〜${r.current.damage_pct[1]}%、${body.hits}発で倒される確率 ${(r.current.ko_chance * 100).toFixed(1)}%`), el('div', { class: 'muted' }, keep));
         if (!r.feasible) { out.append(el('div', { class: 'err' }, r.note)); return; }
