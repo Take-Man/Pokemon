@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import threading
+from bisect import bisect_left, bisect_right
 from collections import OrderedDict
 from dataclasses import dataclass, field
 from functools import lru_cache
@@ -212,7 +213,10 @@ def _observed_ok(totals: list[int], hp: int, r: Record, c: Cond, as_percent: boo
         if c.ko:
             return totals[-1] / hp * 100 >= before - tol
         target = before - after
-        return any(abs(x / hp * 100 - target) <= tol for x in totals)
+        # totals は昇順。条件を満たしうる範囲（前後に1の余裕）だけを、同じ式で確かめる
+        lo = bisect_left(totals, (target - tol) * hp / 100 - 1)
+        hi = bisect_right(totals, (target + tol) * hp / 100 + 1)
+        return any(abs(x / hp * 100 - target) <= tol for x in totals[lo:hi])
     before = int(r.before) if r.before is not None else hp  # 受ける前のHPの既定は最大HP
     after = int(r.after or 0)
     if c.ko:
@@ -247,6 +251,22 @@ def _memo_feasible(fn: Callable) -> Callable:
     return wrapper
 
 
+def _item_groups(items: list[str], same_effect: set) -> dict[str, list[str]]:
+    """同じダメージになる持ち物をまとめる: {計算に使う持ち物: [同じ結果になる持ち物]}。
+
+    攻撃側の防御用の持ち物・防御側の攻撃用の持ち物は、「何か持っている」こと（はたきおとす・アクロバット）
+    以外はダメージに関係しないので、1つだけ計算して残りに写す。"""
+    groups: dict[str, list[str]] = {}
+    rep = None
+    for it in items:
+        if it in same_effect:
+            rep = rep or it
+            groups.setdefault(rep, []).append(it)
+        else:
+            groups.setdefault(it, []).append(it)
+    return groups
+
+
 @_memo_feasible
 def feasible_taken(r: Record, items: list[str], abilities: list[str], mega: bool) -> tuple[str, set]:
     """相手→自分。返り値: (関係するステータス, {(補正, 持ち物, 特性, SP)})"""
@@ -268,14 +288,14 @@ def feasible_taken(r: Record, items: list[str], abilities: list[str], mega: bool
     sp_species = _opp_species(r.opp, mega)
     out = set()
     for cls in CLASSES:
-        for item in items:
+        for item, same in _item_groups(items, DEFENSE_ITEMS).items():
             for ab in abilities:
                 for sp in range(SP_MAX + 1):
                     b = MonSet(sp_species, _nature_for(stat, cls), {stat: sp}, ab, None if item == OTHER else item)
                     att = Side(b.build(), boosts={stat: c.atk_boost or 0}, status=c.a_status())
                     totals, my_hp = _totals(att, dfd, mv["id"], c)
                     if _observed_ok(totals, my_hp, r, c, as_percent=False):
-                        out.add((cls, item, ab, sp))
+                        out.update((cls, it, ab, sp) for it in same)
     return stat, out
 
 
@@ -299,7 +319,7 @@ def feasible_dealt(r: Record, items: list[str], abilities: list[str], mega: bool
     base = D.pokemon[sp_species]["baseStats"]
     out = set()
     for cls in CLASSES:
-        for item in items:
+        for item, same in _item_groups(items, OFFENSE_ITEMS).items():
             for ab in abilities:
                 for dsp in range(SP_MAX + 1):
                     # ダメージはHPの能力ポイントに依存しない（マルチスケイル等は満タン前提）ので、防御側ごとに1回計算
@@ -310,7 +330,7 @@ def feasible_dealt(r: Record, items: list[str], abilities: list[str], mega: bool
                     for hsp in range(SP_MAX + 1):
                         hp = calc_stat(base["hp"], hsp, "hp")
                         if _observed_ok(totals, hp, r, c, as_percent=True):
-                            out.add((cls, item, ab, hsp, dsp))
+                            out.update((cls, it, ab, hsp, dsp) for it in same)
     return stat, out
 
 
