@@ -22,6 +22,10 @@ python -m app
 
 ブラウザで http://127.0.0.1:8765 が開く。データ（パーティ・相手の6体・対戦）は `data/user` に保存される。同時に起動するときは `--port` を分ける。コードが書き換わると自動で再起動する（止めるときは `--no-reload`）。
 
+## サービス版（ログインあり・公開用）
+
+Vercel と Supabase で動かす版。手順は [docs/service-setup.md](docs/service-setup.md)、構成は [docs/service-architecture.md](docs/service-architecture.md)。ローカル版とコードは共通で、保存先だけが違う。
+
 ## 画像からのパーティ取り込み
 
 新UIのパーティ画面で、ゲームの「パーティ確認」画面のスクショ（能力タブ・ステータスタブ）から6体を取り込める。macOS は追加設定なし（`pip install -r requirements.txt` で Vision 用の pyobjc が入る）。Linux などでは tesseract と日本語データ（`jpn`）を入れる。

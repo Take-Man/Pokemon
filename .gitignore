@@ -10,3 +10,5 @@ data/snapshots/_raw/
 .pytest_cache/
 state/battle.md
 data/user/
+.vercel/
+.env*
