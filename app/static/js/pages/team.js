@@ -87,7 +87,7 @@ export async function applySp(id, index, sp) {
 function draw(view) {
   view.innerHTML = '';
   view.append(lead('1', 'パーティ'));
-  view.append(teamBar(view), isService() ? '' : importCard(view));
+  view.append(teamBar(view), importCard(view));
   const cards = el('div', { class: 'team-cards' });
   cardEls = team.members.map((m, i) => { const c = memberCard(m, i); cards.append(c); return c; });
   view.append(cards);
@@ -111,7 +111,7 @@ function teamBar(view) {
   return el('div', { class: 'card teambar' },
     el('div', { class: 'row' }, el('div', { class: 'grow' }, el('label', { class: 'f' }, 'パーティを選ぶ', sel)),
       act('＋ 新規', async () => { await api('/api/teams', { method: 'POST', body: { name: '' } }); toast('新しいパーティを作った'); }),
-      isService() ? '' : el('button', { class: 'btn small alt', onclick: () => { const c = $('#import-card'); c.hidden = !c.hidden; } }, '画像から取り込む'),  // 画像の読み取りはローカル版だけ
+      el('button', { class: 'btn small alt', onclick: () => { const c = $('#import-card'); c.hidden = !c.hidden; } }, '画像から取り込む'),
       act('複製', async () => { await api('/api/teams', { method: 'POST', body: { copy_from: team.id } }); toast('複製した'); }),
       act('削除', async () => { if (!confirm(`「${saved.name}」を削除しますか？`)) throw new Error('cancel'); await api(`/api/teams/${team.id}`, { method: 'DELETE' }); toast('削除した'); }, 'ghost')),
     el('div', { class: 'row', style: 'margin-top:10px' },
@@ -230,6 +230,15 @@ export default {
 
 // ---- 画像（ゲームの「パーティ確認」画面のスクショ）から取り込む ----
 const readFile = (f) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(f); });
+// サービス版は送る前にJPEG（品質0.9）にする（1回の送信は4.5MBまで。読み取りの結果は変わらないことを実機スクショで確認済み）
+const toUpload = async (f) => {
+  if (!isService()) return readFile(f);
+  const bmp = await createImageBitmap(f);
+  const s = Math.min(1, 3000 / Math.max(bmp.width, bmp.height));
+  const c = el('canvas', { width: Math.round(bmp.width * s), height: Math.round(bmp.height * s) });
+  c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+  return c.toDataURL('image/jpeg', 0.9);
+};
 
 function importCard(view) {
   const card = el('div', { class: 'card import', id: 'import-card', hidden: true });
@@ -254,7 +263,7 @@ function importCard(view) {
     body.innerHTML = '';
     body.append(el('div', { class: 'thumbs' }, ...files.map(f => el('img', { src: URL.createObjectURL(f), alt: f.name }))), el('div', { class: 'muted' }, '読み取り中…'));
     try {
-      const r = await api('/api/team/import-image', { method: 'POST', body: { images: await Promise.all(files.map(readFile)) } });
+      const r = await api('/api/team/import-image', { method: 'POST', body: { images: await Promise.all(files.map(toUpload)) } });
       body.lastChild.remove();
       showResult(r);
     } catch (e) {

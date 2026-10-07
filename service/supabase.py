@@ -232,7 +232,15 @@ class SupabaseStore(Store):
         self._cache[("match", mid)] = None
         self._cache.pop(("matches",), None)
 
-    # ---- アカウント
+    # ---- 回数に上限のある機能・アカウント
+    def use_quota(self, kind: str) -> None:
+        self._req("POST", "rpc/use_quota", body={"kind": kind})
+
+    def used_today(self, kind: str) -> int:
+        since = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 86400))
+        rows = self._req("GET", "usage_log", params={"select": "created_at", "kind": f"eq.{kind}", "created_at": f"gt.{since}"})
+        return len(rows or [])
+
     def limits(self) -> dict:
         rows = self._req("POST", "rpc/my_limits", body={})
         return rows[0] if rows else {"plan": "free", "max_teams": None, "max_matches": None, "features": {}}

@@ -31,6 +31,7 @@
 | データ | Supabase Postgres（東京リージョン） | RLSで「本人の行だけ」をDB側で保証。上限（プラン）もDB側で守る |
 | 環境データ | リポジトリに同梱（usage.json） | 実行時に外部へ取りに行かない。版が残る |
 | 課金（将来） | Stripe Checkout＋Webhook（Vercel Functions） | Webhookでプランを書き換えるだけで制限が変わる |
+| 画像の文字の読み取り | Google Cloud Vision API | macOS の文字認識はサーバで動かない。小さな画像を1枚に並べて読み、呼び出しを取り込み1回あたり3〜4回に抑える（従量課金・月1,000回分は無料） |
 
 Vercelの関数は東京（hnd1）に置き、Supabaseも東京にする（往復を短くする）。
 
@@ -80,8 +81,8 @@ subscriptions（将来） user_id / stripe_customer_id / status / plan / current
 
 | 入れる | 入れない（後で） |
 |---|---|
-| Googleでログイン、ログアウト、アカウント削除 | 画像からのパーティ取り込み（macOSのOCRに依存。サーバでは動かない） |
-| パーティの保存（複数）・切替 | 利用者による環境データの更新 |
+| Googleでログイン、ログアウト、アカウント削除 | |
+| パーティの保存（複数）・切替、画像からのパーティ取り込み（OCRは Google Cloud Vision） | 利用者による環境データの更新 |
 | 選出予想・素早さ比較・ダメ計・対戦（逆算）・履歴・評価・タイプ相性 | Claude向けの state/ の書き出し（ローカル版だけ） |
 | プランの上限（free のみ。数値は後で決める） | 課金（Stripe） |
 | 利用規約・プライバシーポリシーのページ | メールのワンタイムコード（送信用SMTPの用意が要る。Googleの次に足す） |
@@ -117,6 +118,7 @@ subscriptions（将来） user_id / stripe_customer_id / status / plan / current
 | ログインの確認・利用者ごとの保存先・アカウント（情報・書き出し・削除） | service/ |
 | ログイン画面・アカウント画面・ローカル版だけの機能を隠す | app/static/js/auth.js、pages/account.js |
 | Vercel の設定（東京リージョン、使わないファイルを除外） | pyproject.toml、vercel.json |
+| 画像からの取り込み: OCR の呼び出しをまとめて Google Cloud Vision で読む（1回の取り込みで3〜4回の呼び出し）、24時間の回数の上限 | screenreader/ocr.py、supabase/migrations/20261008010000_* |
 | 利用規約・プライバシーポリシー（下書き） | app/static/terms.html、privacy.html |
 | テスト: Supabase の振る舞いを真似た偽物で、ログイン・分離・上限・削除を通しで確認 | tests/test_service.py |
 

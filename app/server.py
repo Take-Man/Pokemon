@@ -266,7 +266,7 @@ def post_import_image(body: ImportImagesIn):
         from PIL import Image
 
         from screenreader import parse_team_screens
-        from screenreader.ocr import OCRUnavailable
+        from screenreader.ocr import OCRUnavailable, get_backend
     except ImportError as e:
         raise HTTPException(503, f"画像の読み取りに必要なライブラリが無い: {e}")
     if not body.images or len(body.images) > 4:
@@ -278,7 +278,10 @@ def post_import_image(body: ImportImagesIn):
         except Exception:
             raise HTTPException(400, "画像を開けない")
     try:
-        res = parse_team_screens(imgs)
+        ocr = get_backend()
+        # 読める状態になってから1回と数える（サービス版は24時間の回数に上限。外部OCRの費用の歯止め）
+        storage.current().use_quota("image_import")
+        res = parse_team_screens(imgs, ocr)
     except OCRUnavailable as e:
         raise HTTPException(503, str(e))
     D = dex()

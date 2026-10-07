@@ -13,12 +13,12 @@ from fastapi.testclient import TestClient
 
 URL = "https://fake.supabase.test"
 USERS = {"tok-a": {"id": "uid-a", "email": "a@example.com"}, "tok-b": {"id": "uid-b", "email": "b@example.com"}}
-LIMITS = {"plan": "free", "max_teams": 2, "max_matches": 3, "features": {}}
+LIMITS = {"plan": "free", "max_teams": 2, "max_matches": 3, "max_imports_per_day": 2, "features": {}}
 
 
 class FakeSupabase:
     def __init__(self):
-        self.rows = {"teams": [], "matches": [], "user_state": []}
+        self.rows = {"teams": [], "matches": [], "user_state": [], "usage_log": []}
         self.calls = []
 
     def __call__(self, req: httpx.Request) -> httpx.Response:
@@ -42,9 +42,18 @@ class FakeSupabase:
         table = path.removeprefix("/rest/v1/")
         if table == "rpc/my_limits":
             return httpx.Response(200, json=[LIMITS])
+        if table == "rpc/use_quota":  # 直近24時間の回数を数え、上限内なら記録する
+            kind = json.loads(req.content)["kind"]
+            n = sum(1 for r in self.rows["usage_log"] if r["user_id"] == uid and r["kind"] == kind)
+            if n >= LIMITS["max_imports_per_day"]:
+                return httpx.Response(400, json={"code": "P0001", "message": f"LIMIT:imports:{LIMITS['max_imports_per_day']}"})
+            self.rows["usage_log"].append({"user_id": uid, "kind": kind, "created_at": "2026-10-08T00:00:00Z"})
+            return httpx.Response(204)
         mine = [r for r in self.rows[table] if r["user_id"] == uid]  # RLS
         if "id" in q:
             mine = [r for r in mine if r["id"] == q["id"].removeprefix("eq.")]
+        if "kind" in q:
+            mine = [r for r in mine if r["kind"] == q["kind"].removeprefix("eq.")]
         if req.method == "GET":
             if q.get("order") == "created_at.desc":
                 mine.sort(key=lambda r: r.get("created_at") or "", reverse=True)
@@ -133,7 +142,7 @@ def test_full_flow_is_isolated_per_user(svc):
     assert all(x["id"] != t["id"] for x in c.get("/api/teams", headers=H_B).json())
 
     acc = c.get("/api/account", headers=H_A).json()
-    assert acc["email"] == "a@example.com" and acc["usage"] == {"teams": 1, "matches": 1}
+    assert acc["email"] == "a@example.com" and acc["usage"] == {"teams": 1, "matches": 1, "imports_today": 0}
 
 
 def test_team_limit_and_match_trim(svc):
@@ -159,3 +168,28 @@ def test_export_and_delete_account(svc):
     assert len(ex["teams"]) == 1
     assert c.delete("/api/account", headers=H_A).json() == {"ok": True}
     assert not any(r["user_id"] == "uid-a" for t in fake.rows.values() for r in t)
+
+
+def test_image_import_has_daily_quota(svc, monkeypatch):
+    """画像からの取り込みはサービス版でも使える。外部OCRの費用の歯止めとして、24時間の回数に上限がある。"""
+    import base64
+    import io
+
+    from PIL import Image
+
+    import screenreader
+    from screenreader import ocr
+
+    c, fake = svc
+    monkeypatch.setattr(ocr, "get_backend", lambda prefer=None: object())
+    monkeypatch.setattr(screenreader, "parse_team_screens", lambda imgs, o=None: {"members": [], "warnings": [], "backend": "fake"})
+    buf = io.BytesIO()
+    Image.new("RGB", (20, 10)).save(buf, "JPEG")
+    body = {"images": ["data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()]}
+    assert c.post("/api/team/import-image", headers=H_A, json={"images": ["not-an-image"]}).status_code == 400  # 数えない
+    for _ in range(LIMITS["max_imports_per_day"]):
+        assert c.post("/api/team/import-image", headers=H_A, json=body).status_code == 200
+    r = c.post("/api/team/import-image", headers=H_A, json=body)
+    assert r.status_code == 403 and "24時間で2回まで" in r.json()["detail"]
+    assert c.post("/api/team/import-image", headers=H_B, json=body).status_code == 200  # 利用者ごと
+    assert c.get("/api/account", headers=H_A).json()["usage"]["imports_today"] == 2

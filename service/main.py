@@ -2,7 +2,8 @@
 
 - /api/* はログイン（Supabase のアクセストークン）が必要。固定データだけを返すものは未ログインでも使える
 - リクエストごとに、保存先をその利用者の Supabase に切り替える（app.storage.use）
-- 外部サイトへの取得・画像の読み取り・Claude向けの書き出しなど、ローカル版だけの機能は404
+- 外部サイトへの取得・Claude向けの書き出しなど、ローカル版だけの機能は404
+- 画像からの取り込みは Google Cloud Vision で読む（GOOGLE_VISION_API_KEY）。24時間あたりの回数に上限
 - 環境データ（使用率）は既定で使わない（PBA_USAGE_DATA=on で使う。取得先の利用許可が出てから）
 
 ローカルで試す: SUPABASE_URL=... SUPABASE_ANON_KEY=... uvicorn service.main:app --port 8770
@@ -26,7 +27,7 @@ from . import supabase as sb  # noqa: E402
 # 未ログインでも使える（固定データだけを返す）
 PUBLIC = ("/api/config", "/api/meta", "/api/types", "/api/search", "/api/pokemon/")
 # ローカル版だけの機能
-LOCAL_ONLY = ("/api/collect", "/api/env", "/api/jobs", "/api/team/import-image", "/api/current.md")
+LOCAL_ONLY = ("/api/collect", "/api/env", "/api/jobs", "/api/current.md")
 
 app = FastAPI(title="Gyakudame Note")
 
@@ -54,9 +55,9 @@ async def auth_and_store(request: Request, call_next):
 
 @app.exception_handler(sb.LimitExceeded)
 async def on_limit(_request: Request, e: sb.LimitExceeded):
-    what = {"teams": "保存できるパーティ", "matches": "残せる対戦履歴"}.get(e.kind, e.kind)
-    return JSONResponse({"detail": f"{what}は{e.limit}件まで（いまのプランの上限）", "limit": {"kind": e.kind, "max": e.limit}},
-                        status_code=403)
+    msg = {"teams": f"保存できるパーティは{e.limit}件まで", "matches": f"残せる対戦履歴は{e.limit}件まで",
+           "imports": f"画像からの取り込みは24時間で{e.limit}回まで"}.get(e.kind, f"{e.kind}は{e.limit}まで")
+    return JSONResponse({"detail": f"{msg}（いまのプランの上限）", "limit": {"kind": e.kind, "max": e.limit}}, status_code=403)
 
 
 @app.exception_handler(sb.StoreError)
@@ -75,7 +76,8 @@ def config():
 def get_account(request: Request):
     store: sb.SupabaseStore = storage.current()  # type: ignore[assignment]
     return {"email": request.state.user.email, "limits": store.limits(),
-            "usage": {"teams": len(store.list_teams()), "matches": len(store.list_matches())}}
+            "usage": {"teams": len(store.list_teams()), "matches": len(store.list_matches()),
+                      "imports_today": store.used_today("image_import")}}
 
 
 @app.get("/api/account/export")

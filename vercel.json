@@ -4,7 +4,7 @@
   "functions": {
     "service/main.py": {
       "maxDuration": 60,
-      "excludeFiles": "{tests/**,screenreader/**,tools/**,docs/**,knowledge/**,supabase/**,data/static/_src/**,data/user/**,data/snapshots/_raw/**,state/**,**/__pycache__/**,**/.DS_Store}"
+      "excludeFiles": "{tests/**,tools/**,docs/**,knowledge/**,supabase/**,data/static/_src/**,data/user/**,data/snapshots/_raw/**,state/**,**/__pycache__/**,**/.DS_Store}"
     }
   }
 }
