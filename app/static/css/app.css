@@ -25,8 +25,13 @@ h1, h2, h3 { margin: 0; line-height: 1.25; }
 .step.side .n { background: var(--violet); }
 .step.sep { margin-left: 8px; }
 @media (max-width: 640px) {
-  .steps { margin-left: 0; width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-  .step { flex-direction: column; gap: 2px; padding: 6px 4px; font-size: 12px; border-radius: 14px; text-align: center; }
+  /* タブが四角くなる幅: 主タブは名前だけ、側タブは1文字だけにして省スペースにする */
+  .steps { margin-left: 0; width: 100%; display: flex; flex-wrap: nowrap; gap: 5px; }
+  .step { flex: 1 1 0; min-width: 0; justify-content: center; padding: 6px 0; font-size: 11px; white-space: nowrap; border-radius: 14px; text-align: center; }
+  .step .n { display: none; }
+  .step.side { flex: 0 0 34px; width: 34px; padding: 6px 0; }
+  .step.side .n { display: grid; width: 24px; height: 24px; }
+  .step.side .lbl { display: none; }
   .step.sep { margin-left: 0; }
 }
 

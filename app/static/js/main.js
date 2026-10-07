@@ -14,7 +14,7 @@ function renderNav(cur) {
   const nav = $('#nav'); nav.innerHTML = '';
   for (const p of pages) {
     nav.append(el('button', { class: 'step' + (p.key === cur ? ' on' : '') + (p.side ? ' side sep' : ''), onclick: () => { location.hash = p.key; } },
-      el('span', { class: 'n' }, p.badge), p.label));
+      el('span', { class: 'n' }, p.badge), el('span', { class: 'lbl' }, p.label)));
   }
 }
 
