@@ -278,7 +278,7 @@ function buildForm(box) {
     if (mi >= 0 && (B.my_picks.length ? B.my_picks.includes(mi) : true)) f.my_index = mi;
     Object.assign(f, { kind: prefill.kind, move: prefill.move, move_ja: prefill.move_ja, reveal_type: 'move', reveal_value: prefill.move, reveal_value_ja: prefill.move_ja });
   }
-  box.append(el('h2', {}, edit ? '記録を直す' : '記録/逆ダメ計 ', help('被ダメ・与ダメ・判明した情報から、相手の性格・能力ポイント・持ち物・特性を逆算する。技の確定効果（ランク変化・状態異常・設置・天候など）は、追加すると現在の対面にも反映する'),
+  box.append(el('div', { class: 'sec-title' }, el('h2', {}, edit ? '記録を直す' : '記録/逆ダメ計 ', help('被ダメ・与ダメ・判明した情報から、相手の性格・能力ポイント・持ち物・特性を逆算する。技の確定効果（ランク変化・状態異常・設置・天候など）は、追加すると現在の対面にも反映する')),
     !edit && lastEffects.length ? el('small', { class: 'fx-note', title: '直近の記録で、技の効果として自動で反映した内容' }, `反映: ${lastEffects.join('・')}`) : ''));
   box.append(el('div', { class: 'seg wide' }, ...[['taken', '被ダメ（相手→自分）'], ['dealt', '与ダメ（自分→相手）'], ['reveal', '判明（技・特性・持ち物）']].map(([k, t]) =>
     el('button', { class: f.kind === k ? 'on' : '', onclick: () => { if (edit) return; kind = k; prefill = null; refreshForm(); } }, t))));
@@ -406,7 +406,7 @@ function recordsCard() { recordsEl = el('div', { class: 'card rec-card' }); fill
 function fillRecords() {
   const card = recordsEl; card.innerHTML = '';
   const logN = B.records.filter(r => r.kind === 'log').length;
-  card.append(el('div', { class: 'rec-title' }, el('h2', {}, '記録一覧 ', help('被ダメ・与ダメ・判明は型の逆算に使う。「ログ」は、現在の対面を手で直したときの変化（項目・変化前・変化後）で、逆算には使わない')),
+  card.append(el('div', { class: 'sec-title' }, el('h2', {}, '記録一覧 ', help('被ダメ・与ダメ・判明は型の逆算に使う。「ログ」は、現在の対面を手で直したときの変化（項目・変化前・変化後）で、逆算には使わない')),
     el('label', { class: 'check' }, el('input', { type: 'checkbox', checked: showLogs, onchange: (e) => { showLogs = e.target.checked; fillRecords(); } }), `ログを表示${logN ? `（${logN}）` : ''}`)));
   const rows = B.records.filter(r => showLogs || r.kind !== 'log');
   if (!rows.length) { card.append(el('div', { class: 'muted' }, 'まだ記録が無い')); return; }
@@ -427,7 +427,7 @@ function fillRecords() {
           if (e2.my) e2.my_index = B.my_team.findIndex(x => x.species === e2.my.species);
           if (e2.move) e2.move_ja = await jaOf('moves', e2.move);
           if (e2.reveal_value) e2.reveal_value_ja = await jaOf({ item: 'items', move: 'moves', ability: 'abilities' }[e2.reveal_type], e2.reveal_value);
-          prefill = null; edit = e2; refreshForm(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }, '編集'), del)));
+          prefill = null; edit = e2; refreshForm(); const f = $('#rv-form'); if (f) f.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, '編集'), del)));
   });
   card.append(el('div', { class: 'rec-scroll' }, list));
   fitRecords();
@@ -437,7 +437,10 @@ function fitRecords() {
   requestAnimationFrame(() => {
     const sc = recordsEl && recordsEl.querySelector('.rec-scroll'), form = $('#rv-form');
     if (!sc || !form) return;
-    const side = window.innerWidth > 820;
-    sc.style.maxHeight = (side ? Math.max(260, form.offsetHeight - (sc.offsetTop - recordsEl.offsetTop) - 20) : 420) + 'px';
+    sc.style.maxHeight = '420px';   // 縦に積むとき
+    if (window.innerWidth > 820) {  // 横に並ぶときは「記録/逆ダメ計」の高さに合わせる（両方とも上揃えで、一覧の中だけスクロール）
+      const room = form.offsetHeight - (sc.getBoundingClientRect().top - recordsEl.getBoundingClientRect().top) - 20;
+      sc.style.maxHeight = Math.max(240, room) + 'px';
+    }
   });
 }

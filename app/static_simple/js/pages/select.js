@@ -68,7 +68,8 @@ export default {
       ? el('div', { class: 'muted', style: 'font-size:14px' }, '使うパーティ: ', el('b', {}, active.name || '名前なし'), `（${active.members.join('・')}）`, ' ', el('a', { href: '#team' }, '変更'))
       : el('div', { class: 'tip' }, 'まだパーティが空。先に ', el('a', { href: '#team' }, '① パーティ'), ' を登録しよう。');
     view.append(el('div', { class: 'card' },
-      el('h2', {}, '相手の6体 ', help('対戦の「見せ合い」で表示される相手のポケモン。名前を入れてEnterで次の枠へ')),
+      el('div', { class: 'sec-title' }, el('h2', {}, '相手の6体 ', help('対戦の「見せ合い」で表示される相手のポケモン。名前を入れてEnterで次の枠へ')),
+        el('span', { class: 'row', style: 'gap:6px' }, el('span', { class: 'muted' }, 'タイプから調べる→'), el('a', { class: 'btn small alt', href: '#types' }, 'タイプ相性'))),
       slots, el('div', { class: 'row', style: 'margin-top:12px' },
         el('button', { id: 'go', class: 'btn primary big', onclick: () => runPredict(view) }, '選出を予想する'),
         el('button', { class: 'btn ghost', onclick: async () => { await api('/api/opponent', { method: 'PUT', body: { species: [], source: 'manual' } }); opp = await api('/api/opponent'); oppMtime = opp.mtime; drawSlots(); } }, 'クリア'),

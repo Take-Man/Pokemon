@@ -438,3 +438,8 @@ details summary { cursor: pointer; font-weight: 700; margin-top: 8px; }
 .sidebox.me { border-color: var(--me); } .sidebox.opp { border-color: var(--opp); }
 .sidebox > h3 { margin-top: 0; font-size: 15px; }
 .results { scroll-margin-top: 90px; }
+
+.sec-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; min-height: 40px; margin-bottom: 10px; }
+.sec-title h2 { margin: 0; font-size: 18px; line-height: 1.25; }
+.rv-two > .card { align-self: start; }
+#rv-form { scroll-margin-top: 90px; }
