@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import APIRouter, FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -19,7 +19,7 @@ from engine.matchup import battle_species, predict
 from engine.sets import MonSet, likely_set, load_snapshot
 from engine.stats import Build, speed_variants, validate_sp
 
-from . import state
+from . import state, storage
 
 STATIC = Path(__file__).parent / "static"
 API_VERSION = 10
@@ -42,6 +42,8 @@ async def lifespan(_app):
 
 
 app = FastAPI(title="Pokemon Battle Assistant", lifespan=lifespan)
+# /api のルート。ローカル版はこの app に、サービス版（service/main.py）は認証を付けて取り込む
+api = APIRouter()
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 _pred_lock = threading.Lock()
 NO_CACHE = {"Cache-Control": "no-cache, no-store, must-revalidate"}
@@ -64,7 +66,13 @@ def index():
 
 # ---- 参照系 -----------------------------------------------------------------
 
-@app.get("/api/meta")
+@api.get("/api/config")
+def config():
+    """画面の動き方の切り替え用。サービス版は service/main.py が同じパスでログインの設定を返す。"""
+    return {"mode": "local"}
+
+
+@api.get("/api/meta")
 def meta():
     D = dex()
     snap = load_snapshot()
@@ -83,7 +91,7 @@ TYPE_ORDER = ["Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting",
               "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"]
 
 
-@app.get("/api/types")
+@api.get("/api/types")
 def types():
     """タイプ相性タブ用: タイプ一覧・相性表・使用可能ポケモンのタイプ。"""
     D = dex()
@@ -97,7 +105,7 @@ def types():
     }
 
 
-@app.get("/api/search")
+@api.get("/api/search")
 def search(kind: str, q: str, species: Optional[str] = None, limit: int = 15, include_mega: bool = False):
     """名前検索。メガシンカ後の姿とメガストーンは既定で除く（メガはパーティ側のチェックで指定する）。"""
     D = dex()
@@ -123,7 +131,7 @@ def search(kind: str, q: str, species: Optional[str] = None, limit: int = 15, in
             for r in rows]
 
 
-@app.get("/api/pokemon/{pid}")
+@api.get("/api/pokemon/{pid}")
 def pokemon(pid: str):
     D = dex()
     p = D.pokemon.get(pid)
@@ -160,7 +168,7 @@ class TeamIn(BaseModel):
     members: list[dict]
 
 
-@app.get("/api/team")
+@api.get("/api/team")
 def get_team():
     t = state.load_team()
     D = dex()
@@ -178,7 +186,7 @@ class MemberIn(BaseModel):
     member: dict
 
 
-@app.post("/api/member/stats")
+@api.post("/api/member/stats")
 def post_member_stats(a: MemberIn):
     """保存せずに、編集中の1体の実数値と入力の誤りだけを返す。"""
     m = a.member
@@ -187,13 +195,13 @@ def post_member_stats(a: MemberIn):
     return {"_stats": MonSet.from_dict(m).build().stats(), "_errors": validate_sp(m.get("sp", {}))}
 
 
-@app.put("/api/team")
+@api.put("/api/team")
 def put_team(t: TeamIn):
     members = [{k: v for k, v in m.items() if not k.startswith("_")} for m in t.members][:6]
     return state.save_team({"id": t.id, "name": t.name, "archetype": t.archetype, "members": members})
 
 
-@app.get("/api/teams/{tid}")
+@api.get("/api/teams/{tid}")
 def get_team_by_id(tid: str):
     """保存済みのパーティ1つ（評価画面など、選択中以外のパーティを見るとき）。"""
     t = next((x for x in state.list_teams() if x.get("id") == tid), None)  # load_team は無いidだと新規作成してしまうので使わない
@@ -204,7 +212,7 @@ def get_team_by_id(tid: str):
     return t
 
 
-@app.get("/api/teams")
+@api.get("/api/teams")
 def get_teams():
     D = dex()
     active = state.active_team_id()
@@ -220,7 +228,7 @@ class NewTeamIn(BaseModel):
     copy_from: Optional[str] = None
 
 
-@app.post("/api/teams")
+@api.post("/api/teams")
 def post_team(n: NewTeamIn):
     members, arch = [], "スタンダード"
     if n.copy_from:
@@ -230,7 +238,7 @@ def post_team(n: NewTeamIn):
     return state.create_team(n.name, members, arch)
 
 
-@app.put("/api/teams/active/{tid}")
+@api.put("/api/teams/active/{tid}")
 def put_active(tid: str):
     try:
         return state.set_active_team(tid)
@@ -238,7 +246,7 @@ def put_active(tid: str):
         raise HTTPException(404)
 
 
-@app.delete("/api/teams/{tid}")
+@api.delete("/api/teams/{tid}")
 def delete_team(tid: str):
     state.delete_team(tid)
     return {"ok": True, "active": state.active_team_id()}
@@ -248,7 +256,7 @@ class ImportImagesIn(BaseModel):
     images: list[str]  # 画像のbase64（data URL可）。能力タブとステータスタブの2枚（片方でも可）
 
 
-@app.post("/api/team/import-image")
+@api.post("/api/team/import-image")
 def post_import_image(body: ImportImagesIn):
     """ゲームの「パーティ確認」画面のスクショから6体の型を読み取る（登録はしない。結果を返すだけ）。"""
     import base64
@@ -288,7 +296,7 @@ class AutofillIn(BaseModel):
     member: dict
 
 
-@app.post("/api/autofill")
+@api.post("/api/autofill")
 def post_autofill(a: AutofillIn):
     from engine.sets import autofill
 
@@ -310,14 +318,14 @@ def _diagnose(sets: list[MonSet], archetype: str, top: int):
     return diagnose(sets, archetype, top)
 
 
-@app.post("/api/diagnose")
+@api.post("/api/diagnose")
 def post_diagnose(d: DiagnoseIn, top: int = 30):
     """保存していない編集中のパーティを診断する。"""
     sets = [MonSet.from_dict(m) for m in d.members if m.get("species") and dex().pokemon.get(m["species"])]
     return _diagnose(sets, d.archetype, top)
 
 
-@app.get("/api/threats")
+@api.get("/api/threats")
 def get_threats(top: int = 30):
     """調整の仮想敵候補: 使用率上位と、その想定型の攻撃技。"""
     D = dex()
@@ -346,7 +354,7 @@ class TuneIn(BaseModel):
     members: Optional[list[dict]] = None  # 保存していない編集中のパーティで計算するとき
 
 
-@app.post("/api/tune")
+@api.post("/api/tune")
 def post_tune(t: TuneIn):
     from engine.tuning import ko, survive, worst_case
 
@@ -368,7 +376,7 @@ class OppIn(BaseModel):
     source: str = "manual"
 
 
-@app.get("/api/opponent")
+@api.get("/api/opponent")
 def get_opp():
     o = state.load_opponent()
     D = dex()
@@ -377,7 +385,7 @@ def get_opp():
     return o
 
 
-@app.put("/api/opponent")
+@api.put("/api/opponent")
 def put_opp(o: OppIn):
     return state.save_opponent(o.model_dump())
 
@@ -396,7 +404,7 @@ def _run_prediction() -> dict:  # noqa: C901
     return pred
 
 
-@app.post("/api/predict")
+@api.post("/api/predict")
 def post_predict(fetch: bool = True):
     """ルールベースの予想を即時に返し、環境データに無い相手がいれば並列で取得→再計算する。"""
     pred = _run_prediction()
@@ -404,7 +412,7 @@ def post_predict(fetch: bool = True):
 
     match = matches.create_or_reuse(state.load_opponent()["species"])
     job = None
-    if fetch:
+    if fetch and storage.current().local:  # サービス版は利用者の操作で外部へ取りに行かない
         from collectors import pokedb
 
         snap = load_snapshot() or {}
@@ -419,17 +427,17 @@ def post_predict(fetch: bool = True):
     return pred
 
 
-@app.get("/api/predict")
+@api.get("/api/predict")
 def get_predict():
     return state.load_prediction() or {}
 
 
-@app.get("/api/jobs")
+@api.get("/api/jobs")
 def get_jobs():
     return jobs.list_jobs()
 
 
-@app.post("/api/collect")
+@api.post("/api/collect")
 def post_collect():
     """環境データの「更新を確認」: 一覧（1時間に1回まで）でサイトの更新日時を見て、上位の詳細のうち
     更新後に取得していないものだけを取りに行く。取りに行くものが無ければ通信しない。"""
@@ -440,7 +448,7 @@ def post_collect():
     return {"job": jid}
 
 
-@app.get("/api/env")
+@api.get("/api/env")
 def get_env():
     """環境データの鮮度と取得の状態（通信しない）。"""
     from collectors import pokedb
@@ -530,7 +538,7 @@ def opp_move_list(species: str, set_moves: Optional[list[str]] = None, min_rate:
     return out
 
 
-@app.post("/api/calc/duel")
+@api.post("/api/calc/duel")
 def post_duel(c: DuelIn):
     """自分→相手（自分の技4つ）と、相手→自分（相手の採用率上位の技）を同時に計算する。"""
     from engine.damage import battle_speed
@@ -580,7 +588,7 @@ def post_duel(c: DuelIn):
     return res
 
 
-@app.get("/api/speed")
+@api.get("/api/speed")
 def speed(ids: str, slowest: bool = False):
     """相手候補の素早さ帯と、自分のパーティの実数値を並べる。"""
     D = dex()
@@ -611,7 +619,7 @@ def speed(ids: str, slowest: bool = False):
 
 # ---- 対戦記録（6体の組み合わせ）と対戦モード ---------------------------------------------
 
-@app.get("/api/matches")
+@api.get("/api/matches")
 def get_matches(limit: int = 200):
     from . import matches
 
@@ -628,7 +636,7 @@ def get_matches(limit: int = 200):
     return out
 
 
-@app.post("/api/matches/{mid}/load")
+@api.post("/api/matches/{mid}/load")
 def load_match(mid: str):
     """過去の6体を呼び出す: 相手の6体に入れ、この対戦を現在の対戦にする。"""
     from . import matches
@@ -641,7 +649,7 @@ def load_match(mid: str):
     return {"ok": True}
 
 
-@app.delete("/api/matches/{mid}")
+@api.delete("/api/matches/{mid}")
 def delete_match(mid: str):
     from . import matches
 
@@ -660,7 +668,7 @@ def _bv() -> dict:
     return v
 
 
-@app.get("/api/battle")
+@api.get("/api/battle")
 def get_battle():
     return _bv()
 
@@ -681,7 +689,7 @@ def _current_match_id() -> str:
     return mid
 
 
-@app.put("/api/battle")
+@api.put("/api/battle")
 def put_battle(p: PicksIn):
     from . import matches
 
@@ -692,7 +700,7 @@ def put_battle(p: PicksIn):
     return _bv()
 
 
-@app.post("/api/battle/resnapshot")
+@api.post("/api/battle/resnapshot")
 def battle_resnapshot():
     from . import matches
 
@@ -708,7 +716,7 @@ class LiveIn(BaseModel):
     reason: Optional[str] = None  # 変化のログに添える理由（設置技の反映など）
 
 
-@app.put("/api/battle/live")
+@api.put("/api/battle/live")
 def put_live(p: LiveIn):
     import copy
 
@@ -724,7 +732,7 @@ def put_live(p: LiveIn):
     return _bv()
 
 
-@app.get("/api/battle/hazard-preview")
+@api.get("/api/battle/hazard-preview")
 def get_hazard_preview(side: str, key: str):
     from . import battle
 
@@ -777,7 +785,7 @@ def _record_dict(r: RecordIn, mid: str) -> dict:
     return d
 
 
-@app.post("/api/battle/records")
+@api.post("/api/battle/records")
 def add_battle_record(r: RecordIn):
     from . import matches
 
@@ -788,7 +796,7 @@ def add_battle_record(r: RecordIn):
     return _bv()
 
 
-@app.put("/api/battle/records/{rid}")
+@api.put("/api/battle/records/{rid}")
 def edit_battle_record(rid: str, r: RecordIn):
     from . import matches
 
@@ -800,7 +808,7 @@ def edit_battle_record(rid: str, r: RecordIn):
     return _bv()
 
 
-@app.delete("/api/battle/records/{rid}")
+@api.delete("/api/battle/records/{rid}")
 def delete_battle_record(rid: str):
     from . import matches
 
@@ -808,6 +816,9 @@ def delete_battle_record(rid: str):
     return {**_bv(), "reverted": reverted}
 
 
-@app.get("/api/current.md", response_class=PlainTextResponse)
+@api.get("/api/current.md", response_class=PlainTextResponse)
 def current_md():
     return state.render_current()
+
+
+app.include_router(api)

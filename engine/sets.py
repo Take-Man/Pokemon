@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import asdict, dataclass, field
 from typing import Optional
 
@@ -106,8 +107,13 @@ _snap_cache: tuple = (None, None)  # (ファイルの更新時刻・サイズ, �
 
 
 def load_snapshot() -> Optional[dict]:
-    """環境データ。ファイルが変わるまでは読み込んだ内容を使い回す（読み取り専用として扱う）。"""
+    """環境データ。ファイルが変わるまでは読み込んだ内容を使い回す（読み取り専用として扱う）。
+
+    環境変数 PBA_USAGE_DATA=off なら使わない（相手の型は種族値からの推定になる）。サービス版で、
+    取得先の利用許可が出るまで使用率データを載せないためのスイッチ。"""
     global _snap_cache
+    if os.environ.get("PBA_USAGE_DATA") == "off":
+        return None
     try:
         st = SNAPSHOT.stat()
     except OSError:
