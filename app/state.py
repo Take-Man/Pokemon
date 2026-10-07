@@ -1,4 +1,7 @@
-"""アプリの状態（自分のパーティ・相手の6体・計算履歴）の保存と、Claude向けの state/ 出力。"""
+"""アプリの状態（自分のパーティ・相手の6体・計算履歴）の保存と、Claude向けの state/ 出力。
+
+保存は storage.current()（ローカル版はファイル、サービス版は利用者ごとの Supabase）を通す。
+Claude向けの state/ 書き出しと計算履歴はローカル版だけ。"""
 from __future__ import annotations
 
 import json
@@ -9,6 +12,8 @@ from typing import Optional
 from collectors.base import now_iso
 from engine.data import ROOT, STAT_JA, dex
 from engine.sets import MonSet, load_snapshot
+
+from . import storage
 
 USER = ROOT / "data" / "user"
 STATE = ROOT / "state"
@@ -48,9 +53,17 @@ def _new_id() -> str:
     return uuid.uuid4().hex[:8]
 
 
+def _store() -> storage.Store:
+    return storage.current()
+
+
+def _local() -> bool:
+    return _store().local
+
+
 def _migrate_legacy() -> None:
-    """旧形式（data/user/team.json 1ファイル）を移す。"""
-    if TEAM_FILE.exists() and not TEAMS_DIR.exists():
+    """旧形式（data/user/team.json 1ファイル）を移す（ローカル版だけ）。"""
+    if _local() and TEAM_FILE.exists() and not TEAMS_DIR.exists():
         t = _read(TEAM_FILE, {"name": "", "members": []})
         tid = _new_id()
         t.update(id=tid, name=t.get("name") or "パーティ1")
@@ -61,30 +74,26 @@ def _migrate_legacy() -> None:
 
 def list_teams() -> list[dict]:
     _migrate_legacy()
-    out = []
-    for p in sorted(TEAMS_DIR.glob("*.json")) if TEAMS_DIR.exists() else []:
-        t = _read(p, None)
-        if t:
-            out.append(t)
+    out = _store().list_teams()
     out.sort(key=lambda t: t.get("updated_at") or "", reverse=True)
     return out
 
 
 def active_team_id() -> Optional[str]:
     _migrate_legacy()
-    tid = _read(SETTINGS_FILE, {}).get("active")
-    if tid and (TEAMS_DIR / f"{tid}.json").exists():
+    tid = _store().get_settings().get("active")
+    if tid and _store().get_team(tid) is not None:
         return tid
     teams = list_teams()
     return teams[0]["id"] if teams else None
 
 
 def set_active_team(tid: str) -> dict:
-    if not (TEAMS_DIR / f"{tid}.json").exists():
+    if _store().get_team(tid) is None:
         raise KeyError(tid)
-    s = _read(SETTINGS_FILE, {})
+    s = _store().get_settings()
     s["active"] = tid
-    _write(SETTINGS_FILE, s)
+    _store().put_settings(s)
     render_current()
     return load_team()
 
@@ -94,19 +103,17 @@ def create_team(name: str = "", members: Optional[list] = None, archetype: str =
     n = len(list_teams()) + 1
     t = {"id": tid, "name": name or f"パーティ{n}", "archetype": archetype, "members": members or [],
          "created_at": now_iso(), "updated_at": now_iso()}
-    _write(TEAMS_DIR / f"{tid}.json", t)
+    _store().put_team(t)
     set_active_team(tid)
     return t
 
 
 def delete_team(tid: str) -> None:
-    p = TEAMS_DIR / f"{tid}.json"
-    if p.exists():
-        p.unlink()
-    s = _read(SETTINGS_FILE, {})
+    _store().delete_team(tid)
+    s = _store().get_settings()
     if s.get("active") == tid:
         s["active"] = None
-        _write(SETTINGS_FILE, s)
+        _store().put_settings(s)
     render_current()
 
 
@@ -114,7 +121,7 @@ def load_team(tid: Optional[str] = None) -> dict:
     tid = tid or active_team_id()
     if not tid:
         return create_team()
-    t = _read(TEAMS_DIR / f"{tid}.json", None)
+    t = _store().get_team(tid)
     if t is None:
         return create_team()
     t.setdefault("archetype", "スタンダード")
@@ -127,7 +134,7 @@ def save_team(team: dict) -> dict:
     cur.update({k: v for k, v in team.items() if k in ("name", "members", "archetype")})
     cur["id"] = cur.get("id") or _new_id()
     cur["updated_at"] = now_iso()
-    _write(TEAMS_DIR / f"{cur['id']}.json", cur)
+    _store().put_team(cur)
     render_current()
     return cur
 
@@ -140,7 +147,7 @@ def team_sets(tid: Optional[str] = None) -> list[MonSet]:
 # 手入力はUIから、スクショ判定はClaudeのチャットから、どちらも state/opponent.json に書く。
 
 def load_opponent() -> dict:
-    return _read(OPP_FILE, {"species": [], "sets": {}, "source": "manual", "updated_at": None})
+    return _store().get_doc("opponent") or {"species": [], "sets": {}, "source": "manual", "updated_at": None}
 
 
 def save_opponent(opp: dict) -> dict:
@@ -152,27 +159,29 @@ def save_opponent(opp: dict) -> dict:
             ids.append(p["id"])
     opp = {"species": ids[:6], "sets": opp.get("sets", {}), "source": opp.get("source", "manual"),
            "updated_at": now_iso()}
-    _write(OPP_FILE, opp)
+    _store().put_doc("opponent", opp)
     return opp
 
 
 def opponent_mtime() -> float:
-    return OPP_FILE.stat().st_mtime if OPP_FILE.exists() else 0.0
+    return _store().doc_mtime("opponent")
 
 
 # ---- 予想・計算履歴 ----------------------------------------------------------
 
 def save_prediction(pred: dict) -> None:
     pred = dict(pred, updated_at=now_iso())
-    _write(PRED_FILE, pred)
+    _store().put_doc("prediction", pred)
     render_current()
 
 
 def load_prediction() -> Optional[dict]:
-    return _read(PRED_FILE, None)
+    return _store().get_doc("prediction")
 
 
 def log_calc(entry: dict) -> None:
+    if not _local():
+        return
     STATE.mkdir(parents=True, exist_ok=True)
     with _lock:
         lines = CALC_LOG.read_text(encoding="utf-8").splitlines() if CALC_LOG.exists() else []
@@ -198,7 +207,9 @@ def _set_line(m: MonSet) -> str:
 
 
 def render_current() -> str:
-    """state/current.md を書き直す。Claudeはここを起点に周辺ファイルを読む。"""
+    """state/current.md を書き直す。Claudeはここを起点に周辺ファイルを読む（ローカル版だけ）。"""
+    if not _local():
+        return ""
     D = dex()
     snap = load_snapshot()
     team = load_team()

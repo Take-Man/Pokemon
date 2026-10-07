@@ -10,7 +10,6 @@ data/user/matches/<id>.json に1対戦1ファイル。
 """
 from __future__ import annotations
 
-import json
 import uuid
 from datetime import datetime, timedelta
 from typing import Optional
@@ -18,54 +17,37 @@ from typing import Optional
 from collectors.base import now_iso
 from engine.data import ROOT
 
-from . import state
+from . import state, storage
 
 MATCH_DIR = ROOT / "data" / "user" / "matches"
 REUSE_MINUTES = 120
 
 
-def _path(mid: str):
-    return MATCH_DIR / f"{mid}.json"
-
-
 def _read(mid: str) -> Optional[dict]:
-    p = _path(mid)
-    if not p.exists():
-        return None
-    return json.loads(p.read_text(encoding="utf-8"))
+    return storage.current().get_match(mid)
 
 
 def _write(m: dict) -> dict:
-    MATCH_DIR.mkdir(parents=True, exist_ok=True)
     m["updated_at"] = now_iso()
-    tmp = _path(m["id"]).with_suffix(".tmp")
-    tmp.write_text(json.dumps(m, ensure_ascii=False, indent=1), encoding="utf-8")
-    tmp.replace(_path(m["id"]))
+    storage.current().put_match(m)
     return m
 
 
 def list_matches() -> list[dict]:
-    if not MATCH_DIR.exists():
-        return []
-    out = []
-    for p in MATCH_DIR.glob("*.json"):
-        try:
-            out.append(json.loads(p.read_text(encoding="utf-8")))
-        except Exception:  # noqa: BLE001
-            continue
+    out = storage.current().list_matches()
     out.sort(key=lambda m: m.get("created_at") or "", reverse=True)
     return out
 
 
 def current_id() -> Optional[str]:
-    mid = state._read(state.SETTINGS_FILE, {}).get("current_match")
-    return mid if mid and _path(mid).exists() else None
+    mid = storage.current().get_settings().get("current_match")
+    return mid if mid and _read(mid) is not None else None
 
 
 def set_current(mid: Optional[str]) -> None:
-    s = state._read(state.SETTINGS_FILE, {})
+    s = storage.current().get_settings()
     s["current_match"] = mid
-    state._write(state.SETTINGS_FILE, s)
+    storage.current().put_settings(s)
 
 
 def get(mid: Optional[str] = None) -> Optional[dict]:
@@ -89,9 +71,7 @@ def create_or_reuse(opp: list[str]) -> dict:
 
 
 def delete(mid: str) -> None:
-    p = _path(mid)
-    if p.exists():
-        p.unlink()
+    storage.current().delete_match(mid)
     if current_id() is None:
         set_current(None)
 

@@ -312,7 +312,11 @@ def view(mid: Optional[str] = None) -> dict:
 
 
 def write_state(v: dict) -> None:
-    """state/battle.md: 対戦モードの現在（Claudeがチャットから読む用）。"""
+    """state/battle.md: 対戦モードの現在（Claudeがチャットから読む用。ローカル版だけ）。"""
+    from . import storage
+
+    if not storage.current().local:
+        return
     L = ["# 対戦モード", ""]
     m = v.get("match")
     if not m:
