@@ -76,6 +76,11 @@ function headCard() {
 }
 
 // ---- 選出 ----
+// 選出から外すと、そのポケモンの HP・状態異常・ランクが消えるので確認する
+function unpick(selected, ja, go) {
+  if (selected && !confirm(`${ja} を選出から外すと、HP・状態異常・ランクの記録が消える。外しますか？`)) return;
+  go();
+}
 function picksCard() {
   const m = B.match;
   const toggle = (arr, v) => arr.includes(v) ? arr.filter(x => x !== v) : (arr.length >= 3 ? arr : [...arr, v]);
@@ -88,9 +93,9 @@ function picksCard() {
   const all = (side, n) => n < 3 || showAll[side];
   const more = (side, n) => n >= 3 ? el('label', { class: 'check' }, el('input', { type: 'checkbox', checked: showAll[side], onchange: (e) => { showAll[side] = e.target.checked; draw(); } }), '6体表示') : '';
   const mine = B.my_team.filter(x => all('me', B.my_picks.length) || B.my_picks.includes(x.index))
-    .map(x => el('button', { class: 'pick me' + (B.my_picks.includes(x.index) ? ' on' : ''), onclick: () => put({ my_picks: toggle(B.my_picks, x.index) }) }, monLabel(x.ja)));
+    .map(x => el('button', { class: 'pick me' + (B.my_picks.includes(x.index) ? ' on' : ''), onclick: () => unpick(B.my_picks.includes(x.index), x.ja, () => put({ my_picks: toggle(B.my_picks, x.index) })) }, monLabel(x.ja)));
   const opp = m.opp.map((sid, k) => [sid, m.opp_ja[k]]).filter(([sid]) => all('opp', B.opp_picks.length) || B.opp_picks.includes(sid))
-    .map(([sid, ja]) => el('button', { class: 'pick opp' + (B.opp_picks.includes(sid) ? ' on' : ''), onclick: () => pickOpp(sid) }, monLabel(ja)));
+    .map(([sid, ja]) => el('button', { class: 'pick opp' + (B.opp_picks.includes(sid) ? ' on' : ''), onclick: () => unpick(B.opp_picks.includes(sid), ja, () => pickOpp(sid)) }, monLabel(ja)));
   return el('div', { class: 'card', style: 'margin-top:18px' },
     el('h2', {}, '選出 ', help('見せ合いのあとに選んだ3体ずつ。相手は見えた順に選ぶ。ここで選んだ体だけが、現在の対面・記録・控え相性に出る')),
     el('div', { class: 'rv-picks' }, el('b', { class: 'side-me' }, '自分'), ...mine, more('me', B.my_picks.length)),
@@ -413,7 +418,7 @@ function fillRecords() {
   const list = el('div', { class: 'rec-list' });
   // 新しいものを先頭にする（番号も新しいほど大きい）
   rows.map((r, i) => [r, i + 1]).reverse().forEach(([r, n]) => {
-    const del = el('button', { class: 'btn small ghost', onclick: async () => { B = await api(`/api/battle/records/${r.id}`, { method: 'DELETE' }); draw(); toast('削除した'); } }, '削除');
+    const del = el('button', { class: 'btn small ghost', onclick: async () => { const v = await api(`/api/battle/records/${r.id}`, { method: 'DELETE' }); B = v; draw(); toast((v.reverted || []).length ? `削除した（戻した: ${v.reverted.join('・')}）` : '削除した'); } }, '削除');
     if (r.kind === 'log') { list.append(el('div', { class: 'rec-row log' }, el('div', { class: 'rec-top' }, el('span', { class: 'n' }, n), el('span', { class: 'kind kind-log' }, 'ログ')), el('div', { class: 'muted' }, r.summary), el('div', { class: 'row' }, del))); return; }
     list.append(el('div', { class: 'rec-row' + (r.feasible === 0 ? ' bad' : '') },
       el('div', { class: 'rec-top' }, el('span', { class: 'n' }, n), el('span', { class: 'kind kind-' + r.kind }, r.kind_short || r.kind_ja),
