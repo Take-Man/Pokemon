@@ -146,5 +146,8 @@ create policy "user_state: 本人" on public.user_state for all to authenticated
 
 -- 匿名（未ログイン）には何も見せない
 revoke all on public.teams, public.matches, public.user_state, public.profiles, public.plan_limits from anon;
+-- ログインした利用者に必要な権限だけを明示する（「新しい表を自動で公開する」をオフにしたプロジェクト向け。オンでも害はない）
+grant select, insert, update, delete on public.teams, public.matches, public.user_state to authenticated;
+grant select on public.profiles, public.plan_limits to authenticated;
 revoke execute on function public.my_limits() from anon, public;
 grant execute on function public.my_limits() to authenticated;

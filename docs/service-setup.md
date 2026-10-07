@@ -5,7 +5,11 @@
 
 ## 1. Supabase
 
-1. https://supabase.com でプロジェクトを作る。リージョンは **Northeast Asia (Tokyo)**。データベースのパスワードは控えておく
+1. https://supabase.com でプロジェクトを作る
+   - Project name: `gyakudame-note`。GitHub はつながない（SQLは手順2で手動で流す）
+   - Database password: 「Generate a password」で作り、パスワード管理アプリに保存する
+   - Region: ADVANCED CONFIGURATION で Tokyo（ap-northeast-1）を選べれば選ぶ
+   - Security: Enable Data API は**オン**、Automatically expose new tables は**オフ**（権限はSQLで明示する）、Enable automatic RLS は**オン**
 2. 左メニュー「SQL Editor」で、[supabase/migrations/](../supabase/migrations/) のSQLを**ファイル名の順に**貼って実行する
    1. `20261008000000_init.sql`（表・RLS・上限）
    2. `20261008010000_image_import_quota.sql`（画像からの取り込みの回数の上限）

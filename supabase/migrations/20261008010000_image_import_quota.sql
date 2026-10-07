@@ -13,6 +13,7 @@ alter table public.usage_log enable row level security;
 -- 本人は読むだけ。書き込みは use_quota だけが行う
 create policy "usage_log: 本人が読む" on public.usage_log for select to authenticated using (user_id = (select auth.uid()));
 revoke all on public.usage_log from anon;
+grant select on public.usage_log to authenticated;
 
 -- 回数を数えて、上限内なら1回分を記録する。上限なら LIMIT:imports:<上限> の例外
 create function public.use_quota(kind text) returns void
