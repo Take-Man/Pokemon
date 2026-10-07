@@ -224,30 +224,123 @@ def update_live(mid: str, patch: dict) -> dict:
     return _write(m)
 
 
-def apply_record_effect(mid: str, rec: dict) -> None:
-    """記録の結果（受けた後のHP・当てた後の%・状態異常技）を現在の対面に反映する。"""
+_RANK_JA = {"atk": "A", "def": "B", "spa": "C", "spd": "D", "spe": "S"}
+_WEATHER_ID = {"raindance": "rain", "primordialsea": "rain", "sunnyday": "sun", "desolateland": "sun", "sandstorm": "sand",
+               "hail": "snow", "snowscape": "snow"}
+_TERRAIN_ID = {"electricterrain": "electric", "grassyterrain": "grassy", "psychicterrain": "psychic", "mistyterrain": "misty"}
+_WEATHER_JA = {"rain": "雨", "sun": "晴れ", "sand": "砂嵐", "snow": "雪"}
+_TERRAIN_JA = {"electric": "エレキフィールド", "grassy": "グラスフィールド", "psychic": "サイコフィールド", "misty": "ミストフィールド"}
+_STATUS_JA = {"brn": "やけど", "par": "まひ", "psn": "どく", "tox": "もうどく", "slp": "ねむり", "frz": "こおり"}
+
+
+def _certain_effects(mv: dict) -> dict:
+    """技の追加効果のうち、命中すれば必ず起きるもの（ランク変化・状態異常・場の変化）。"""
+    sec = mv.get("secondary") or {}
+    user_b, target_b = {}, {}
+    if mv.get("boosts"):
+        (user_b if mv.get("target") == "self" else target_b).update(mv["boosts"])
+    user_b.update((mv.get("self") or {}).get("boosts") or {})
+    if sec.get("chance") == 100:
+        user_b.update((sec.get("self") or {}).get("boosts") or {})
+        target_b.update(sec.get("boosts") or {})
+    return {"user": user_b, "target": target_b, "status": mv.get("status") if mv.get("target") != "self" else None,
+            "side": mv.get("sideCondition"), "weather": mv.get("weather"), "terrain": mv.get("terrain"), "to": mv.get("target")}
+
+
+def apply_record_effect(mid: str, rec: dict) -> list[str]:
+    """記録の結果（受けた後のHP・当てた後の%・技の確定効果）を現在の対面に反映し、HP以外の反映内容を文にして返す。"""
     from engine.data import dex
 
-    if rec.get("kind") not in ("taken", "dealt"):
-        return
     D = dex()
     m = get(mid)
     lv = live_state(ensure_detail(m))
     cond = rec.get("cond") or {}
-    mv = D.moves.get(rec.get("move") or "")
-    st = mv.get("status") if mv else None
-    if rec["kind"] == "taken" and rec.get("my_index") is not None and str(rec["my_index"]) in lv["my"]:
-        tgt = lv["my"][str(rec["my_index"])]
-        tgt["hp"] = 0 if cond.get("ko") else rec.get("after")
-        if st and tgt["status"] == "none":
-            tgt["status"] = st
-    elif rec["kind"] == "dealt" and rec.get("opp") in lv["opp"]:
-        tgt = lv["opp"][rec["opp"]]
-        tgt["hp"] = 0 if cond.get("ko") else rec.get("after")
-        if st and tgt["status"] == "none":
-            tgt["status"] = st
-    if cond.get("opp_mega") and rec.get("opp") in lv["opp"]:
+    team = m["detail"].get("my_team", [])
+    notes: list[str] = []
+    mv = D.moves.get(rec.get("move") or (rec.get("reveal_value") if rec.get("reveal_type") == "move" else "") or "")
+    kind = rec.get("kind")
+    miss = bool(cond.get("miss"))
+
+    def my_name(i):
+        return "自分 " + D.pokemon[team[int(i)]["species"]]["ja"]
+
+    def opp_name(s):
+        return "相手 " + D.pokemon[s]["ja"]
+
+    # ---- 誰が使い、誰に当たったか
+    if kind == "taken":
+        user = ("opp", rec.get("opp")); target = ("my", str(rec.get("my_index")))
+    elif kind == "dealt":
+        user = ("my", str(rec.get("my_index"))); target = ("opp", rec.get("opp"))
+    elif kind == "reveal" and rec.get("reveal_type") == "move":
+        user = ("opp", rec.get("opp")); target = ("my", str(lv["active"]["my"]) if lv["active"]["my"] is not None else None)
+    else:
+        user = target = None
+    name = lambda t: (my_name(t[1]) if t[0] == "my" else opp_name(t[1])) if t and t[1] is not None else ""
+    mon = lambda t: lv[t[0]].get(t[1]) if t and t[1] is not None else None
+
+    if kind in ("taken", "dealt") and not miss:
+        tgt = mon(target)
+        if tgt is not None:
+            tgt["hp"] = 0 if cond.get("ko") else rec.get("after")
+    if mv and not miss and user:
+        fx = _certain_effects(mv)
+
+        def boost(t, stats):
+            x = mon(t)
+            if x is None:
+                return
+            for st, n in stats.items():
+                if st in _RANK_JA and n:
+                    old = x["boosts"].get(st, 0)
+                    new = max(-6, min(6, old + n))
+                    if new != old:
+                        x["boosts"][st] = new
+                        notes.append(f"{name(t)} {_RANK_JA[st]}ランク {new - old:+d}")
+        boost(user, fx["user"])
+        if fx["to"] not in ("self", "foeSide", "allySide", "all"):
+            boost(target, fx["target"])
+            tgt = mon(target)
+            if fx["status"] and tgt is not None and tgt["status"] == "none":
+                tgt["status"] = fx["status"]
+                notes.append(f"{name(target)} {_STATUS_JA.get(fx['status'], fx['status'])}")
+        if fx["weather"] and _WEATHER_ID.get(str(fx["weather"]).lower()) and lv["field"].get("weather") != _WEATHER_ID[str(fx["weather"]).lower()]:
+            lv["field"]["weather"] = _WEATHER_ID[str(fx["weather"]).lower()]
+            notes.append(f"天候 {_WEATHER_JA[lv['field']['weather']]}")
+        if fx["terrain"] and _TERRAIN_ID.get(str(fx["terrain"]).lower()) and lv["field"].get("terrain") != _TERRAIN_ID[str(fx["terrain"]).lower()]:
+            lv["field"]["terrain"] = _TERRAIN_ID[str(fx["terrain"]).lower()]
+            notes.append(f"フィールド {_TERRAIN_JA[lv['field']['terrain']]}")
+        sc = str(fx["side"] or "").lower()
+        if sc in ("stealthrock", "spikes", "toxicspikes", "stickyweb"):
+            key = "opp_hazards" if user[0] == "my" else "my_hazards"
+            h = {"rocks": False, "spikes": 0, "tspikes": 0, "web": False, **(lv["field"].get(key) or {})}
+            side_ja = "相手側" if user[0] == "my" else "自分側"
+            if sc == "stealthrock" and not h["rocks"]:
+                h["rocks"] = True; notes.append(f"{side_ja} ステルスロック")
+            elif sc == "spikes" and h["spikes"] < 3:
+                h["spikes"] += 1; notes.append(f"{side_ja} まきびし{h['spikes']}層")
+            elif sc == "toxicspikes" and h["tspikes"] < 2:
+                h["tspikes"] += 1; notes.append(f"{side_ja} どくびし{h['tspikes']}層")
+            elif sc == "stickyweb" and not h["web"]:
+                h["web"] = True; notes.append(f"{side_ja} ねばねばネット")
+            lv["field"][key] = h
+        if sc in ("reflect", "lightscreen", "auroraveil"):
+            key = "my_screen" if user[0] == "my" else "opp_screen"
+            have = {"reflect": {"reflect"}, "lightscreen": {"lightscreen"}, "both": {"reflect", "lightscreen"}}.get(lv["field"].get(key, "none"), set())
+            have = have | ({"reflect", "lightscreen"} if sc == "auroraveil" else {sc})
+            lv["field"][key] = "both" if have == {"reflect", "lightscreen"} else next(iter(have))
+            notes.append(f"{'自分側' if user[0] == 'my' else '相手側'} {({'reflect': 'リフレクター', 'lightscreen': 'ひかりのかべ', 'auroraveil': 'オーロラベール'})[sc]}")
+    if kind in ("taken", "dealt") and cond.get("opp_mega") and rec.get("opp") in lv["opp"]:
         lv["opp"][rec["opp"]]["mega"] = True
         lv["opp"][rec["opp"]]["mega_state"] = "yes"
     m["detail"]["live"] = lv
+    _write(m)
+    return notes
+
+
+def set_record_effects(mid: str, rid: str, effects: list[str]) -> None:
+    m = ensure_detail(get(mid))
+    for r in m["detail"]["records"]:
+        if r["id"] == rid:
+            r["effects"] = effects
     _write(m)

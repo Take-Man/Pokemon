@@ -8,6 +8,10 @@ let kind = 'taken';    // 記録の種類
 let root = null;
 let prefill = null;    // ダメ計から「記録」で飛んできたときの入力済みの内容
 let scrollForm = false;
+let showAll = { me: false, opp: false };   // 3体選出したあとも6体を出すか
+let showLogs = false;
+let lastEffects = [];   // 直近の記録で、技の確定効果として現在の対面に自動で反映した内容
+const openState = { detail: true, bench: true };
 
 // ダメ計の技から、記録の追加フォームを埋めた状態で開く
 export function prefillRecord(p) { prefill = p; kind = p.kind; edit = null; scrollForm = true; location.hash = 'reverse'; }
@@ -31,7 +35,7 @@ const livePut = (patch) => api('/api/battle/live', { method: 'PUT', body: patch 
 const livePutLater = debounce(async (patch) => { await livePut(patch); refreshRecords(); }, 400);
 
 export default {
-  key: 'reverse', label: '逆ダメ計', badge: '4',
+  key: 'reverse', label: '対戦', badge: '4',
   async render(view) {
     await loadTypes();
     root = view;
@@ -43,7 +47,7 @@ export default {
 function draw() {
   const y = window.scrollY;
   root.innerHTML = '';
-  root.append(lead('4', '逆ダメ計'));
+  root.append(lead('4', '対戦'));
   if (!B || !B.match) {
     root.append(el('div', { class: 'card' }, el('div', { class: 'empty' }, ['対戦がまだない。', el('a', { href: '#select' }, '選出'), 'で相手の6体を入れて「選出を予想する」を押すか、', el('a', { href: '#history' }, '履歴'), 'から開く'])));
     return;
@@ -51,7 +55,7 @@ function draw() {
   root.append(headCard(), picksCard(), liveCard());
   root.append(el('div', { class: 'grid2 rv-two', style: 'margin-top:18px' }, formCard(), recordsCard()));
   if (scrollForm) { scrollForm = false; setTimeout(() => { const f = $('#rv-form'); if (f) f.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50); }
-  root.append(el('div', { class: 'grid2 rv-two', style: 'margin-top:18px' }, mineCol(), oppCol()), matrixCard());
+  root.append(detailCard(), matrixCard());
   window.scrollTo(0, y);
 }
 
@@ -75,16 +79,22 @@ function headCard() {
 function picksCard() {
   const m = B.match;
   const toggle = (arr, v) => arr.includes(v) ? arr.filter(x => x !== v) : (arr.length >= 3 ? arr : [...arr, v]);
-  const mine = B.my_team.map(x => el('button', { class: 'pick me' + (B.my_picks.includes(x.index) ? ' on' : ''), onclick: () => put({ my_picks: toggle(B.my_picks, x.index) }) }, monLabel(x.ja)));
   const pickOpp = async (sid) => {
     const next = toggle(B.opp_picks, sid), added = next.length > B.opp_picks.length ? sid : null;
     B = await api('/api/battle', { method: 'PUT', body: { opp_picks: next } });
     if (added && B.live && B.live.active.opp !== added) await switchTo('opp', added); else draw();   // 新しく選んだ相手は、そのまま場に出ている扱いにする
   };
-  const opp = m.opp.map((sid, k) => el('button', { class: 'pick opp' + (B.opp_picks.includes(sid) ? ' on' : ''), onclick: () => pickOpp(sid) }, monLabel(m.opp_ja[k])));
+  // 3体選び終わったら、選んだ3体だけを出す（「6体表示」で全員を出し直せる）
+  const all = (side, n) => n < 3 || showAll[side];
+  const more = (side, n) => n >= 3 ? el('label', { class: 'check' }, el('input', { type: 'checkbox', checked: showAll[side], onchange: (e) => { showAll[side] = e.target.checked; draw(); } }), '6体表示') : '';
+  const mine = B.my_team.filter(x => all('me', B.my_picks.length) || B.my_picks.includes(x.index))
+    .map(x => el('button', { class: 'pick me' + (B.my_picks.includes(x.index) ? ' on' : ''), onclick: () => put({ my_picks: toggle(B.my_picks, x.index) }) }, monLabel(x.ja)));
+  const opp = m.opp.map((sid, k) => [sid, m.opp_ja[k]]).filter(([sid]) => all('opp', B.opp_picks.length) || B.opp_picks.includes(sid))
+    .map(([sid, ja]) => el('button', { class: 'pick opp' + (B.opp_picks.includes(sid) ? ' on' : ''), onclick: () => pickOpp(sid) }, monLabel(ja)));
   return el('div', { class: 'card', style: 'margin-top:18px' },
-    el('h2', {}, '選出 ', help('見せ合いのあとに選んだ3体ずつ。相手は見えた順に選ぶ。ここで選んだ体だけが、現在の対面・記録・対面表に出る')),
-    el('div', { class: 'rv-picks' }, el('b', { class: 'side-me' }, '自分'), ...mine), el('div', { class: 'rv-picks' }, el('b', { class: 'side-opp' }, '相手'), ...opp));
+    el('h2', {}, '選出 ', help('見せ合いのあとに選んだ3体ずつ。相手は見えた順に選ぶ。ここで選んだ体だけが、現在の対面・記録・控え相性に出る')),
+    el('div', { class: 'rv-picks' }, el('b', { class: 'side-me' }, '自分'), ...mine, more('me', B.my_picks.length)),
+    el('div', { class: 'rv-picks' }, el('b', { class: 'side-opp' }, '相手'), ...opp, more('opp', B.opp_picks.length)));
 }
 
 // ---- 現在の対面 ----
@@ -205,21 +215,28 @@ function oppCard(o, picked) {
   return card;
 }
 function mineCol() {
-  const c = el('div', { class: 'card side-me-card' }, el('h2', {}, '自分の選出'));
+  const c = el('div', { class: 'sidebox me' }, el('h3', {}, '自分の選出'));
   B.mine.forEach(x => c.append(mineCard(x)));
   if (!B.mine.length) c.append(el('div', { class: 'muted' }, '上で選出を選ぶと出る'));
   return c;
 }
 function oppCol() {
-  const c = el('div', { class: 'card side-opp-card' }, el('h2', {}, '相手の選出 ', el('small', {}, srcTag('confirmed'), srcTag('inferred'), srcTag('usage'), srcTag('estimate')), help('確定=見えた情報、逆算=記録から絞り込んだ値、採用率=環境データの上位、推定=種族値からの推定')));
+  const c = el('div', { class: 'sidebox opp' }, el('h3', {}, '相手の選出 ', el('small', {}, srcTag('confirmed'), srcTag('inferred'), srcTag('usage'), srcTag('estimate')), help('確定=見えた情報、逆算=記録から絞り込んだ値、採用率=環境データの上位、推定=種族値からの推定')));
   B.opp_builds.concat(B.other_builds || []).forEach(o => c.append(oppCard(o, B.opp_builds.includes(o))));
   if (!B.opp_builds.length) c.append(el('div', { class: 'muted' }, '上で相手の選出を選ぶと出る'));
   return c;
 }
+// 閉じられるセクション
+function fold(key, title, tip, ...kids) {
+  const d = el('details', { class: 'card fold', open: openState[key] ? true : undefined, ontoggle: () => { openState[key] = d.open; } },
+    el('summary', {}, el('h2', {}, title, ' ', tip ? help(tip) : '')), ...kids);
+  return d;
+}
+function detailCard() { return fold('detail', '構築の詳細', '選出した3体ずつの型。相手は記録から絞り込んだ内容', el('div', { class: 'grid2 rv-two' }, mineCol(), oppCol())); }
 
-// ---- 対面と素早さ ----
+// ---- 控え相性 ----
 function matrixCard() {
-  const card = el('div', { class: 'card', style: 'margin-top:18px' }, el('h2', {}, '対面と素早さ ', help('上段が自分の最大打点、下段が相手の最大打点。緑は有利、赤は不利')));
+  const card = fold('bench', '控え相性', '選出した3体どうしの対面表と素早さ。上段が自分の最大打点、下段が相手の最大打点。緑は有利、赤は不利');
   if (!(B.matrix.length && B.opp_builds.length)) { card.append(el('div', { class: 'muted' }, '自分と相手の選出を選ぶと出る')); return card; }
   const line = (who, mv, id, p, hits) => el('div', { class: 'mx-line' + (who === '相' ? ' muted' : '') }, el('span', { class: 'mx-who' }, who), mv ? moveName(mv, id) : '-', el('span', { class: 'mx-pct' }, ` ${pct(p)}`), hits ? el('small', {}, `（${hits}発）`) : '');
   const t = el('table', { class: 'mx' }, el('tr', {}, el('th', {}, ''), ...B.opp_builds.map(o => el('th', {}, monLabel(o.battle_ja || o.ja, true)))));
@@ -244,7 +261,7 @@ const jaOf = async (k, id) => { if (!id) return ''; const q = await api(`/api/se
 
 function formCard() {
   const card = el('div', { class: 'card', id: 'rv-form' });
-  refreshForm = () => { card.innerHTML = ''; buildForm(card); };
+  refreshForm = () => { card.innerHTML = ''; buildForm(card); fitRecords(); };
   buildForm(card);
   return card;
 }
@@ -261,7 +278,8 @@ function buildForm(box) {
     if (mi >= 0 && (B.my_picks.length ? B.my_picks.includes(mi) : true)) f.my_index = mi;
     Object.assign(f, { kind: prefill.kind, move: prefill.move, move_ja: prefill.move_ja, reveal_type: 'move', reveal_value: prefill.move, reveal_value_ja: prefill.move_ja });
   }
-  box.append(el('h2', {}, edit ? '記録を直す' : '記録を追加 ', help('被ダメ・与ダメ・判明した情報から、相手の性格・能力ポイント・持ち物・特性を逆算する')));
+  box.append(el('h2', {}, edit ? '記録を直す' : '記録/逆ダメ計 ', help('被ダメ・与ダメ・判明した情報から、相手の性格・能力ポイント・持ち物・特性を逆算する。技の確定効果（ランク変化・状態異常・設置・天候など）は、追加すると現在の対面にも反映する'),
+    !edit && lastEffects.length ? el('small', { class: 'fx-note', title: '直近の記録で、技の効果として自動で反映した内容' }, `反映: ${lastEffects.join('・')}`) : ''));
   box.append(el('div', { class: 'seg wide' }, ...[['taken', '被ダメ（相手→自分）'], ['dealt', '与ダメ（自分→相手）'], ['reveal', '判明（技・特性・持ち物）']].map(([k, t]) =>
     el('button', { class: f.kind === k ? 'on' : '', onclick: () => { if (edit) return; kind = k; prefill = null; refreshForm(); } }, t))));
   const oppList = B.opp_picks.length ? B.opp_picks : B.match.opp;
@@ -274,11 +292,15 @@ function buildForm(box) {
   const done = async (body) => {
     try {
       B = edit ? await api(`/api/battle/records/${edit.id}`, { method: 'PUT', body }) : await api('/api/battle/records', { method: 'POST', body });
-      const was = edit; edit = null; prefill = null; draw(); toast(was ? '記録を更新した' : '記録を追加し、HPを反映した');
+      const was = edit; edit = null; prefill = null;
+      lastEffects = was ? [] : ((B.records.filter(r => r.kind !== 'log').slice(-1)[0] || {}).effects || []);
+      draw(); toast(was ? '記録を更新した' : '記録を追加し、HPを反映した');
     } catch (e) { toast('入力を確認: ' + errMsg(e)); }
   };
   const actions = (onSubmit, hint) => el('div', { class: 'row', style: 'margin-top:12px' }, el('button', { class: 'btn primary small', onclick: onSubmit }, edit ? '更新' : '追加'),
-    edit ? el('button', { class: 'btn small ghost', onclick: () => { edit = null; refreshForm(); } }, 'キャンセル') : '', hint ? el('small', { class: 'muted' }, hint) : '');
+    edit ? el('button', { class: 'btn small ghost', onclick: () => { edit = null; refreshForm(); } }, 'キャンセル') : '',
+    el('button', { class: 'btn small alt', title: 'ダメ計の技の一覧から、記録したい技を選ぶ', onclick: () => { S.focusMoves = true; location.hash = 'calc'; } }, '技一覧から選ぶ'),
+    hint ? el('small', { class: 'muted' }, hint) : '');
 
   if (f.kind === 'reveal') {
     const typeSel = el('select', {}, ...[['move', '技'], ['ability', '特性'], ['item', '持ち物']].map(([v, t]) => el('option', { value: v, selected: f.reveal_type === v }, t)));
@@ -317,6 +339,7 @@ function buildForm(box) {
   const before = el('input', { type: 'number', value: f.before != null ? f.before : curBefore() });
   const after = el('input', { type: 'number', value: f.after != null ? f.after : '' });
   const ko = el('input', { type: 'checkbox', checked: !!f.cond.ko });
+  const miss = el('input', { type: 'checkbox', checked: !!f.cond.miss });
   const crit = el('input', { type: 'checkbox', checked: !!f.cond.crit });
   const hits = el('select', {}, el('option', { value: '' }, '1回'), ...[2, 3, 4, 5].map(n => el('option', { value: n, selected: f.cond.hits === n }, `${n}回`)));
   mySel.addEventListener('change', () => { mkMove(); if (!edit) before.value = curBefore(); updSummary(); });
@@ -324,7 +347,8 @@ function buildForm(box) {
   mkMove();
   grid.append(lbl(taken ? '攻撃した相手' : '攻撃された相手', oppSel), lbl(taken ? '受けた自分' : '攻撃した自分', mySel), lbl('技', moveBox),
     lbl(taken ? '受ける前のHP（実数）' : '当てる前の相手HP（%）', before), lbl(taken ? '受けた後のHP（実数）' : '当てた後の相手HP（%）', after), lbl('連続技', hits),
-    el('label', { class: 'check' }, ko, 'この攻撃で倒れた'), el('label', { class: 'check' }, crit, '急所'));
+    el('label', { class: 'check' }, ko, 'この攻撃で倒れた'), el('label', { class: 'check' }, crit, '急所'),
+    el('label', { class: 'check', title: '技が外れた・効果がなかったときは、ダメージの逆算に使わない' }, miss, '不発・効果なし'));
   box.append(grid);
 
   const summary = el('div', { class: 'cond-summary' });
@@ -364,9 +388,10 @@ function buildForm(box) {
     else { cond = condFromLive(); delete cond._uncat; }
     if (ko.checked) cond.ko = true;
     if (crit.checked) cond.crit = true;
+    if (miss.checked) cond.miss = true;
     if (hits.value) cond.hits = parseInt(hits.value, 10);
     return { kind: f.kind, opp: oppSel.value, my_index: parseInt(mySel.value, 10), move: moveInfo.id,
-      before: before.value === '' ? null : parseFloat(before.value), after: ko.checked && after.value === '' ? 0 : (after.value === '' ? null : parseFloat(after.value)), cond };
+      before: before.value === '' ? null : parseFloat(before.value), after: ko.checked && after.value === '' ? 0 : (after.value === '' ? (miss.checked && before.value !== '' ? parseFloat(before.value) : null) : parseFloat(after.value)), cond };
   };
   box.append(actions(() => done(collect()), taken ? '自分のHPは実数（画面の数値）' : '相手のHPは画面の%'));
 }
@@ -377,20 +402,25 @@ function refreshRecords() {
   if (!recordsEl || !document.body.contains(recordsEl)) return;
   api('/api/battle').then(b => { B = b; fillRecords(); }).catch(() => {});
 }
-function recordsCard() { recordsEl = el('div', { class: 'card' }); fillRecords(); return recordsEl; }
+function recordsCard() { recordsEl = el('div', { class: 'card rec-card' }); fillRecords(); return recordsEl; }
 function fillRecords() {
   const card = recordsEl; card.innerHTML = '';
-  card.append(el('h2', {}, '記録一覧 ', help('被ダメ・与ダメ・判明は型の逆算に使う。「ログ」は、現在の対面を手で直したときの変化（項目・変化前・変化後）で、逆算には使わない')));
-  if (!B.records.length) { card.append(el('div', { class: 'muted' }, 'まだ記録が無い')); return; }
+  const logN = B.records.filter(r => r.kind === 'log').length;
+  card.append(el('div', { class: 'rec-title' }, el('h2', {}, '記録一覧 ', help('被ダメ・与ダメ・判明は型の逆算に使う。「ログ」は、現在の対面を手で直したときの変化（項目・変化前・変化後）で、逆算には使わない')),
+    el('label', { class: 'check' }, el('input', { type: 'checkbox', checked: showLogs, onchange: (e) => { showLogs = e.target.checked; fillRecords(); } }), `ログを表示${logN ? `（${logN}）` : ''}`)));
+  const rows = B.records.filter(r => showLogs || r.kind !== 'log');
+  if (!rows.length) { card.append(el('div', { class: 'muted' }, 'まだ記録が無い')); return; }
   const list = el('div', { class: 'rec-list' });
-  B.records.forEach((r, i) => {
+  // 新しいものを先頭にする（番号も新しいほど大きい）
+  rows.map((r, i) => [r, i + 1]).reverse().forEach(([r, n]) => {
     const del = el('button', { class: 'btn small ghost', onclick: async () => { B = await api(`/api/battle/records/${r.id}`, { method: 'DELETE' }); draw(); toast('削除した'); } }, '削除');
-    if (r.kind === 'log') { list.append(el('div', { class: 'rec-row log' }, el('div', { class: 'rec-top' }, el('span', { class: 'n' }, i + 1), el('span', { class: 'kind kind-log' }, 'ログ')), el('div', { class: 'muted' }, r.summary), el('div', { class: 'row' }, del))); return; }
+    if (r.kind === 'log') { list.append(el('div', { class: 'rec-row log' }, el('div', { class: 'rec-top' }, el('span', { class: 'n' }, n), el('span', { class: 'kind kind-log' }, 'ログ')), el('div', { class: 'muted' }, r.summary), el('div', { class: 'row' }, del))); return; }
     list.append(el('div', { class: 'rec-row' + (r.feasible === 0 ? ' bad' : '') },
-      el('div', { class: 'rec-top' }, el('span', { class: 'n' }, i + 1), el('span', { class: 'kind kind-' + r.kind }, r.kind_short || r.kind_ja),
+      el('div', { class: 'rec-top' }, el('span', { class: 'n' }, n), el('span', { class: 'kind kind-' + r.kind }, r.kind_short || r.kind_ja),
         r.chip_move && moveType(r.chip_move) ? typeChip(moveType(r.chip_move), '', true) : '',
         r.feasible == null ? '' : el('small', { class: 'muted', title: '観測値と矛盾しない組み合わせの数。0なら入力か条件の誤り' }, `候補 ${r.feasible}`)),
       el('div', {}, r.summary),
+      (r.effects || []).length ? el('div', { class: 'fx-note' }, `反映: ${r.effects.join('・')}`) : '',
       el('div', { class: 'row' },
         el('button', { class: 'btn small ghost', onclick: async () => {
           const e2 = JSON.parse(JSON.stringify(r));
@@ -399,5 +429,15 @@ function fillRecords() {
           if (e2.reveal_value) e2.reveal_value_ja = await jaOf({ item: 'items', move: 'moves', ability: 'abilities' }[e2.reveal_type], e2.reveal_value);
           prefill = null; edit = e2; refreshForm(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }, '編集'), del)));
   });
-  card.append(list);
+  card.append(el('div', { class: 'rec-scroll' }, list));
+  fitRecords();
+}
+// 一覧の高さは、横に並ぶ「記録/逆ダメ計」と同じにする（縦に積むときは固定）。中でスクロールする
+function fitRecords() {
+  requestAnimationFrame(() => {
+    const sc = recordsEl && recordsEl.querySelector('.rec-scroll'), form = $('#rv-form');
+    if (!sc || !form) return;
+    const side = window.innerWidth > 820;
+    sc.style.maxHeight = (side ? Math.max(260, form.offsetHeight - (sc.offsetTop - recordsEl.offsetTop) - 20) : 420) + 'px';
+  });
 }

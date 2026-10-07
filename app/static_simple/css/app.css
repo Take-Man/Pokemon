@@ -422,3 +422,19 @@ details summary { cursor: pointer; font-weight: 700; margin-top: 8px; }
 
 .m-name { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 .rec-go { margin-left: auto; min-height: 28px; padding: 0 10px; font-size: 12px; }
+
+/* 対戦: 記録一覧・構築の詳細・控え相性 */
+.rec-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.rec-title h2 { margin: 0; }
+.rec-scroll { overflow-y: auto; padding-right: 6px; }
+.fx-note { display: inline-block; margin-left: 8px; font-size: 12px; font-weight: 700; color: var(--good); }
+.fold > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 8px; margin: 0; }
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary::before { content: '▸'; font-size: 16px; transition: transform .1s; }
+.fold[open] > summary::before { transform: rotate(90deg); }
+.fold > summary h2 { margin: 0; font-size: 18px; }
+.fold > :not(summary) { margin-top: 12px; }
+.sidebox { padding: 12px; border: 3px solid var(--soft-line); border-radius: var(--radius-s); }
+.sidebox.me { border-color: var(--me); } .sidebox.opp { border-color: var(--opp); }
+.sidebox > h3 { margin-top: 0; font-size: 15px; }
+.results { scroll-margin-top: 90px; }

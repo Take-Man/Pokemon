@@ -189,6 +189,17 @@ def put_team(t: TeamIn):
     return state.save_team({"id": t.id, "name": t.name, "archetype": t.archetype, "members": members})
 
 
+@app.get("/api/teams/{tid}")
+def get_team_by_id(tid: str):
+    """保存済みのパーティ1つ（評価画面など、選択中以外のパーティを見るとき）。"""
+    t = next((x for x in state.list_teams() if x.get("id") == tid), None)  # load_team は無いidだと新規作成してしまうので使わない
+    if not t:
+        raise HTTPException(404)
+    t = dict(t)
+    t["archetypes"] = state.ARCHETYPES
+    return t
+
+
 @app.get("/api/teams")
 def get_teams():
     D = dex()
@@ -637,7 +648,7 @@ def get_matches(limit: int = 200):
         d = m.get("detail") or {}
         out.append({"id": m["id"], "created_at": m["created_at"], "opp": m["opp"],
                     "opp_ja": [D.pokemon[s]["ja"] for s in m["opp"] if D.pokemon.get(s)],
-                    "team_name": m.get("team_name"), "current": m["id"] == cur, "has_detail": bool(d),
+                    "team_name": m.get("team_name"), "team_id": m.get("team_id"), "current": m["id"] == cur, "has_detail": bool(d),
                     "records": len(d.get("records", [])), "result": d.get("result"),
                     "opp_picks_ja": [D.pokemon[s]["ja"] for s in d.get("opp_picks", []) if D.pokemon.get(s)]})
     return out
@@ -776,6 +787,8 @@ def _record_dict(r: RecordIn, mid: str) -> dict:
             raise HTTPException(400, "自分のポケモン")
         if not r.move or not D.moves.get(r.move):
             raise HTTPException(400, "技")
+        if r.after is None and (r.cond or {}).get("miss"):
+            r.after = r.before if r.before is not None else (0 if r.kind == "taken" else 100)  # 不発・効果なしはHPが変わらない
         if r.after is None:
             raise HTTPException(400, "受けた後のHP／当てた後の%")
         d["move"] = D.moves[r.move]["id"]
@@ -795,9 +808,8 @@ def add_battle_record(r: RecordIn):
     from . import matches
 
     mid = _current_match_id()
-    rec = _record_dict(r, mid)
-    matches.add_record(mid, rec)
-    matches.apply_record_effect(mid, rec)
+    rec = matches.add_record(mid, _record_dict(r, mid))
+    matches.set_record_effects(mid, rec["id"], matches.apply_record_effect(mid, rec))
     return _bv()
 
 

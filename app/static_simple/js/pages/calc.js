@@ -81,8 +81,8 @@ function liveStrip() {
   const a = C.live;
   const side = (cls, name) => el('span', { class: 'live-side ' + cls }, name ? monLabel(name) : el('span', { class: 'muted' }, '未選択'));
   return el('div', { class: 'card live-strip' },
-    el('div', { class: 'live-names' }, el('b', {}, '対戦の対面 ', help('逆ダメ計で場に出している2体。対面や記録が変わると、ここの設定がその状態に入れ替わる。ここで変えた内容は試すだけで、逆ダメ計には反映されない')),
-      a ? [side('me', a.me && a.me.battle_ja), el('span', { class: 'muted' }, 'VS'), side('opp', a.opp && (a.opp.battle_ja || a.opp.ja))] : el('span', { class: 'muted' }, ['なし（', el('a', { href: '#reverse' }, '逆ダメ計'), 'で選出を選ぶと出る）'])),
+    el('div', { class: 'live-names' }, el('b', {}, '対戦の対面 ', help('対戦で場に出している2体。対面や記録が変わると、ここの設定がその状態に入れ替わる。ここで変えた内容は試すだけで、対戦には反映されない')),
+      a ? [side('me', a.me && a.me.battle_ja), el('span', { class: 'muted' }, 'VS'), side('opp', a.opp && (a.opp.battle_ja || a.opp.ja))] : el('span', { class: 'muted' }, ['なし（', el('a', { href: '#reverse' }, '対戦'), 'で選出を選ぶと出る）'])),
     el('button', { class: 'btn small alt', disabled: !a, onclick: async () => { await syncFromBattle(a); C.syncSig = a.sig; await redraw(); toast('対戦の対面に戻した'); } }, '対戦の対面に戻す'));
 }
 
@@ -196,7 +196,7 @@ const KO_HOT = (ko) => /^(確定1|乱数1)/.test(ko);
 function recordBtn(x, side) {
   if (!C.live || (side === 'me' && x.category === 'Status')) return '';
   const kind = side === 'me' ? 'dealt' : x.category === 'Status' ? 'reveal' : 'taken';
-  return el('button', { class: 'btn small ghost rec-go', title: kind === 'reveal' ? '相手が使った技として、逆ダメ計に記録する' : '逆ダメ計に記録する',
+  return el('button', { class: 'btn small ghost rec-go', title: kind === 'reveal' ? '相手が使った技として、対戦に記録する' : '対戦に記録する',
     onclick: () => prefillRecord({ kind, move: x.move_id, move_ja: x.move, opp: C.opp.species, mySpecies: C.me.species }) }, '記録→');
 }
 
@@ -292,5 +292,6 @@ const run = debounce(async () => {
     out.append(el('div', { class: 'grid2 results', style: 'margin-top:18px' },
       col('me', el('span', {}, monLabel(r.me.ja), ' → ', monLabel(r.opp.ja)), `相手のHP ${r.opp.current_hp} / ${r.opp.stats.hp}`, r.to_opp, '技が未設定。状態設定の「自分の技」で入れる', 'me'),
       col('opp', el('span', {}, monLabel(r.opp.ja), ' → ', monLabel(r.me.ja)), `自分のHP ${r.me.current_hp} / ${r.me.stats.hp}`, r.to_me, '技のデータがない', 'opp')), ladder);
+    if (S.focusMoves) { S.focusMoves = false; const t = out.querySelector('.results'); if (t) setTimeout(() => t.scrollIntoView({ block: 'start' }), 60); }  // 対戦の「技一覧から選ぶ」から来たとき
   } catch (e) { out.textContent = '計算エラー: ' + e.message; }
 }, 200);

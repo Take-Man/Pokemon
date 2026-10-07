@@ -45,6 +45,8 @@ def _cond_text(c: dict) -> str:
         parts.append(f"{c['hits']}回")
     if c.get("ko"):
         parts.append("倒れた")
+    if c.get("miss"):
+        parts.append("不発・効果なし")
     return "・".join(parts)
 
 
@@ -58,6 +60,8 @@ def record_summary(r: dict) -> str:
     my = D.pokemon[r["my"]["species"]]["ja"] if r.get("my") else "?"
     mv = D.ja("moves", r.get("move"))
     c = _cond_text(r.get("cond") or {})
+    if (r.get("cond") or {}).get("miss"):
+        return f"{opp}の{mv} → {my}" if r["kind"] == "taken" else f"{my}の{mv} → {opp}"
     if r["kind"] == "taken":
         b, a = r.get("before"), r.get("after")
         val = f"HP {b}→{a}（{(b or 0) - (a or 0)}ダメージ）" if b is not None else f"残りHP {a}"

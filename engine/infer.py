@@ -293,7 +293,8 @@ def infer(opp: str, records: list[Record], snap: Optional[dict] = None, mega_hin
     D = dex()
     snap = snap if snap is not None else load_snapshot()
     recs = [r for r in records if r.opp == opp]
-    dmg_recs = [r for r in recs if r.kind in ("taken", "dealt") and r.move and D.moves.get(r.move)]
+    dmg_recs = [r for r in recs if r.kind in ("taken", "dealt") and r.move and D.moves.get(r.move)
+                and not (r.cond or {}).get("miss")]  # 不発・効果なしの技は、ダメージの逆算に使わない
     mega = mega_hint or any(Cond.from_dict(r.cond).opp_mega for r in recs)
     known_item = _known(recs, "item")
     _MEGA_PREF.pop(D.pokemon[opp]["id"], None)
