@@ -30,9 +30,19 @@ const moveName = (name, id) => el('span', { class: 'mv' }, moveType(id) ? typeCh
 const rankText = (v) => v > 0 ? `+${v}` : `${v}`;
 const errMsg = (e) => { try { return JSON.parse(e.message).detail; } catch (_) { return e.message; } };
 
-const put = async (patch) => { B = await api('/api/battle', { method: 'PUT', body: patch }); draw(); };
-const livePut = (patch) => api('/api/battle/live', { method: 'PUT', body: patch }).then(v => { B = v; return v; });
-const livePutLater = debounce(async (patch) => { await livePut(patch); refreshRecords(); }, 400);
+// 続けて変えたときは0.4秒待ってまとめて送る（間に別のポケモン・項目を変えても取りこぼさないよう、変更を重ねていく）
+const deepMerge = (a, b) => { for (const [k, v] of Object.entries(b)) a[k] = v && typeof v === 'object' && !Array.isArray(v) ? deepMerge(a[k] && typeof a[k] === 'object' ? a[k] : {}, v) : v; return a; };
+let pendingLive = null;
+// すぐ送るときは、待っている変更も一緒に送る（古い状態で描き直さないため）
+const livePut = (patch) => {
+  if (pendingLive) { patch = deepMerge(pendingLive, patch); pendingLive = null; }
+  return api('/api/battle/live', { method: 'PUT', body: patch }).then(v => { B = v; return v; });
+};
+const flushLive = debounce(async () => { const patch = pendingLive; pendingLive = null; if (patch) { await livePut(patch); refreshRecords(); } }, 400);
+const livePutLater = (patch) => { pendingLive = deepMerge(pendingLive || {}, patch); flushLive(); };
+// 待っている変更があれば先に送る（他のタブへ移る・記録する前）
+const flushNow = () => pendingLive ? livePut({}) : Promise.resolve();
+const put = async (patch) => { await flushNow(); B = await api('/api/battle', { method: 'PUT', body: patch }); draw(); };
 
 export default {
   key: 'reverse', label: '対戦', badge: '4',
@@ -42,6 +52,7 @@ export default {
     try { B = await api('/api/battle'); } catch (e) { B = { match: null }; }
     draw();
   },
+  leave: () => flushNow().catch(() => {}),
 };
 
 function draw() {
@@ -296,6 +307,7 @@ function buildForm(box) {
   const lbl = (t, n) => el('label', { class: 'f' }, t, n);
   const done = async (body) => {
     try {
+      await flushNow();
       B = edit ? await api(`/api/battle/records/${edit.id}`, { method: 'PUT', body }) : await api('/api/battle/records', { method: 'POST', body });
       const was = edit; edit = null; prefill = null;
       lastEffects = was ? [] : ((B.records.filter(r => r.kind !== 'log').slice(-1)[0] || {}).effects || []);
@@ -403,9 +415,10 @@ function buildForm(box) {
 
 // ---- 記録一覧 ----
 let recordsEl = null;
+// 現在の対面を変えたあと、ログが増えた一覧を出し直す（保存の応答で B は最新になっている）
 function refreshRecords() {
   if (!recordsEl || !document.body.contains(recordsEl)) return;
-  api('/api/battle').then(b => { B = b; fillRecords(); }).catch(() => {});
+  fillRecords();
 }
 function recordsCard() { recordsEl = el('div', { class: 'card rec-card' }); fillRecords(); return recordsEl; }
 function fillRecords() {

@@ -18,9 +18,12 @@ function renderNav(cur) {
   }
 }
 
+let current = null;
 async function show() {
   const key = location.hash.slice(1) || 'team';
   const page = pages.find(p => p.key === key) || pages[0];
+  if (current && current.leave) await current.leave();  // 前の画面の保存待ちを済ませてから次の画面を読む
+  current = page;
   renderNav(page.key);
   const view = $('#view'); view.innerHTML = '';
   try { await page.render(view); } catch (e) { console.error(e); banner(`${page.label}の表示に失敗: ${e.message}`); }

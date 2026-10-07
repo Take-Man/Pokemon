@@ -13,6 +13,7 @@ const RANK_LABEL = { atk: 'こうげき', def: 'ぼうぎょ', spa: 'とくこ�
 
 const jaOf = async (kind, id) => {
   if (!id) return '';
+  if (kind === 'moves' && S.types && S.types.moves[id]) return S.types.moves[id][1];  // 技名は読み込み済みの一覧から引く
   const r = await api(`/api/search?kind=${kind}&q=${encodeURIComponent(id)}&limit=1&include_mega=true`);
   return r[0] ? r[0].ja : id;
 };
@@ -26,27 +27,33 @@ async function setFromSet(side, set, ja) {
   if (set.item && d.megas.some(m => m.item === set.item)) x.mega = true;
 }
 
+// タブを開いたとき: パーティ・相手・予想・対戦の対面をまとめて取り直してから描く
 async function draw(view) {
-  await loadMeta();
+  const [, team, o, pred, live] = await Promise.all([loadMeta(), api('/api/team'), api('/api/opponent'),
+    api('/api/predict').catch(() => null), battleLive()]);
+  C.myTeam = team.members.filter(m => m.species);
+  C.oppIds = o.species.map((id, i) => ({ id, ja: o.ja[i] }));
+  C.pred = pred;
+  // 逆ダメ計の現在の対面が変わっていたら、ダメ計に写す。変わっていなければ、試している内容をそのまま残す
+  C.live = live;
+  if (C.live && C.live.sig !== C.syncSig) { await syncFromBattle(C.live); C.syncSig = C.live.sig; }
+  render(view);
+}
+
+// 画面の中の操作（ポケモンを選ぶ・対面に戻す）: 取り直さずに描き直す
+function render(view) {
   const y = window.scrollY;
   view.innerHTML = '';
-  C.myTeam = (await api('/api/team')).members.filter(m => m.species);
-  const o = await api('/api/opponent');
-  C.oppIds = o.species.map((id, i) => ({ id, ja: o.ja[i] }));
-  try { C.pred = await api('/api/predict'); } catch (e) { C.pred = null; }
-  // 逆ダメ計の現在の対面が変わっていたら、ダメ計に写す。変わっていなければ、試している内容をそのまま残す
-  C.live = await battleLive();
-  if (C.live && C.live.sig !== C.syncSig) { await syncFromBattle(C.live); C.syncSig = C.live.sig; }
   view.append(lead('3', 'ダメ計'));
   view.append(liveStrip());
   view.append(el('div', { class: 'duel' }, selectList('me'), el('div', { class: 'vs' }, 'VS'), selectList('opp')), settingsCard(), el('div', { id: 'calc-out' }));
   window.scrollTo(0, y);
-  run();
+  runNow();
 }
 
 export default { key: 'calc', label: 'ダメ計', badge: '3', render: draw };
 
-const redraw = () => draw($('#view'));
+const redraw = () => render($('#view'));
 
 // ---- 逆ダメ計の「現在の対面」 ----
 async function battleLive() {
@@ -68,6 +75,7 @@ async function syncFromBattle(a) {
   }
   if (opp) {
     await setFromSet('opp', opp.set, opp.ja);
+    C.opp.base = opp.base_species;  // 型がメガ後の姿でも、一覧ではメガ前の名前に印を付ける
     const x = C.opp, mon = lv.opp[opp.base_species] || {};
     x.hp_percent = Math.max(1, mon.hp == null ? 100 : mon.hp); x.status = mon.status || 'none'; x.boosts = { ...(mon.boosts || {}) };
     scr(x, lv.field.opp_screen);
@@ -97,11 +105,12 @@ function selectList(side) {
   }
   const col = el('div', { class: 'pick-col' });
   for (const it of list) {
-    col.append(el('button', { class: 'pick-btn' + (x.species === it.key ? ' on' : ''), onclick: async () => {
+    col.append(el('button', { class: 'pick-btn' + ((x.base || x.species) === it.key ? ' on' : ''), onclick: async () => {
       if (isMe) await setFromSet('me', it.set, it.ja);
       else {
         const p = C.pred && (C.pred.opponent || []).find(q => q.species === it.key);
         if (p) await setFromSet('opp', p.set, p.ja); else { const d = await dexInfo(it.key); await setFromSet('opp', d.likely_set, d.ja); }
+        C.opp.base = it.key;
       }
       redraw();
     } }, monLabel(it.ja, true)));
@@ -232,13 +241,14 @@ function speedCard(r) {
     const x = C[side];
     const label = el('b', { class: 'stage' }, stageText(x.boosts.spe || 0));
     const range = el('input', { type: 'range', min: -6, max: 6, step: 1, value: x.boosts.spe || 0, 'aria-label': (side === 'me' ? '自分' : '相手') + 'の素早さランク' });
-    const set = (v) => { v = Math.max(-6, Math.min(6, v)); x.boosts.spe = v; range.value = v; label.textContent = stageText(v); sync(side); refresh(); };
+    const set = (v) => { v = Math.max(-6, Math.min(6, v)); x.boosts.spe = v; range.value = v; label.textContent = stageText(v); sync(side); refresh(null); };
     range.addEventListener('input', () => set(parseInt(range.value, 10)));
     return el('div', { class: 'sctl ' + side }, el('div', { class: 'sctl-head' }, el('span', {}, 'ランク'), label),
       el('button', { class: 'mini', 'aria-label': 'ランクを上げる', onclick: () => set((x.boosts.spe || 0) + 1) }, '＋'), range,
       el('button', { class: 'mini', 'aria-label': 'ランクを下げる', onclick: () => set((x.boosts.spe || 0) - 1) }, '−'));
   };
-  const refresh = debounce(async () => {
+  // mySpeed: 自分の素早さが計算済みならそれを使う（初回はダメ計の結果にある）。スライダーを動かしたら計算し直す
+  const refresh = debounce(async (mySpeed) => {
     const dex = await dexInfo(op.species);
     let spe = dex.speed;
     if (op.mega) { const mg = dex.megas.find(m => m.item === op.item); if (mg) spe = (await dexInfo(mg.id)).speed; }
@@ -248,13 +258,13 @@ function speedCard(r) {
     const me = C.me;
     const side = (x, isMe) => ({ species: x.species, nature: x.nature, sp: x.sp, ability: x.ability, item: x.item, boosts: x.boosts, status: x.status && x.status !== 'none' ? x.status : null,
       hp_percent: x.hp_percent, hp: isMe && x.hp != null ? x.hp : null, mega: x.mega, moves: [] });
-    const rr = await api('/api/calc/duel', { method: 'POST', body: { me: side(me, true), opp: side(op, false), my_moves: [], opp_moves: [], weather: C.weather || null, terrain: C.terrain || null, log: false } });
+    if (mySpeed == null) mySpeed = (await api('/api/calc/duel', { method: 'POST', body: { me: side(me, true), opp: side(op, false), my_moves: [], opp_moves: [], weather: C.weather || null, terrain: C.terrain || null, log: false } })).me.speed;
     const rows = [
       { side: 'opp', label: '最速スカーフ', v: adj(spe['最速'], true), tip: '性格補正あり・能力ポイント最大＋こだわりスカーフ' },
       { side: 'opp', label: '最速', v: adj(spe['最速']), tip: 'すばやさ↑の性格・能力ポイント最大' },
       { side: 'opp', label: '準速', v: adj(spe['準速']), tip: '性格補正なし・能力ポイント最大' },
       { side: 'opp', label: '無振り', v: adj(spe['無振り']), tip: '性格補正なし・能力ポイント0' },
-      { side: 'me', label: me.ja, v: rr.me.speed },
+      { side: 'me', label: me.ja, v: mySpeed },
     ].sort((a, b) => b.v - a.v || (a.side === 'me' ? 1 : -1));
     box.innerHTML = '';
     for (const x of rows) box.append(el('div', { class: 'lrow ' + x.side },
@@ -262,12 +272,13 @@ function speedCard(r) {
       el('div', { class: 'lnum' }, x.v),
       el('div', { class: 'lcell r', title: x.tip || '' }, x.side === 'opp' ? el('span', { class: 'lbadge opp' }, el('small', {}, op.ja), x.label) : '')));
   }, 80);
-  refresh();
+  refresh(r.me.speed);
   return el('div', { class: 'card speed' }, el('h2', {}, '素早さ ', help('相手の努力値は分からないので、よくある型の素早さを並べている。大きい方が先に動く（トリックルーム中は逆）。左右のスライダーで素早さのランクを上げ下げした後の比較ができる')),
     el('div', { class: 'sbody' }, ctl('me'), box, ctl('opp')));
 }
 
-const run = debounce(async () => {
+// 入力中は0.2秒待ってから計算する（run）。画面を描いたときはすぐ計算する（runNow）
+const runNow = async () => {
   const out = $('#calc-out'); if (!out) return;
   const me = C.me, op = C.opp;
   if (!me.species || !op.species) {
@@ -294,4 +305,5 @@ const run = debounce(async () => {
       col('opp', el('span', {}, monLabel(r.opp.ja), ' → ', monLabel(r.me.ja)), `自分のHP ${r.me.current_hp} / ${r.me.stats.hp}`, r.to_me, '技のデータがない', 'opp')), ladder);
     if (S.focusMoves) { S.focusMoves = false; const t = out.querySelector('.results'); if (t) setTimeout(() => t.scrollIntoView({ block: 'start' }), 60); }  // 対戦の「技一覧から選ぶ」から来たとき
   } catch (e) { out.textContent = '計算エラー: ' + e.message; }
-}, 200);
+};
+const run = debounce(runNow, 200);
