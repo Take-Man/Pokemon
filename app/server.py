@@ -1,13 +1,11 @@
 """ローカルWebアプリ（FastAPI）。起動: python -m app  →  http://127.0.0.1:8765"""
 from __future__ import annotations
 
-import os
 import threading
 from pathlib import Path
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException
-import hashlib
 
 from fastapi import Request
 from fastapi.responses import HTMLResponse, PlainTextResponse
@@ -24,10 +22,7 @@ from engine.stats import Build, speed_variants, validate_sp
 
 from . import state
 
-# 画面の切替: APP_UI=simple で新UI（app/static_simple）、未指定は現行UI（app/static）。python -m app --ui simple が設定する
-UI = os.environ.get("APP_UI", "classic")
-STATIC = Path(__file__).parent / ("static_simple" if UI == "simple" else "static")
-# 画面(app.js)とサーバのAPIの世代。app.js の APP_API_VERSION と一致しなければ画面に再起動を促す表示を出す
+STATIC = Path(__file__).parent / "static"
 API_VERSION = 10
 app = FastAPI(title="Pokemon Battle Assistant")
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
@@ -35,13 +30,9 @@ _pred_lock = threading.Lock()
 NO_CACHE = {"Cache-Control": "no-cache, no-store, must-revalidate"}
 
 
-def _file_hash(name: str) -> str:
-    return hashlib.sha1((STATIC / name).read_bytes()).hexdigest()[:10]
-
-
 @app.middleware("http")
 async def no_cache_static(request: Request, call_next):
-    """ブラウザが古い app.js / style.css を使い続けないようにする。"""
+    """ブラウザが古い画面のファイルを使い続けないようにする。"""
     resp = await call_next(request)
     if request.url.path.startswith("/static/") or request.url.path == "/":
         for k, v in NO_CACHE.items():
@@ -51,11 +42,7 @@ async def no_cache_static(request: Request, call_next):
 
 @app.get("/", response_class=HTMLResponse)
 def index():
-    html = (STATIC / "index.html").read_text(encoding="utf-8")
-    if UI != "simple":
-        html = html.replace("/static/app.js", f"/static/app.js?v={_file_hash('app.js')}")
-        html = html.replace("/static/style.css", f"/static/style.css?v={_file_hash('style.css')}")
-    return HTMLResponse(html, headers=NO_CACHE)
+    return HTMLResponse((STATIC / "index.html").read_text(encoding="utf-8"), headers=NO_CACHE)
 
 
 # ---- 参照系 -----------------------------------------------------------------

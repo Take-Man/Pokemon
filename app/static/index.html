@@ -3,151 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>対戦サポート</title>
-<link rel="stylesheet" href="/static/style.css">
+<title>対戦サポート Simple</title>
+<link rel="stylesheet" href="/static/css/tokens.css">
+<link rel="stylesheet" href="/static/css/app.css">
 </head>
 <body>
-<header>
-  <h1>対戦サポート</h1>
-  <nav id="tabs">
-    <button data-tab="select" class="active">選出</button>
-    <button data-tab="battle">対戦</button>
-    <button data-tab="calc">ダメ計</button>
-    <button data-tab="speed">素早さ</button>
-    <button data-tab="dex">図鑑・型</button>
-    <button data-tab="types">タイプ相性</button>
-    <button data-tab="team">パーティ</button>
-    <button data-tab="history">履歴</button>
-  </nav>
-  <div id="status"></div>
+<header class="top">
+  <div class="brand"><span class="logo"><svg viewBox="0 0 24 24" width="18" height="18" fill="#1f1b3a"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></span><b>対戦サポート</b></div>
+  <nav id="nav" class="steps" aria-label="画面"></nav>
 </header>
-
-<main>
-  <!-- 選出 -->
-  <section id="tab-select" class="tab active">
-    <div class="row">
-      <div class="panel grow">
-        <h2>相手の6体 <small>名前を入力してEnter。スクショ判定結果は自動で反映</small> <span id="sel-team" style="float:right"></span></h2>
-        <div id="opp-slots" class="slots"></div>
-        <div class="actions">
-          <button id="btn-predict" class="primary">選出予想</button>
-          <button id="btn-opp-clear">クリア</button>
-          <span id="job-status" class="muted"></span>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="panel grow">
-        <h2>相手の選出予想 <small id="pred-source"></small></h2>
-        <div id="pred-opp"></div>
-      </div>
-      <div class="panel grow">
-        <h2>推奨選出</h2>
-        <div id="pred-rec"></div>
-      </div>
-    </div>
-    <div class="panel">
-      <h2>対面表 <small>行=自分 / 列=相手。セルは「自分の最大打点 / 相手の最大打点」、色は有利不利。* は実戦データ（倒した/倒されたポケモン）で補正</small></h2>
-      <div id="pred-matrix" class="scroll-x"></div>
-    </div>
-  </section>
-
-  <!-- 対戦モード -->
-  <section id="tab-battle" class="tab">
-    <div class="panel" id="bt-head"></div>
-    <div class="panel" id="bt-picks"></div>
-    <div class="panel"><h2>現在の対面 <small>カードを押して場に出ているポケモンを選ぶ。HP・状態異常・ランク・場の状態は記録の条件に使い、記録するとHPを更新</small></h2><div id="bt-live"></div></div>
-    <div class="row">
-      <div class="panel grow"><h2>記録を追加 <small>被ダメ・与ダメから相手の性格・能力ポイント・持ち物・特性を逆算</small></h2><div id="bt-form"></div></div>
-      <div class="panel grow"><h2>記録一覧</h2><div id="bt-records"></div></div>
-    </div>
-    <div class="row">
-      <div class="panel grow bt-col side-me"><h2>自分の選出</h2><div id="bt-mine"></div></div>
-      <div class="panel grow bt-col side-opp"><h2>相手の選出 <small><span class="src src-confirmed">確定</span><span class="src src-inferred">逆算</span><span class="src src-usage">採用率</span><span class="src src-estimate">推定</span></small></h2><div id="bt-opp"></div></div>
-    </div>
-    <div class="panel"><h2>対面と素早さ <small>上段: 自分の最大打点、下段: 相手の最大打点。緑は有利、赤は不利</small></h2>
-      <div class="row bt-mxrow"><div class="bt-mx" id="bt-matrix"></div><div class="bt-sp" id="bt-speed"></div></div>
-    </div>
-  </section>
-
-  <!-- 履歴 -->
-  <section id="tab-history" class="tab">
-    <div class="panel">
-      <h2>相手の6体の履歴 <small>選出予想を押した時点で保存。「呼び出す」で選出タブに入れる。対戦モードの記録がある対戦には記録数を表示</small></h2>
-      <div id="history"></div>
-    </div>
-  </section>
-
-  <!-- ダメ計 -->
-  <section id="tab-calc" class="tab">
-    <div class="row">
-      <div class="panel grow side-me" id="calc-me"></div>
-      <div class="calc-mid"><div id="calc-now"></div><button id="calc-reset" title="対戦タブの「現在の対面」と同じ2体・HP・状態異常・ランク・場の状態に戻す">対戦の対面に<br>戻す</button></div>
-      <div class="panel grow side-opp" id="calc-opp"></div>
-    </div>
-    <div class="panel">
-      <div class="field-row">
-        <label>天候 <select id="f-weather"><option value="">なし</option><option value="sun">晴れ</option><option value="rain">雨</option><option value="sand">砂嵐</option><option value="snow">雪</option></select></label>
-        <label>フィールド <select id="f-terrain"><option value="">なし</option><option value="electric">エレキ</option><option value="grassy">グラス</option><option value="psychic">サイコ</option><option value="misty">ミスト</option></select></label>
-        <label><input type="checkbox" id="f-crit"> 急所</label>
-      </div>
-      <div id="calc-results"></div>
-    </div>
-  </section>
-
-  <!-- 素早さ -->
-  <section id="tab-speed" class="tab">
-    <div class="panel">
-      <h2>素早さ比較 <small>自分のパーティの実数値と、相手6体の最速・準速・スカーフ・メガ</small></h2>
-      <div id="speed-table"></div>
-    </div>
-  </section>
-
-  <!-- 図鑑・型 -->
-  <section id="tab-dex" class="tab">
-    <div class="panel">
-      <div id="dex-picker"></div>
-      <div id="dex-body"></div>
-    </div>
-  </section>
-
-  <!-- タイプ相性 -->
-  <section id="tab-types" class="tab">
-    <div class="row">
-      <div class="panel grow"><h2>フォーカスするタイプ <small>最大2つ。表の見出しを押しても選べる</small></h2><div id="ty-pick" class="ty-pick"></div></div>
-      <div class="panel grow"><h2>該当ポケモン <small>1タイプなら単タイプのみ、2タイプならその複合。押すと図鑑・型で開く</small></h2><div id="ty-mons"></div></div>
-    </div>
-    <div class="row ty-three">
-      <div class="panel grow"><h2>攻撃時 <small>フォーカスしたタイプの技で攻撃したとき（等倍は省略）</small></h2><div id="ty-atk"></div></div>
-      <div class="panel grow"><h2>防御時 <small>このタイプのポケモンが受けるとき（等倍は省略）</small></h2><div id="ty-def"></div></div>
-      <div class="panel grow"><h2>弱点メタ <small>抜群を取ってくるタイプ（単タイプ）のうち、いくつに抜群を取れるか</small></h2><div id="ty-counter"></div></div>
-    </div>
-    <div class="panel">
-      <h2>タイプ相性表 <small>行＝攻撃、列＝防御</small></h2>
-      <div id="ty-chart" class="scroll-x"></div>
-    </div>
-  </section>
-
-  <!-- パーティ -->
-  <section id="tab-team" class="tab">
-    <div class="panel">
-      <div id="team-bar" class="team-bar"></div>
-      <small class="muted">能力ポイント: 合計66・各32まで。変更は自動保存（0.5秒後）。確実に残すときは「保存」</small>
-      <div id="team-cards" class="cards"></div>
-    </div>
-    <div class="row">
-      <div class="panel grow">
-        <h2>構築診断 <small>役割は型から自動判定。使用率上位30体との対面・タイプの重なり・構築の型に必要な役割を確認</small></h2>
-        <div id="diag"></div>
-      </div>
-      <div class="panel grow">
-        <h2>能力ポイント調整 <small>仮想敵の技を耐える最小H/B・H/D、または倒すのに必要な最小A/C</small></h2>
-        <div id="tune"></div>
-      </div>
-    </div>
-  </section>
-</main>
-<div id="toast"></div>
-<script src="/static/app.js"></script>
+<div id="banner" class="banner" hidden></div>
+<main id="view"></main>
+<div id="toast" role="status"></div>
+<script type="module" src="/static/js/main.js"></script>
 </body>
 </html>

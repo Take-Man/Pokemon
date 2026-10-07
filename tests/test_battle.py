@@ -141,18 +141,6 @@ def test_zero_after_is_ko_and_spread_total():
     assert sum(b["sp"].values()) <= 66
 
 
-def test_index_has_cache_busting():
-    from fastapi.testclient import TestClient
-
-    from app.server import API_VERSION, app
-
-    c = TestClient(app)
-    r = c.get("/")
-    assert "/static/app.js?v=" in r.text and "no-cache" in r.headers["cache-control"]
-    assert c.get("/api/meta").json()["api_version"] == API_VERSION
-    js = c.get("/static/app.js").text
-    assert f"APP_API_VERSION = {API_VERSION}" in js
-
 
 def test_every_status_move_has_effect_text():
     import json
