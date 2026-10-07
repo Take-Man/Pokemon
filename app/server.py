@@ -2,12 +2,11 @@
 from __future__ import annotations
 
 import threading
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException
-
-from fastapi import Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -24,7 +23,25 @@ from . import state
 
 STATIC = Path(__file__).parent / "static"
 API_VERSION = 10
-app = FastAPI(title="Pokemon Battle Assistant")
+
+
+def _warm_up() -> None:
+    """起動直後に現在の対戦の逆算を済ませておく（対戦中に再起動しても、最初の表示で待たせない）。"""
+    try:
+        from . import battle
+
+        battle.view()
+    except Exception:  # noqa: BLE001
+        pass
+
+
+@asynccontextmanager
+async def lifespan(_app):
+    threading.Thread(target=_warm_up, daemon=True).start()
+    yield
+
+
+app = FastAPI(title="Pokemon Battle Assistant", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 _pred_lock = threading.Lock()
 NO_CACHE = {"Cache-Control": "no-cache, no-store, must-revalidate"}

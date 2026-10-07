@@ -264,3 +264,18 @@ def test_duel_walls_are_even():
     a = MonSet("hippowdon", "impish", {"hp": 32, "def": 32}, "Sand Stream", None, ["slackoff"])
     b = MonSet("garchomp", "jolly", {"atk": 32}, "Rough Skin", None, ["swordsdance"])
     assert duel(a, b)["score"] == 0.5
+
+
+def test_feasible_cache_matches_uncached_and_tracks_record_changes():
+    """記録ごとの逆算は結果を覚えておくが、内容が変われば計算し直す（idや日時は関係しない）。"""
+    from engine.infer import feasible_taken
+
+    items, abilities = ["other", "lifeorb"], ["Rough Skin"]
+    rec = _taken()
+    first = feasible_taken(rec, items, abilities, False)
+    assert first[1] == frozenset(feasible_taken.__wrapped__(rec, items, abilities, False)[1])
+    same = Record("other-id", rec.kind, rec.opp, rec.my, rec.move, rec.before, rec.after, dict(rec.cond))
+    assert feasible_taken(same, items, abilities, False) is first
+    changed = _taken(roll_index=0)
+    assert feasible_taken(changed, items, abilities, False)[1] == \
+        frozenset(feasible_taken.__wrapped__(changed, items, abilities, False)[1])

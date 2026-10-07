@@ -15,8 +15,12 @@
 """
 from __future__ import annotations
 
+import json
+import threading
+from collections import OrderedDict
 from dataclasses import dataclass, field
-from typing import Optional
+from functools import lru_cache
+from typing import Callable, Optional
 
 from .damage import SPECIAL_PHYSICAL_DEF, Field, Options, Result, Side, calc
 from .data import STATS, dex, to_id
@@ -216,6 +220,34 @@ def _observed_ok(totals: list[int], hp: int, r: Record, c: Cond, as_percent: boo
     return before - after in totals
 
 
+# 記録ごとの可能集合は、記録の内容・候補・相手の姿が同じなら変わらない。HP・ランクの変更や
+# 他の相手の記録の追加では再計算しないよう、結果を覚えておく（全列挙は1記録0.1〜0.5秒かかる）
+_FEASIBLE_CACHE: "OrderedDict[str, tuple[str, frozenset]]" = OrderedDict()
+_FEASIBLE_MAX = 1024
+_FEASIBLE_LOCK = threading.Lock()
+
+
+def _memo_feasible(fn: Callable) -> Callable:
+    def wrapper(r: Record, items: list[str], abilities: list[str], mega: bool) -> tuple[str, frozenset]:
+        key = json.dumps([fn.__name__, r.kind, r.opp, r.my, r.move, r.before, r.after, r.cond, items, abilities,
+                          mega, _opp_species(r.opp, mega)], sort_keys=True, default=str)
+        with _FEASIBLE_LOCK:
+            hit = _FEASIBLE_CACHE.get(key)
+            if hit is not None:
+                _FEASIBLE_CACHE.move_to_end(key)
+                return hit
+        stat, F = fn(r, items, abilities, mega)
+        hit = (stat, frozenset(F))
+        with _FEASIBLE_LOCK:
+            _FEASIBLE_CACHE[key] = hit
+            if len(_FEASIBLE_CACHE) > _FEASIBLE_MAX:
+                _FEASIBLE_CACHE.popitem(last=False)
+        return hit
+    wrapper.__name__, wrapper.__doc__, wrapper.__wrapped__ = fn.__name__, fn.__doc__, fn
+    return wrapper
+
+
+@_memo_feasible
 def feasible_taken(r: Record, items: list[str], abilities: list[str], mega: bool) -> tuple[str, set]:
     """相手→自分。返り値: (関係するステータス, {(補正, 持ち物, 特性, SP)})"""
     D = dex()
@@ -247,6 +279,7 @@ def feasible_taken(r: Record, items: list[str], abilities: list[str], mega: bool
     return stat, out
 
 
+@_memo_feasible
 def feasible_dealt(r: Record, items: list[str], abilities: list[str], mega: bool) -> tuple[str, set]:
     """自分→相手。返り値: (防御ステータス, {(補正, 持ち物, 特性, HPのSP, 防御のSP)})"""
     D = dex()
@@ -384,8 +417,11 @@ def _item_rate(item: str, rates: dict) -> float:
     return rates.get(item, 1.0)
 
 
-def _index(kind: str, F: set) -> dict:
-    """可能集合を (補正, 持ち物, 特性) で引けるようにする。taken: SPの集合 / dealt: {HPのSP: 防御のSPの集合}"""
+@lru_cache(maxsize=256)
+def _index(kind: str, F: frozenset) -> dict:
+    """可能集合を (補正, 持ち物, 特性) で引けるようにする。taken: SPの集合 / dealt: {HPのSP: 防御のSPの集合}
+
+    F は _memo_feasible が返す同じオブジェクトなので、結果も覚えておく（呼び出し側は読むだけ）。"""
     idx: dict = {}
     for t in F:
         key = t[:3]
