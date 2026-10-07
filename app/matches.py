@@ -141,11 +141,16 @@ def update_record(mid: str, rid: str, rec: dict) -> dict:
     raise KeyError(rid)
 
 
-def delete_record(mid: str, rid: str) -> None:
+def delete_record(mid: str, rid: str) -> list[str]:
     m = ensure_detail(get(mid))
+    reverted: list[str] = []
+    for r in m["detail"]["records"]:
+        if r["id"] == rid and r.get("effect_ops"):
+            reverted = revert_effects(m, r)
     m["detail"]["records"] = [r for r in m["detail"]["records"] if r["id"] != rid]
     m["detail"]["logs"] = [r for r in m["detail"].get("logs", []) if r["id"] != rid]
     _write(m)
+    return reverted
 
 
 def add_log(mid: str, entry: dict) -> dict:
@@ -247,7 +252,7 @@ def _certain_effects(mv: dict) -> dict:
             "side": mv.get("sideCondition"), "weather": mv.get("weather"), "terrain": mv.get("terrain"), "to": mv.get("target")}
 
 
-def apply_record_effect(mid: str, rec: dict) -> list[str]:
+def apply_record_effect(mid: str, rec: dict) -> tuple[list[str], list[dict]]:
     """記録の結果（受けた後のHP・当てた後の%・技の確定効果）を現在の対面に反映し、HP以外の反映内容を文にして返す。"""
     from engine.data import dex
 
@@ -257,6 +262,7 @@ def apply_record_effect(mid: str, rec: dict) -> list[str]:
     cond = rec.get("cond") or {}
     team = m["detail"].get("my_team", [])
     notes: list[str] = []
+    ops: list[dict] = []   # 反映した変更。記録を削除するとき、矛盾しなければ元に戻す
     mv = D.moves.get(rec.get("move") or (rec.get("reveal_value") if rec.get("reveal_type") == "move" else "") or "")
     kind = rec.get("kind")
     miss = bool(cond.get("miss"))
@@ -297,6 +303,7 @@ def apply_record_effect(mid: str, rec: dict) -> list[str]:
                     if new != old:
                         x["boosts"][st] = new
                         notes.append(f"{name(t)} {_RANK_JA[st]}ランク {new - old:+d}")
+                        ops.append({"t": "boost", "side": t[0], "key": t[1], "stat": st, "before": old, "after": new, "label": f"{name(t)} {_RANK_JA[st]}ランク"})
         boost(user, fx["user"])
         if fx["to"] not in ("self", "foeSide", "allySide", "all"):
             boost(target, fx["target"])
@@ -304,16 +311,20 @@ def apply_record_effect(mid: str, rec: dict) -> list[str]:
             if fx["status"] and tgt is not None and tgt["status"] == "none":
                 tgt["status"] = fx["status"]
                 notes.append(f"{name(target)} {_STATUS_JA.get(fx['status'], fx['status'])}")
+                ops.append({"t": "status", "side": target[0], "key": target[1], "before": "none", "after": fx["status"], "label": f"{name(target)} 状態異常"})
         if fx["weather"] and _WEATHER_ID.get(str(fx["weather"]).lower()) and lv["field"].get("weather") != _WEATHER_ID[str(fx["weather"]).lower()]:
+            ops.append({"t": "field", "key": "weather", "before": lv["field"].get("weather"), "after": _WEATHER_ID[str(fx["weather"]).lower()], "label": "天候"})
             lv["field"]["weather"] = _WEATHER_ID[str(fx["weather"]).lower()]
             notes.append(f"天候 {_WEATHER_JA[lv['field']['weather']]}")
         if fx["terrain"] and _TERRAIN_ID.get(str(fx["terrain"]).lower()) and lv["field"].get("terrain") != _TERRAIN_ID[str(fx["terrain"]).lower()]:
+            ops.append({"t": "field", "key": "terrain", "before": lv["field"].get("terrain"), "after": _TERRAIN_ID[str(fx["terrain"]).lower()], "label": "フィールド"})
             lv["field"]["terrain"] = _TERRAIN_ID[str(fx["terrain"]).lower()]
             notes.append(f"フィールド {_TERRAIN_JA[lv['field']['terrain']]}")
         sc = str(fx["side"] or "").lower()
         if sc in ("stealthrock", "spikes", "toxicspikes", "stickyweb"):
             key = "opp_hazards" if user[0] == "my" else "my_hazards"
             h = {"rocks": False, "spikes": 0, "tspikes": 0, "web": False, **(lv["field"].get(key) or {})}
+            h_before = dict(h)
             side_ja = "相手側" if user[0] == "my" else "自分側"
             if sc == "stealthrock" and not h["rocks"]:
                 h["rocks"] = True; notes.append(f"{side_ja} ステルスロック")
@@ -323,24 +334,54 @@ def apply_record_effect(mid: str, rec: dict) -> list[str]:
                 h["tspikes"] += 1; notes.append(f"{side_ja} どくびし{h['tspikes']}層")
             elif sc == "stickyweb" and not h["web"]:
                 h["web"] = True; notes.append(f"{side_ja} ねばねばネット")
+            if h != h_before:
+                ops.append({"t": "field", "key": key, "before": h_before, "after": dict(h), "label": f"{side_ja} 設置"})
             lv["field"][key] = h
         if sc in ("reflect", "lightscreen", "auroraveil"):
             key = "my_screen" if user[0] == "my" else "opp_screen"
             have = {"reflect": {"reflect"}, "lightscreen": {"lightscreen"}, "both": {"reflect", "lightscreen"}}.get(lv["field"].get(key, "none"), set())
             have = have | ({"reflect", "lightscreen"} if sc == "auroraveil" else {sc})
-            lv["field"][key] = "both" if have == {"reflect", "lightscreen"} else next(iter(have))
+            after = "both" if have == {"reflect", "lightscreen"} else next(iter(have))
+            if after != lv["field"].get(key, "none"):
+                ops.append({"t": "field", "key": key, "before": lv["field"].get(key, "none"), "after": after, "label": "壁"})
+            lv["field"][key] = after
             notes.append(f"{'自分側' if user[0] == 'my' else '相手側'} {({'reflect': 'リフレクター', 'lightscreen': 'ひかりのかべ', 'auroraveil': 'オーロラベール'})[sc]}")
     if kind in ("taken", "dealt") and cond.get("opp_mega") and rec.get("opp") in lv["opp"]:
         lv["opp"][rec["opp"]]["mega"] = True
         lv["opp"][rec["opp"]]["mega_state"] = "yes"
     m["detail"]["live"] = lv
     _write(m)
-    return notes
+    return notes, ops
 
 
-def set_record_effects(mid: str, rid: str, effects: list[str]) -> None:
+def set_record_effects(mid: str, rid: str, effects: list[str], ops: list[dict]) -> None:
     m = ensure_detail(get(mid))
     for r in m["detail"]["records"]:
         if r["id"] == rid:
             r["effects"] = effects
+            r["effect_ops"] = ops
     _write(m)
+
+
+def revert_effects(m: dict, rec: dict) -> list[str]:
+    """記録で反映した変更を、いまの値が反映直後のままのものだけ元に戻す。食い違うものは何もしない。"""
+    lv = live_state(m)
+    done: list[str] = []
+    for op in rec.get("effect_ops") or []:
+        t = op.get("t")
+        if t == "boost":
+            x = lv[op["side"]].get(op["key"])
+            if x is not None and x["boosts"].get(op["stat"], 0) == op["after"]:
+                x["boosts"][op["stat"]] = op["before"]
+                done.append(f"{op['label']} {op['before'] - op['after']:+d}")
+        elif t == "status":
+            x = lv[op["side"]].get(op["key"])
+            if x is not None and x["status"] == op["after"]:
+                x["status"] = op["before"]
+                done.append(f"{op['label']} {_STATUS_JA.get(op['after'], op['after'])}を解除")
+        elif t == "field" and lv["field"].get(op["key"], "none" if isinstance(op["after"], str) else {}) == op["after"]:
+            lv["field"][op["key"]] = op["before"]
+            done.append(f"{op['label']} を元に戻した")
+    if done:
+        m["detail"]["live"] = lv
+    return done

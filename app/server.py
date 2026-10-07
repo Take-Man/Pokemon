@@ -796,7 +796,8 @@ def add_battle_record(r: RecordIn):
 
     mid = _current_match_id()
     rec = matches.add_record(mid, _record_dict(r, mid))
-    matches.set_record_effects(mid, rec["id"], matches.apply_record_effect(mid, rec))
+    notes, ops = matches.apply_record_effect(mid, rec)
+    matches.set_record_effects(mid, rec["id"], notes, ops)
     return _bv()
 
 
@@ -816,8 +817,8 @@ def edit_battle_record(rid: str, r: RecordIn):
 def delete_battle_record(rid: str):
     from . import matches
 
-    matches.delete_record(_current_match_id(), rid)
-    return _bv()
+    reverted = matches.delete_record(_current_match_id(), rid)
+    return {**_bv(), "reverted": reverted}
 
 
 @app.get("/api/current.md", response_class=PlainTextResponse)
