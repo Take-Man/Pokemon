@@ -56,7 +56,11 @@ async def auth_and_store(request: Request, call_next):
 @app.exception_handler(sb.LimitExceeded)
 async def on_limit(_request: Request, e: sb.LimitExceeded):
     msg = {"teams": f"保存できるパーティは{e.limit}件まで", "matches": f"残せる対戦履歴は{e.limit}件まで",
-           "imports": f"画像からの取り込みは24時間で{e.limit}回まで"}.get(e.kind, f"{e.kind}は{e.limit}まで")
+           "imports": f"画像からの取り込みは24時間で{e.limit}回まで"}.get(e.kind)
+    if e.kind == "imports_total":  # 全利用者の合計の上限（外部OCRの費用の歯止め）
+        return JSONResponse({"detail": "画像からの取り込みが混み合っているため、いまは使えない。時間をおいて試してください",
+                             "limit": {"kind": e.kind}}, status_code=429)
+    msg = msg or f"{e.kind}は{e.limit}まで"
     return JSONResponse({"detail": f"{msg}（いまのプランの上限）", "limit": {"kind": e.kind, "max": e.limit}}, status_code=403)
 
 

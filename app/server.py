@@ -252,6 +252,9 @@ def delete_team(tid: str):
     return {"ok": True, "active": state.active_team_id()}
 
 
+MAX_IMPORT_PIXELS = 4096 * 4096  # 取り込む画像1枚の上限（スマホ・PCのスクショは十分に収まる）
+
+
 class ImportImagesIn(BaseModel):
     images: list[str]  # 画像のbase64（data URL可）。能力タブとステータスタブの2枚（片方でも可）
 
@@ -269,12 +272,18 @@ def post_import_image(body: ImportImagesIn):
         from screenreader.ocr import OCRUnavailable, get_backend
     except ImportError as e:
         raise HTTPException(503, f"画像の読み取りに必要なライブラリが無い: {e}")
-    if not body.images or len(body.images) > 4:
+    if not body.images or len(body.images) > 2:
         raise HTTPException(400, "画像は1〜2枚")
     imgs = []
     for b in body.images:
         try:
-            imgs.append(Image.open(io.BytesIO(base64.b64decode(b.split(",", 1)[-1]))))
+            im = Image.open(io.BytesIO(base64.b64decode(b.split(",", 1)[-1])))
+            if im.width * im.height > MAX_IMPORT_PIXELS:  # 極端に大きい画像は読む前に断る（展開で重くなる）
+                raise HTTPException(400, "画像が大きすぎる（スクショをそのまま入れてください）")
+            im.load()
+            imgs.append(im)
+        except HTTPException:
+            raise
         except Exception:
             raise HTTPException(400, "画像を開けない")
     # サービス版は24時間の回数に上限（外部OCRの費用の歯止め）。上限なら読む前に断る。

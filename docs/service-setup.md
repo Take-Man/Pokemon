@@ -13,6 +13,7 @@
 2. 左メニュー「SQL Editor」で、[supabase/migrations/](../supabase/migrations/) のSQLを**ファイル名の順に**貼って実行する
    1. `20261008000000_init.sql`（表・RLS・上限）
    2. `20261008010000_image_import_quota.sql`（画像からの取り込みの回数の上限）
+   3. `20261009000000_global_quota.sql`（取り込みの全利用者の合計の上限。既定は24時間で50回）
 3. 「Project Settings → API Keys / Data API」で次の3つを控える（後で Vercel に入れる。新形式の `sb_publishable_…`・`sb_secret_…` でも旧形式の anon・service_role でもよい）
    - Project URL（例: `https://abcdxyz.supabase.co`）→ `SUPABASE_URL`
    - anon / publishable key → `SUPABASE_ANON_KEY`（画面に渡してよい公開キー。RLS で守られる）
@@ -65,7 +66,22 @@ Google Auth Platform で設定する。ログインで使う範囲が openid・e
    - 承認済みドメインに `gyakudame-note.vercel.app` を追加（Supabase のドメインは残す）
 3. 対象: 「アプリを公開」→ 公開ステータスが「本番環境」になる
 
-## 6. 動作確認
+## 6. 使いすぎ対策
+
+アプリ側（1人24時間20回・全体24時間50回の取り込み上限、画像は2枚・4096×4096画素まで）に加えて、次の2つを設定する。
+
+1. **Vercel のレート制限**（Firewall → Configure → + New Rule。Hobby は1ルールまで）
+   - Name: `api-rate-limit`
+   - If: Request Path / Starts with / `/api/`
+   - Then: Rate Limit、Fixed Window、Time Window `60s`、Request Limit `200`、Key: IP Address、Action: Default (429)
+   - Save Rule → Review Changes → Publish
+   - 対戦中の普通の使い方は1分あたり多くても100回ほど。超えた人には「アクセスが多すぎる」と帯で出る
+2. **Google Cloud の割り当て**（料金の最後の砦。Google 側で止まる）
+   - 「APIとサービス → 有効なAPI → Cloud Vision API → 割り当てとシステム上限」
+   - 1日あたり（無ければ1分あたり）のリクエスト数の上限を編集し、1日 300（1分 60）程度にする
+   - 取り込み1回はおよそ3〜4回の呼び出し。アプリ側の全体上限（50回）より少し多めにしておく
+
+## 7. 動作確認
 
 - 開くとログイン画面が出る → Google でログイン → パーティ画面が出る
 - 「アカウント」タブにメールアドレスとプラン（無料・パーティ5件・対戦履歴50件）が出る

@@ -25,7 +25,10 @@ export async function api(path, opt = {}) {
   if (!r.ok) {
     const t = await r.text();
     if (r.status === 401) onUnauthorized();
-    else if (r.status === 403) { let d = t; try { d = JSON.parse(t).detail; } catch (_) { /* 本文のまま */ } banner(d); }
+    else if (r.status === 403 || r.status === 429) {  // 上限・使いすぎ対策（429 は Vercel のレート制限も）
+      let d = ''; try { d = JSON.parse(t).detail; } catch (_) { /* JSON でない */ }
+      banner(d || (r.status === 429 ? 'アクセスが多すぎるため、少し時間をおいてから試してください' : t));
+    }
     else if (r.status >= 500 || r.status === 404) banner(`サーバでエラー（${path.split('?')[0]}）。時間をおいても続くときは知らせてください`);
     throw new Error(t);
   }
