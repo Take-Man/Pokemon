@@ -13,7 +13,7 @@
 2. 左メニュー「SQL Editor」で、[supabase/migrations/](../supabase/migrations/) のSQLを**ファイル名の順に**貼って実行する
    1. `20261008000000_init.sql`（表・RLS・上限）
    2. `20261008010000_image_import_quota.sql`（画像からの取り込みの回数の上限）
-3. 「Project Settings → API」で次の3つを控える（後で Vercel に入れる）
+3. 「Project Settings → API Keys / Data API」で次の3つを控える（後で Vercel に入れる。新形式の `sb_publishable_…`・`sb_secret_…` でも旧形式の anon・service_role でもよい）
    - Project URL（例: `https://abcdxyz.supabase.co`）→ `SUPABASE_URL`
    - anon / publishable key → `SUPABASE_ANON_KEY`（画面に渡してよい公開キー。RLS で守られる）
    - service_role / secret key → `SUPABASE_SERVICE_ROLE_KEY`（**秘密**。アカウント削除だけで使う。画面やGitに出さない）

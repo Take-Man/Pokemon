@@ -97,7 +97,10 @@ def verify(token: str) -> Optional[User]:
 def delete_user(user_id: str) -> None:
     """アカウントを消す（データは on delete cascade で消える）。管理用キーを使う。"""
     key = _env("SUPABASE_SERVICE_ROLE_KEY")
-    r = client().delete(f"{url()}/auth/v1/admin/users/{user_id}", headers={"apikey": key, "Authorization": f"Bearer {key}"})
+    headers = {"apikey": key}
+    if not key.startswith("sb_"):  # 旧形式（JWT）の service_role キーは Bearer にも入れる。新形式（sb_secret_）は apikey だけ
+        headers["Authorization"] = f"Bearer {key}"
+    r = client().delete(f"{url()}/auth/v1/admin/users/{user_id}", headers=headers)
     if r.status_code not in (200, 204):
         raise StoreError(f"アカウントを削除できない: HTTP {r.status_code} {r.text[:200]}")
 

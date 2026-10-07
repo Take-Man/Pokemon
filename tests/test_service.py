@@ -12,6 +12,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 URL = "https://fake.supabase.test"
+SERVICE_KEY = "sb_secret_test"
 USERS = {"tok-a": {"id": "uid-a", "email": "a@example.com"}, "tok-b": {"id": "uid-b", "email": "b@example.com"}}
 LIMITS = {"plan": "free", "max_teams": 2, "max_matches": 3, "max_imports_per_day": 2, "features": {}}
 
@@ -29,8 +30,8 @@ class FakeSupabase:
             u = USERS.get(auth)
             return httpx.Response(200, json=u) if u else httpx.Response(401, json={"msg": "invalid"})
         if path.startswith("/auth/v1/admin/users/"):
-            if auth != "service-key":
-                return httpx.Response(403)
+            if req.headers.get("apikey") != SERVICE_KEY or ("authorization" in req.headers and SERVICE_KEY.startswith("sb_")):
+                return httpx.Response(403)  # 新形式のキーは apikey だけで送る
             uid = path.rsplit("/", 1)[1]
             for t in self.rows.values():
                 t[:] = [r for r in t if r["user_id"] != uid]
@@ -84,8 +85,8 @@ class FakeSupabase:
 @pytest.fixture
 def svc(monkeypatch):
     monkeypatch.setenv("SUPABASE_URL", URL)
-    monkeypatch.setenv("SUPABASE_ANON_KEY", "anon-key")
-    monkeypatch.setenv("SUPABASE_SERVICE_ROLE_KEY", "service-key")
+    monkeypatch.setenv("SUPABASE_ANON_KEY", "sb_publishable_test")
+    monkeypatch.setenv("SUPABASE_SERVICE_ROLE_KEY", SERVICE_KEY)
     had = "PBA_USAGE_DATA" in os.environ
     from service import main, supabase as sb
 
