@@ -277,13 +277,18 @@ def post_import_image(body: ImportImagesIn):
             imgs.append(Image.open(io.BytesIO(base64.b64decode(b.split(",", 1)[-1]))))
         except Exception:
             raise HTTPException(400, "画像を開けない")
+    # サービス版は24時間の回数に上限（外部OCRの費用の歯止め）。上限なら読む前に断る。
+    # 数えるのは読み取りを行ったときだけ: OCR が使えない・OCR サービスの設定や障害で失敗したときは数えない
+    store = storage.current()
+    store.check_quota("image_import")
     try:
-        ocr = get_backend()
-        # 読める状態になってから1回と数える（サービス版は24時間の回数に上限。外部OCRの費用の歯止め）
-        storage.current().use_quota("image_import")
-        res = parse_team_screens(imgs, ocr)
+        res = parse_team_screens(imgs, get_backend())
     except OCRUnavailable as e:
-        raise HTTPException(503, str(e))
+        raise HTTPException(503, f"画像の読み取りサービスを使えない（時間をおいて試してください）: {e}")
+    except Exception:
+        store.use_quota("image_import", strict=False)  # 画像が壊れている等。OCR は呼んでいるので数える
+        raise
+    store.use_quota("image_import", strict=False)
     D = dex()
     for m in res["members"]:
         if not m.get("species"):

@@ -194,3 +194,29 @@ def test_image_import_has_daily_quota(svc, monkeypatch):
     assert r.status_code == 403 and "24時間で2回まで" in r.json()["detail"]
     assert c.post("/api/team/import-image", headers=H_B, json=body).status_code == 200  # 利用者ごと
     assert c.get("/api/account", headers=H_A).json()["usage"]["imports_today"] == 2
+
+
+def test_image_import_not_counted_when_ocr_service_fails(svc, monkeypatch):
+    """OCR サービスの設定・障害で読めなかったときは、取り込みの回数に数えない。"""
+    import base64
+    import io
+
+    from PIL import Image
+
+    import screenreader
+    from screenreader import ocr
+
+    c, fake = svc
+
+    def broken(imgs, o=None):
+        raise ocr.OCRUnavailable("Google Cloud Vision: HTTP 403 blocked")
+
+    monkeypatch.setattr(ocr, "get_backend", lambda prefer=None: object())
+    monkeypatch.setattr(screenreader, "parse_team_screens", broken)
+    buf = io.BytesIO()
+    Image.new("RGB", (20, 10)).save(buf, "JPEG")
+    body = {"images": ["data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()]}
+    for _ in range(LIMITS["max_imports_per_day"] + 1):
+        r = c.post("/api/team/import-image", headers=H_A, json=body)
+        assert r.status_code == 503 and "読み取りサービス" in r.json()["detail"]
+    assert c.get("/api/account", headers=H_A).json()["usage"]["imports_today"] == 0

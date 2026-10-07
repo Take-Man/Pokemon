@@ -236,8 +236,20 @@ class SupabaseStore(Store):
         self._cache.pop(("matches",), None)
 
     # ---- 回数に上限のある機能・アカウント
-    def use_quota(self, kind: str) -> None:
-        self._req("POST", "rpc/use_quota", body={"kind": kind})
+    QUOTA_LIMIT_KEY = {"image_import": ("imports", "max_imports_per_day")}
+
+    def check_quota(self, kind: str) -> None:
+        name, col = self.QUOTA_LIMIT_KEY[kind]
+        lim = self.limits().get(col)
+        if lim is not None and self.used_today(kind) >= lim:
+            raise LimitExceeded(name, lim)
+
+    def use_quota(self, kind: str, strict: bool = True) -> None:
+        try:
+            self._req("POST", "rpc/use_quota", body={"kind": kind})
+        except LimitExceeded:
+            if strict:
+                raise
 
     def used_today(self, kind: str) -> int:
         since = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 86400))

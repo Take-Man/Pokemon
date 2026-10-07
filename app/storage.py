@@ -38,8 +38,13 @@ class Store:
     def put_match(self, m: dict) -> None: raise NotImplementedError
     def delete_match(self, mid: str) -> None: raise NotImplementedError
 
-    # 回数に上限のある機能（画像の取り込み）を1回使う。上限なら例外。ローカル版は数えない
-    def use_quota(self, kind: str) -> None:
+    # 回数に上限のある機能（画像の取り込み）。ローカル版は数えない
+    def check_quota(self, kind: str) -> None:
+        """上限に達していれば例外（使う前に確かめる。数えはしない）。"""
+        return None
+
+    def use_quota(self, kind: str, strict: bool = True) -> None:
+        """1回使ったと記録する。strict=False なら、その間に上限に達していても例外にしない。"""
         return None
 
 
