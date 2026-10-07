@@ -28,7 +28,7 @@ export function loginView() {
   };
   return el('div', { class: 'login' },
     el('div', { class: 'card login-card' },
-      el('h1', {}, '対戦サポート'),
+      el('h1', {}, 'ギャクダメノート'), el('div', { class: 'muted login-en' }, 'Gyakudame Note'),
       el('p', {}, 'ポケモンチャンピオンズ（シングル）の選出・ダメ計・対戦中の型の絞り込みを、手元の端末で素早く引き出すための道具。'),
       el('button', { class: 'btn primary big', onclick: go }, 'Googleでログイン'),
       err,

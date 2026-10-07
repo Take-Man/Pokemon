@@ -28,7 +28,7 @@ PUBLIC = ("/api/config", "/api/meta", "/api/types", "/api/search", "/api/pokemon
 # ローカル版だけの機能
 LOCAL_ONLY = ("/api/collect", "/api/env", "/api/jobs", "/api/team/import-image", "/api/current.md")
 
-app = FastAPI(title="Pokemon Battle Assistant (service)")
+app = FastAPI(title="Gyakudame Note")
 
 
 @app.middleware("http")

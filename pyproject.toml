@@ -1,6 +1,6 @@
 # サービス版（Vercel）の設定。ローカル版は requirements.txt で入れる（README）。
 [project]
-name = "battle-support"
+name = "gyakudame-note"
 version = "0.1.0"
 requires-python = ">=3.12"
 # サービス版の実行に要るものだけ（画像の読み取り・データ取得・テストの依存は入れない）

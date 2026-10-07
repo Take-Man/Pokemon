@@ -41,7 +41,7 @@ async def lifespan(_app):
     yield
 
 
-app = FastAPI(title="Pokemon Battle Assistant", lifespan=lifespan)
+app = FastAPI(title="Gyakudame Note (local)", lifespan=lifespan)
 # /api のルート。ローカル版はこの app に、サービス版（service/main.py）は認証を付けて取り込む
 api = APIRouter()
 app.mount("/static", StaticFiles(directory=STATIC), name="static")

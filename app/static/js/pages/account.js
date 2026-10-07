@@ -30,7 +30,7 @@ async function render(view) {
 async function exportData() {
   const d = await api('/api/account/export');
   const url = URL.createObjectURL(new Blob([JSON.stringify(d, null, 1)], { type: 'application/json' }));
-  const a = el('a', { href: url, download: `battle-support-${new Date().toISOString().slice(0, 10)}.json` });
+  const a = el('a', { href: url, download: `gyakudame-note-${new Date().toISOString().slice(0, 10)}.json` });
   document.body.append(a); a.click(); a.remove(); URL.revokeObjectURL(url);
   toast('書き出した');
 }

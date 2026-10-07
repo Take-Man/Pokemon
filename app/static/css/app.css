@@ -455,3 +455,4 @@ details summary { cursor: pointer; font-weight: 700; margin-top: 8px; }
 .login-card h1 { font-size: 26px; }
 .acc-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed var(--soft-line); }
 .card.danger { border-color: var(--bad); }
+.login-en { margin-top: -10px; letter-spacing: .08em; font-size: 13px; }
