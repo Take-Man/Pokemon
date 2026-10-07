@@ -6,10 +6,13 @@
 - 上位構築の公開データ（/opendata、完了したシーズンのみ。サイトが公式に配布しているもの）
 
 利用規約（2026/6/11版）で「過度な連続アクセス」「大量のデータ取得を目的とした継続的・断続的なアクセス」が
-禁止されているため、次を守る:
-- 同一サイトへのアクセス間隔は3秒以上
-- 詳細ページは既定で上位30体まで。取得済みのものは24時間以内は再取得しない
-- 対戦中の追加取得は、環境データに無い相手の分だけ
+禁止されているため、次を守る（robots.txt・1日の上限・断られたら止める、は base.fetch_html が守る）:
+- 同一サイトへのアクセス間隔は3秒以上。定期的な自動取得はしない（人が「更新を確認」したときと、
+  選出予想で環境データに無い相手が出たときだけ）
+- 一覧の取り直しは1時間に1回まで。詳細ページは既定で上位30体まで
+- 詳細ページは、サイトの更新日時より後に取得済みなら取り直さない（更新日時が分からなければ24時間）。
+  サイトが更新されていても、同じページは6時間以内に取り直さない
+- 取得に失敗したポケモンは6時間は取り直さない
 """
 from __future__ import annotations
 
@@ -17,19 +20,26 @@ import argparse
 import json
 import re
 import sys
-from datetime import datetime, timedelta
-from typing import Optional
+import threading
+from datetime import datetime, timedelta, timezone
+from typing import Callable, Optional
 from urllib.parse import urljoin
 
 from . import base
-from .base import RAW_DIR, SNAP_DIR, fetch_html, now_iso, read_snapshot, write_snapshot
+from .base import RAW_DIR, SNAP_DIR, FetchBlocked, fetch_html, now_iso, read_snapshot, write_snapshot
 
 BASE = "https://champs.pokedb.tokyo/"
 SOURCE = "pokedb"
 RULE_SINGLE = 0
+HOST = "champs.pokedb.tokyo"
 DEFAULT_TOP = 30
-REFRESH_HOURS = 24
-base.MIN_INTERVAL = 3.0
+REFRESH_HOURS = 24  # サイトの更新日時が分からないときの取り直し間隔
+MIN_REFETCH_HOURS = 6  # サイトが更新されていても、同じページはこの時間内に取り直さない
+CHECK_HOURS = 1  # 一覧（更新日時）を取り直す最小間隔
+RETRY_FAILED_HOURS = 6
+JST = timezone(timedelta(hours=9))
+_collect_lock = threading.Lock()  # usage.json の読み→取得→書きを1つずつ行う（別のジョブの結果を上書きしない）
+base.HOST_INTERVAL[HOST] = 3.0
 
 # pokedbのキー（図鑑番号-フォルム番号）→ このアプリのid。-00 と地方フォルムは自動で解決し、残りをここで指定
 KEY_OVERRIDES = {
@@ -215,21 +225,78 @@ def parse_detail(html: str, names: Optional[dict[str, str]] = None) -> dict:
 # 取得
 # ---------------------------------------------------------------------------
 
-def _fresh(entry: Optional[dict], hours: float = REFRESH_HOURS) -> bool:
-    if not entry or not entry.get("fetched_at"):
+def _fresh(entry: Optional[dict], hours: float = REFRESH_HOURS, key: str = "fetched_at") -> bool:
+    if not entry or not entry.get(key):
         return False
-    return datetime.fromisoformat(entry["fetched_at"]) > datetime.now().astimezone() - timedelta(hours=hours)
+    return datetime.fromisoformat(entry[key]) > datetime.now().astimezone() - timedelta(hours=hours)
+
+
+def site_updated_at(tag: Optional[str]) -> Optional[datetime]:
+    """一覧ページの更新日時（例: 2026/10/7 15:19、日本時間）。"""
+    try:
+        return datetime.strptime(tag or "", "%Y/%m/%d %H:%M").replace(tzinfo=JST)
+    except ValueError:
+        return None
+
+
+def _needs_detail(entry: Optional[dict], site_updated: Optional[datetime], failed_at: Optional[str]) -> bool:
+    """詳細ページを取りに行くか。"""
+    if failed_at and _fresh({"t": failed_at}, RETRY_FAILED_HOURS, "t"):
+        return False
+    if not entry or not entry.get("fetched_at"):
+        return True
+    if site_updated is None:
+        return not _fresh(entry, REFRESH_HOURS)
+    return datetime.fromisoformat(entry["fetched_at"]) < site_updated and not _fresh(entry, MIN_REFETCH_HOURS)
+
+
+def status(snap: Optional[dict] = None) -> dict:
+    """画面向け: 環境データの鮮度と、いま「更新を確認」したら取りに行くか（通信しない）。"""
+    from .base import access_status
+
+    snap = snap if snap is not None else (read_snapshot("usage") or {})
+    upd = site_updated_at(snap.get("source_updated"))
+    failed = snap.get("failed") or {}
+    top = [r["id"] for r in snap.get("ranking", []) if r.get("id")][:DEFAULT_TOP]
+    stale = [i for i in top if _needs_detail((snap.get("pokemon") or {}).get(i), upd, failed.get(i))]
+    return {"season_label": snap.get("season_label"), "source_updated": snap.get("source_updated"),
+            "list_fetched_at": snap.get("list_fetched_at"), "fetched_at": snap.get("fetched_at"),
+            "details": len(snap.get("pokemon") or {}), "top": len(top), "stale": len(stale),
+            "can_check": not _fresh(snap, CHECK_HOURS, "list_fetched_at"), "check_hours": CHECK_HOURS,
+            "blocked": snap.get("blocked"), "access": access_status(HOST)}
+
+
+def pending(species: list[str], snap: Optional[dict] = None) -> list[str]:
+    """選出予想で取りに行く相手: ランキングに載っていて、詳細が無いか古く、最近失敗していないもの（通信しない）。"""
+    snap = snap if snap is not None else (read_snapshot("usage") or {})
+    ranked = {r.get("id") for r in snap.get("ranking", [])}
+    upd = site_updated_at(snap.get("source_updated"))
+    failed = snap.get("failed") or {}
+    return [s for s in species
+            if s in ranked and _needs_detail((snap.get("pokemon") or {}).get(s), upd, failed.get(s))]
 
 
 def collect(season: Optional[int] = None, top: int = DEFAULT_TOP, rule: int = RULE_SINGLE,
-            only: Optional[list[str]] = None, force: bool = False, **_: object) -> dict:
-    """一覧と、上位top体（またはonlyの種族）の詳細を取得して usage.json を更新する。"""
+            only: Optional[list[str]] = None, force: bool = False,
+            progress: Optional[Callable[[int, int], None]] = None) -> dict:
+    """一覧と、上位top体（またはonlyの種族）の詳細を取得して usage.json を更新する。
+
+    force: 一覧の確認間隔・詳細の取り直し条件を無視する（robots.txt・1日の上限・断られたときの停止は守る）。
+    progress(済んだ件数, 取得する件数): 詳細を1件取るごとに呼ぶ。
+    """
+    with _collect_lock:
+        return _collect(season, top, rule, only, force, progress)
+
+
+def _collect(season, top, rule, only, force, progress) -> dict:
     from engine.data import dex
 
     D = dex()
     prev = read_snapshot("usage") or {}
     lurl = f"{BASE}pokemon/list?rule={rule}" + (f"&season={season}" if season else "")
-    if (not force and only and prev.get("ranking") and _fresh({"fetched_at": prev.get("list_fetched_at")})
+    # 一覧は、選出予想の追加取得なら24時間、それ以外も1時間以内に取得済みなら使い回す
+    list_hours = REFRESH_HOURS if only else CHECK_HOURS
+    if (not force and prev.get("ranking") and _fresh(prev, list_hours, "list_fetched_at")
             and (season is None or prev.get("season") == season)):
         lst = {"season": prev["season"], "updated": prev.get("source_updated"), "ranking": prev["ranking"]}
         list_fetched = prev.get("list_fetched_at")
@@ -245,34 +312,45 @@ def collect(season: Optional[int] = None, top: int = DEFAULT_TOP, rule: int = RU
     if prev.get("season") != season:
         prev = {}
     pokemon = dict(prev.get("pokemon", {}))
-    names = _name_index()
+    failed = {k: v for k, v in (prev.get("failed") or {}).items() if _fresh({"t": v}, RETRY_FAILED_HOURS, "t")}
+    upd = site_updated_at(lst.get("updated"))
 
     by_id = {r["id"]: r for r in ranking if r["id"]}
     if only:
         targets = [by_id[i] for i in only if i in by_id]
     else:
         targets = [r for r in ranking if r["id"]][:top]
-    errors, fetched = [], 0
-    for r in targets:
-        if not force and _fresh(pokemon.get(r["id"])):
-            continue
+    todo = [r for r in targets if force or _needs_detail(pokemon.get(r["id"]), upd, failed.get(r["id"]))]
+    errors, fetched, blocked = [], 0, None
+    names = _name_index() if todo else {}
+    for k, r in enumerate(todo):
+        if progress:
+            progress(k, len(todo))
         url = f"{BASE}pokemon/show/{r['key']}?season={season}&rule={rule}"
         try:
             det = parse_detail(fetch_html(url, SOURCE), names)
             det.update(fetched_at=now_iso(), url=url, key=r["key"])
             pokemon[r["id"]] = det
+            failed.pop(r["id"], None)
             fetched += 1
+        except FetchBlocked as e:
+            blocked = str(e)  # 断られた・上限に達したら、残りは取りに行かない
+            break
         except Exception as e:  # noqa: BLE001
             errors.append({"id": r["id"], "error": str(e)[:200]})
+            failed[r["id"]] = now_iso()
+    if progress:
+        progress(fetched, len(todo))
     snap = {
         "source": "ポケモンバトルデータベース", "source_url": BASE, "season": season,
         "season_label": f"シーズンM-{season}", "rule": "single", "source_updated": lst.get("updated"),
         "list_fetched_at": list_fetched, "fetched_at": now_iso(),
-        "ranking": ranking, "pokemon": pokemon, "errors": errors,
+        "ranking": ranking, "pokemon": pokemon, "errors": errors, "failed": failed, "blocked": blocked,
         "unresolved_ranking": [r["name"] for r in ranking if not r["id"]],
     }
     write_snapshot("usage", snap)
     snap["_fetched_now"] = fetched
+    snap["_planned"] = len(todo)
     return snap
 
 
@@ -328,7 +406,8 @@ def main(argv=None) -> None:
     u.add_argument("--top", type=int, default=DEFAULT_TOP)
     u.add_argument("--season", type=int)
     u.add_argument("--only", nargs="*", help="このアプリのid（例: garchomp）")
-    u.add_argument("--force", action="store_true", help="24時間以内に取得済みでも取り直す")
+    u.add_argument("--force", action="store_true",
+                   help="取得済みでも取り直す（robots.txt・1日の上限・断られたときの停止は守る）")
     o = sub.add_parser("opendata", help="上位構築の公開データ（前シーズン）を取得")
     o.add_argument("--season", type=int)
     a = ap.parse_args(argv)
@@ -337,7 +416,9 @@ def main(argv=None) -> None:
     elif a.cmd == "update":
         s = collect(a.season, a.top, only=a.only, force=a.force)
         print(f"{s['season_label']}（サイト更新 {s.get('source_updated')}）: ランキング{len(s['ranking'])}件 / "
-              f"詳細 保持{len(s['pokemon'])}件・今回取得{s['_fetched_now']}件 / エラー{len(s['errors'])}件")
+              f"詳細 保持{len(s['pokemon'])}件・今回取得{s['_fetched_now']}/{s['_planned']}件 / エラー{len(s['errors'])}件")
+        if s.get("blocked"):
+            print("取得を途中で止めた:", s["blocked"])
         if s["unresolved_ranking"]:
             print("名前を解決できなかったポケモン:", "、".join(s["unresolved_ranking"]))
     else:

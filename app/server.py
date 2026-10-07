@@ -405,16 +405,16 @@ def post_predict(fetch: bool = True):
     match = matches.create_or_reuse(state.load_opponent()["species"])
     job = None
     if fetch:
+        from collectors import pokedb
+
         snap = load_snapshot() or {}
-        have = set(snap.get("pokemon", {}).keys())
-        missing = [s for s in state.load_opponent()["species"] if s not in have]
+        # ランキングに載っていて詳細が無いか古い相手だけ（最近失敗したもの・ランキング外は取りに行かない）
+        missing = pokedb.pending(state.load_opponent()["species"], snap)
         if missing:
-            from collectors import pokedb
+            def work(report):
+                return pokedb.collect(season=snap.get("season"), only=missing, progress=report)
 
-            def work():
-                return pokedb.collect(season=snap.get("season"), only=missing, merge=True)
-
-            job = jobs.submit(f"pokedb:{','.join(missing)}", work, on_done=lambda _: _run_prediction())
+            job = jobs.submit(f"pokedb:{','.join(sorted(missing))}", work, on_done=lambda _: _run_prediction())
     pred = dict(pred, job=job, match_id=match["id"])
     return pred
 
@@ -430,11 +430,23 @@ def get_jobs():
 
 
 @app.post("/api/collect")
-def post_collect(top: int = 30):
+def post_collect():
+    """環境データの「更新を確認」: 一覧（1時間に1回まで）でサイトの更新日時を見て、上位の詳細のうち
+    更新後に取得していないものだけを取りに行く。取りに行くものが無ければ通信しない。"""
     from collectors import pokedb
 
-    jid = jobs.submit(f"pokedb:top{top}", lambda: pokedb.collect(top=top), on_done=lambda _: state.render_current())
+    jid = jobs.submit("pokedb:update", lambda report: pokedb.collect(progress=report),
+                      on_done=lambda _: state.render_current())
     return {"job": jid}
+
+
+@app.get("/api/env")
+def get_env():
+    """環境データの鮮度と取得の状態（通信しない）。"""
+    from collectors import pokedb
+
+    running = [j for j in jobs.list_jobs() if j["status"] == "running" and j["kind"].startswith("pokedb:")]
+    return pokedb.status() | {"job": running[-1] if running else None}
 
 
 # ---- ダメージ計算 ---------------------------------------------------------------
