@@ -92,3 +92,56 @@ def test_parse_resized_screens(key, w, h):
 
 def test_find_cards_none_on_blank():
     assert find_cards(Image.new("RGB", (800, 600), (240, 220, 180))) is None
+
+
+# ---- Google Cloud Vision（サービス版）: 応答の形を真似た偽物で、まとめて読む仕組みを確かめる ----
+
+def _fake_google():
+    """macOS Vision で読んだ結果を、Google の DOCUMENT_TEXT_DETECTION の応答の形にして返す（語は3文字ずつに分ける）。"""
+    import base64
+    import io
+
+    from screenreader.ocr import VisionOCR
+
+    v = VisionOCR()
+    calls = []
+
+    def post(body):
+        req = body["requests"][0]
+        img = Image.open(io.BytesIO(base64.b64decode(req["image"]["content"])))
+        hints = req["imageContext"]["languageHints"]
+        calls.append((img.size, hints))
+        words = []
+        for ln in v._run(img, ("ja-JP", "en-US") if "ja" in hints else ("en-US",)):
+            n = max(1, -(-len(ln.text) // 3))
+            for k in range(n):
+                part = ln.text[k * 3:(k + 1) * 3]
+                x0 = ln.x + ln.w * k // n
+                x1 = ln.x + ln.w * (k + 1) // n
+                vs = [{"x": x0, "y": ln.y}, {"x": x1, "y": ln.y}, {"x": x1, "y": ln.y + ln.h}, {"x": x0, "y": ln.y + ln.h}]
+                words.append({"boundingBox": {"vertices": vs}, "confidence": ln.conf, "symbols": [{"text": c} for c in part]})
+        return {"responses": [{"fullTextAnnotation": {"pages": [{"blocks": [{"paragraphs": [{"words": words}]}]}]}}]}
+
+    return post, calls
+
+
+@pytest.mark.parametrize("key", ["a", "b"])
+def test_google_backend_reads_real_screens_in_few_calls(key):
+    import sys
+
+    from screenreader.ocr import GoogleVisionOCR
+
+    if sys.platform != "darwin":
+        pytest.skip("偽の Google 応答に macOS Vision を使う")
+    post, calls = _fake_google()
+    g = GoogleVisionOCR(key="test", post=post)
+    res = parse_team_screens(_load(key), g)
+    assert res["warnings"] == [] and res["backend"] == "google-vision"
+    for m, (ja, nature, sp, ability, item, moves) in zip(res["members"], EXPECT[key]):
+        assert m["species_ja"] == ja
+        assert m["nature"] == nature
+        assert tuple(m["sp"][k] for k in ("hp", "atk", "def", "spa", "spd", "spe")) == sp
+        assert (m["ability"], m["item"]) == (ability, item)
+        if moves:
+            assert m["moves"] == moves
+    assert g.calls <= 5  # 1枚ずつ読むと約177回
