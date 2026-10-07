@@ -456,3 +456,11 @@ details summary { cursor: pointer; font-weight: 700; margin-top: 8px; }
 .acc-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed var(--soft-line); }
 .card.danger { border-color: var(--bad); }
 .login-en { margin-top: -10px; letter-spacing: .08em; font-size: 13px; }
+
+/* ---- 確認のダイアログ（confirmBox） ---- */
+.modal { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 16px; background: rgba(20, 16, 40, .45); }
+.modal-card { width: min(440px, 100%); display: grid; gap: 14px; }
+.modal-msg { white-space: pre-line; font-weight: 700; }
+.modal-input { display: grid; gap: 4px; }
+.modal-btns { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+.btn.danger { background: var(--bad); border-color: var(--line); color: #fff; }

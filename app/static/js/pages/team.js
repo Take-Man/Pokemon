@@ -1,4 +1,4 @@
-import { $, el, api, lead, toast, picker, help, typeChip, debounce } from '../ui.js';
+import { $, el, api, lead, toast, picker, help, typeChip, debounce, confirmBox } from '../ui.js';
 import { S, dexInfo, isService, jaOf, loadMeta, loadTypes } from '../store.js';
 
 import { STATS, STAT_JA, spGrid } from '../parts.js';
@@ -27,7 +27,7 @@ function countChanges() {
   team.members.forEach((_, i) => { n += diff(i).size; });
   return n;
 }
-const guard = () => !team || countChanges() === 0 || confirm('保存していない変更があります。破棄して続けますか？');
+const guard = async () => !team || countChanges() === 0 || await confirmBox('保存していない変更があります。破棄して続けますか？', { ok: '破棄して続ける', danger: true });
 window.addEventListener('beforeunload', (e) => { if (team && saved && countChanges() > 0) { e.preventDefault(); e.returnValue = ''; } });
 
 // 変更した項目に印を付け、保存・戻すボタンの状態を合わせる
@@ -96,13 +96,14 @@ function draw(view) {
 
 function teamBar(view) {
   const sel = el('select', { 'aria-label': 'パーティを選ぶ', onchange: async () => {
-    if (!guard()) { sel.value = saved.id; return; }
+    if (!(await guard())) { sel.value = saved.id; return; }
     await api(`/api/teams/active/${sel.value}`, { method: 'PUT' }); await load(view); toast('パーティを切り替えた'); } },
     ...teams.map(t => el('option', { value: t.id, selected: t.id === team.id }, `${t.name || '名前なし'}（${t.members.join('・') || '空'}）`)));
   const name = el('input', { value: team.name || '', placeholder: 'パーティ名', 'aria-label': 'パーティ名', oninput: () => { team.name = name.value; paint(); } });
   const arch = el('select', { 'aria-label': '構築の型', onchange: () => { team.archetype = arch.value; paint(); } },
     ...(team.archetypes || ['スタンダード']).map(a => el('option', { value: a, selected: a === team.archetype }, a)));
-  const act = (label, fn, cls = '') => el('button', { class: 'btn small ' + cls, onclick: async () => { if (!guard()) return; await fn(); await load(view); } }, label);
+  // fn が false を返したら（確認でやめたら）何もしない
+  const act = (label, fn, cls = '') => el('button', { class: 'btn small ' + cls, onclick: async () => { if (!(await guard())) return; if (await fn() === false) return; await load(view); } }, label);
   const save = el('button', { class: 'btn small primary', onclick: () => ask(`変更した ${countChanges()} 項目を保存します。`, '保存する', doSave) }, '保存');
   const revert = el('button', { class: 'btn small', onclick: () => ask(`変更した ${countChanges()} 項目を、保存済みの内容に戻します。入力した内容は失われます。`, '戻す', doRevert, 'alt') }, '保存済みに戻す');
   const state = el('span', { class: 'save-state' }, '✓ 保存済み');
@@ -113,7 +114,7 @@ function teamBar(view) {
       act('＋ 新規', async () => { await api('/api/teams', { method: 'POST', body: { name: '' } }); toast('新しいパーティを作った'); }),
       el('button', { class: 'btn small alt', onclick: () => { const c = $('#import-card'); c.hidden = !c.hidden; } }, '画像から取り込む'),
       act('複製', async () => { await api('/api/teams', { method: 'POST', body: { copy_from: team.id } }); toast('複製した'); }),
-      act('削除', async () => { if (!confirm(`「${saved.name}」を削除しますか？`)) throw new Error('cancel'); await api(`/api/teams/${team.id}`, { method: 'DELETE' }); toast('削除した'); }, 'ghost')),
+      act('削除', async () => { if (!(await confirmBox(`「${saved.name || '名前なし'}」を削除しますか？`, { ok: '削除する', danger: true }))) return false; await api(`/api/teams/${team.id}`, { method: 'DELETE' }); toast('削除した'); }, 'ghost')),
     el('div', { class: 'row', style: 'margin-top:10px' },
       el('div', { class: 'grow' }, el('label', { class: 'f' }, 'パーティ名', name)),
       el('div', { class: 'grow' }, el('label', { class: 'f' }, ['構築の型', help('パーティの戦い方。対面=読み合いで押す／サイクル=交代しながら有利を取る／展開=積み・設置から勝つ／受けループ=耐久で崩す')], arch)),
@@ -292,10 +293,11 @@ function importCard(view) {
     const doImport = async (asNew) => {
       const ms = members();
       if (!ms.length) { toast('取り込める内容がない'); return; }
-      if (!guard()) return;
-      let id = team.id, name = team.name, archetype = team.archetype;
+      if (!(await guard())) return;
+      // 上書きは保存済みの名前・構築の型のまま（編集中の変更は、直前の確認で破棄すると決めている）
+      let id = team.id, name = saved.name, archetype = saved.archetype;
       if (asNew) { const t = await api('/api/teams', { method: 'POST', body: { name: '取り込んだパーティ' } }); id = t.id; name = t.name; archetype = t.archetype; }
-      else if (team.members.some(m => m.species) && !confirm('現在のパーティの内容を上書きします。よろしいですか？')) return;
+      else if (team.members.some(m => m.species) && !(await confirmBox(`「${saved.name || '名前なし'}」の内容を、読み取った6体で上書きします。よろしいですか？`, { ok: '上書きする', danger: true }))) return;
       // 6体の内容を丸ごと入れ替える（読み取れなかった項目は空のまま。別のポケモンの内容が混ざらない）
       await api('/api/team', { method: 'PUT', body: { id, name, archetype, members: ms } });
       await load($('#view'));

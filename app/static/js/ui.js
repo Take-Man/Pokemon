@@ -46,6 +46,29 @@ export function typeFg(t) {
 }
 export const typeChip = (t, label, short = false) => el('span', { class: 'tchip', style: `background:${TYPE_COLOR[t]};color:${typeFg(t)}` }, short ? TYPE_SHORT[t] : label);
 
+// 確認（画面の中に出すダイアログ）。ブラウザ標準の confirm・prompt は、アプリ内ブラウザ（LINE等）で表示されずに
+// 即「キャンセル」になることがあるので使わない。結果は Promise<boolean>。
+// type を渡すと、その文字を入力するまで OK を押せない（取り返しのつかない操作用）
+export function confirmBox(message, { ok = 'OK', cancel = 'やめる', danger = false, type = null } = {}) {
+  return new Promise((resolve) => {
+    const prev = document.activeElement;
+    const close = (v) => { overlay.remove(); document.removeEventListener('keydown', onKey, true); if (prev && prev.focus) prev.focus(); resolve(v); };
+    const input = type ? el('input', { placeholder: type, 'aria-label': `確認のため「${type}」と入力`, oninput: () => { okBtn.disabled = input.value.trim() !== type; } }) : null;
+    const okBtn = el('button', { class: 'btn ' + (danger ? 'danger' : 'primary'), disabled: !!type, onclick: () => close(true) }, ok);
+    const onKey = (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); close(false); }
+      else if (e.key === 'Enter' && !okBtn.disabled && (!type || document.activeElement === input)) { e.preventDefault(); close(true); }
+    };
+    const overlay = el('div', { class: 'modal', role: 'dialog', 'aria-modal': 'true', onclick: (e) => { if (e.target === overlay) close(false); } },
+      el('div', { class: 'modal-card card' }, el('div', { class: 'modal-msg' }, message),
+        input ? el('div', { class: 'modal-input' }, el('small', { class: 'muted' }, `確認のため「${type}」と入力`), input) : '',
+        el('div', { class: 'modal-btns' }, el('button', { class: 'btn ghost', onclick: () => close(false) }, cancel), okBtn)));
+    document.body.append(overlay);
+    document.addEventListener('keydown', onKey, true);
+    (input || okBtn).focus();
+  });
+}
+
 // 「？」マーク。用語の説明をその場で出す
 export const help = (tip) => el('span', { class: 'help', tabindex: '0', 'data-tip': tip, 'aria-label': tip }, '?');
 

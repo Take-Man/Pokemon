@@ -1,4 +1,4 @@
-import { $, el, api, lead, toast, picker, help, debounce, typeChip } from '../ui.js';
+import { $, el, api, lead, toast, picker, help, debounce, typeChip, confirmBox } from '../ui.js';
 import { S, jaOf, loadTypes, monLabel } from '../store.js';
 import { STATS, STAT_JA, STATUS, rankText } from '../parts.js';
 
@@ -78,7 +78,7 @@ function headCard() {
   return el('div', { class: 'card' },
     el('div', { class: 'rv-head' }, el('b', {}, (m.created_at || '').slice(5, 16).replace('T', ' ')), el('span', { class: 'muted' }, `自分: ${B.my_team_name || ''}`),
       el('button', { class: 'btn small ghost', title: '記録の前提になる自分のパーティを、今のパーティで取り直す', onclick: async () => {
-        if (!confirm('自分のパーティのコピーを現在のパーティで取り直しますか？（記録は残る）')) return;
+        if (!(await confirmBox('自分のパーティのコピーを、現在のパーティで取り直しますか？（記録は残る）', { ok: '取り直す' }))) return;
         B = await api('/api/battle/resnapshot', { method: 'POST' }); draw(); } }, 'パーティを取り直す')),
     el('div', { class: 'rv-head' }, ...m.opp_ja.map((ja, i) => el('span', { class: 'chip opp' }, monLabel(ja)))),
     el('div', { class: 'row', style: 'margin-top:8px' }, el('div', { class: 'grow' }, res), el('div', { class: 'grow', style: 'flex-basis:260px' }, memo)));
@@ -86,8 +86,8 @@ function headCard() {
 
 // ---- 選出 ----
 // 選出から外すと、そのポケモンの HP・状態異常・ランクが消えるので確認する
-function unpick(selected, ja, go) {
-  if (selected && !confirm(`${ja} を選出から外すと、HP・状態異常・ランクの記録が消える。外しますか？`)) return;
+async function unpick(selected, ja, go) {
+  if (selected && !(await confirmBox(`${ja} を選出から外すと、HP・状態異常・ランクの記録が消える。外しますか？`, { ok: '外す', danger: true }))) return;
   go();
 }
 function picksCard() {
@@ -118,7 +118,7 @@ async function switchTo(side, key) {
   const patch = { active: { [side]: key } };
   try {
     const hz = await api(`/api/battle/hazard-preview?side=${side}&key=${encodeURIComponent(key)}`);
-    if (hz.lines.length && confirm(`${hz.name} が場に出ると、設置技の影響を受ける。\n\n・${hz.lines.join('\n・')}\n\n反映しますか？`)) {
+    if (hz.lines.length && await confirmBox(`${hz.name} が場に出ると、設置技の影響を受ける。\n\n・${hz.lines.join('\n・')}\n\n反映しますか？`, { ok: '反映する', cancel: '反映しない' })) {
       const cur = lv[side][key] || {}, mon = {};
       if (hz.hp != null) mon.hp = hz.hp;
       if (hz.status && (cur.status || 'none') === 'none') mon.status = hz.status;

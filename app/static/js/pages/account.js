@@ -1,5 +1,5 @@
 // アカウント（サービス版だけ）: ログイン中のメールアドレス、プランと使用量、データの書き出し、ログアウト、削除
-import { el, api, lead, toast, help } from '../ui.js';
+import { el, api, lead, toast, help, confirmBox } from '../ui.js';
 import { signOut } from '../auth.js';
 
 const usageRow = (label, n, max) => el('div', { class: 'acc-row' }, el('span', {}, label),
@@ -37,8 +37,7 @@ async function exportData() {
 }
 
 async function deleteAccount() {
-  if (!confirm('アカウントとすべてのデータを削除します。元には戻せません。よろしいですか？')) return;
-  if (prompt('確認のため「削除」と入力してください') !== '削除') { toast('削除をやめた'); return; }
+  if (!(await confirmBox('アカウントと、パーティ・対戦履歴などすべてのデータを削除します。元には戻せません。', { ok: 'アカウントを削除する', danger: true, type: '削除' }))) { toast('削除をやめた'); return; }
   await api('/api/account', { method: 'DELETE' });
   await signOut();
 }
