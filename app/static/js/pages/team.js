@@ -1,5 +1,5 @@
 import { $, el, api, lead, toast, picker, help, typeChip, debounce } from '../ui.js';
-import { S, dexInfo, loadMeta, loadTypes } from '../store.js';
+import { S, dexInfo, jaOf, loadMeta, loadTypes } from '../store.js';
 
 import { STATS, STAT_JA, spGrid } from '../parts.js';
 import { evaluateTeam } from './evaluate.js';
@@ -52,11 +52,6 @@ function ask(text, okLabel, fn, cls = 'primary') {
 const doSave = async () => { await api('/api/team', { method: 'PUT', body: body() }); await load(viewEl); toast('保存した'); };
 const doRevert = () => { team = clone(saved); draw(viewEl); toast('保存済みの状態に戻した'); };
 
-const jaOf = async (kind, id) => {
-  if (!id) return '';
-  const r = await api(`/api/search?kind=${kind}&q=${encodeURIComponent(id)}&limit=1&include_mega=true`);
-  return r[0] ? r[0].ja : id;
-};
 // 表示用の日本語名（持ち物・技）を付ける。技は4枠の位置に合わせる
 async function labelize(m) {
   m.moves = pad4(m.moves);

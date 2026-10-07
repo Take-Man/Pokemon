@@ -1,6 +1,6 @@
 import { $, el, api, lead, toast, picker, help, debounce, typeChip } from '../ui.js';
-import { S, loadTypes, monLabel } from '../store.js';
-import { STATS, STAT_JA } from '../parts.js';
+import { S, jaOf, loadTypes, monLabel } from '../store.js';
+import { STATS, STAT_JA, STATUS, rankText } from '../parts.js';
 
 let B = null;          // /api/battle の内容
 let edit = null;       // 編集中の記録
@@ -16,7 +16,6 @@ const openState = { detail: true, bench: true };
 // ダメ計の技から、記録の追加フォームを埋めた状態で開く
 export function prefillRecord(p) { prefill = p; kind = p.kind; edit = null; scrollForm = true; location.hash = 'reverse'; }
 
-const STATUS = [['none', 'なし'], ['brn', 'やけど'], ['par', 'まひ'], ['psn', 'どく'], ['tox', 'もうどく'], ['slp', 'ねむり'], ['frz', 'こおり']];
 const STATUS_JA = Object.fromEntries(STATUS);
 const SCREEN = [['none', 'なし'], ['reflect', 'リフレクター'], ['lightscreen', 'ひかりのかべ'], ['both', '両方・オーロラベール']];
 const WEATHER = [['none', 'なし'], ['sun', '晴れ'], ['rain', '雨'], ['sand', '砂嵐'], ['snow', '雪']];
@@ -27,7 +26,6 @@ const pct = (a) => a ? `${a[0]}〜${a[1]}%` : '-';
 const srcTag = (src) => el('span', { class: `src src-${src}` }, SRC_JA[src] || src);
 const moveType = (id) => (S.types.moves[id] || [])[0] || null;
 const moveName = (name, id) => el('span', { class: 'mv' }, moveType(id) ? typeChip(moveType(id), '', true) : '', name);
-const rankText = (v) => v > 0 ? `+${v}` : `${v}`;
 const errMsg = (e) => { try { return JSON.parse(e.message).detail; } catch (_) { return e.message; } };
 
 // 続けて変えたときは0.4秒待ってまとめて送る（間に別のポケモン・項目を変えても取りこぼさないよう、変更を重ねていく）
@@ -273,7 +271,6 @@ function matrixCard() {
 let refreshSummary = () => {};
 let refreshForm = () => {};
 function screenOn(v, physical) { return v === 'both' || (physical ? v === 'reflect' : v === 'lightscreen'); }
-const jaOf = async (k, id) => { if (!id) return ''; const q = await api(`/api/search?kind=${k}&q=${encodeURIComponent(id)}&limit=1&include_mega=true`); return q[0] ? q[0].ja : id; };
 
 function formCard() {
   const card = el('div', { class: 'card', id: 'rv-form' });

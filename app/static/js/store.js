@@ -6,6 +6,16 @@ export async function loadMeta() { return S.meta || (S.meta = await api('/api/me
 export async function loadTypes() { return S.types || (S.types = await api('/api/types')); }
 export async function dexInfo(id) { return S.dex[id] || (S.dex[id] = await api(`/api/pokemon/${encodeURIComponent(id)}`)); }
 
+// id → 日本語名。技は読み込み済みの一覧から引き、持ち物・特性は検索した結果を覚えておく
+const _ja = {};
+export function jaOf(kind, id) {
+  if (!id) return Promise.resolve('');
+  if (kind === 'moves' && S.types && S.types.moves[id]) return Promise.resolve(S.types.moves[id][1]);
+  const key = `${kind}:${id}`;
+  return _ja[key] || (_ja[key] = api(`/api/search?kind=${kind}&q=${encodeURIComponent(id)}&limit=1&include_mega=true`)
+    .then(r => r[0] ? r[0].ja : id, (e) => { delete _ja[key]; throw e; }));
+}
+
 // ポケモン名（日本語）→ タイプ。メガ後の姿も含む
 let _byJa = null;
 export function typesOfJa(ja) {

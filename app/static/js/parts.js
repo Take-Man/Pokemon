@@ -2,6 +2,8 @@ import { el, help } from './ui.js';
 
 export const STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
 export const STAT_JA = { hp: 'H', atk: 'A', def: 'B', spa: 'C', spd: 'D', spe: 'S' };
+export const STATUS = [['none', 'なし'], ['brn', 'やけど'], ['par', 'まひ'], ['psn', 'どく'], ['tox', 'もうどく'], ['slp', 'ねむり'], ['frz', 'こおり']];
+export const rankText = (v) => v > 0 ? `+${v}` : `${v}`;
 export const STAT_TIP = { hp: 'HP（体力）', atk: 'こうげき', def: 'ぼうぎょ', spa: 'とくこう', spd: 'とくぼう', spe: 'すばやさ' };
 
 export function spGrid(sp, onChange) {

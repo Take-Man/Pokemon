@@ -1,6 +1,6 @@
 import { $, el, api, lead, toast, picker, help, typeChip, debounce } from '../ui.js';
-import { S, dexInfo, loadMeta, monLabel } from '../store.js';
-import { STATS, STAT_JA, spGrid } from '../parts.js';
+import { S, dexInfo, jaOf, loadMeta, monLabel } from '../store.js';
+import { STATUS, rankText, spGrid } from '../parts.js';
 import { prefillRecord } from './reverse.js';
 
 const blank = () => ({ species: null, ja: '', nature: null, sp: {}, ability: null, item: null, item_ja: '', boosts: {}, status: 'none', hp_percent: 100, hp: null,
@@ -8,15 +8,8 @@ const blank = () => ({ species: null, ja: '', nature: null, sp: {}, ability: nul
 // 画面を行き来しても選んだ内容が残るようモジュールで保持する
 const C = { me: blank(), opp: blank(), weather: '', terrain: '', myTeam: null, oppIds: null, pred: null, open: false, live: null, syncSig: null };
 
-const STATUS = [['none', 'なし'], ['brn', 'やけど'], ['par', 'まひ'], ['psn', 'どく'], ['tox', 'もうどく'], ['slp', 'ねむり'], ['frz', 'こおり']];
 const RANK_LABEL = { atk: 'こうげき', def: 'ぼうぎょ', spa: 'とくこう', spd: 'とくぼう', spe: 'すばやさ' };
 
-const jaOf = async (kind, id) => {
-  if (!id) return '';
-  if (kind === 'moves' && S.types && S.types.moves[id]) return S.types.moves[id][1];  // 技名は読み込み済みの一覧から引く
-  const r = await api(`/api/search?kind=${kind}&q=${encodeURIComponent(id)}&limit=1&include_mega=true`);
-  return r[0] ? r[0].ja : id;
-};
 
 async function setFromSet(side, set, ja) {
   const x = C[side];
@@ -229,7 +222,6 @@ function statusRow(x, side) {
 }
 
 const rankMult = (st) => st >= 0 ? (2 + st) / 2 : 2 / (2 - st);
-const stageText = (v) => v > 0 ? `+${v}` : `${v}`;
 
 // 素早さライン: 自分の実際の素早さと、相手の最速スカーフ・最速・準速・無振りを並べる（相手の努力は断言できないため）。
 // 左右のスライダーで、素早さのランクを上げ下げした後の比較ができる
@@ -239,9 +231,9 @@ function speedCard(r) {
   const sync = (side) => { const sel = document.querySelector(`[data-rank="${side}-spe"]`); if (sel) sel.value = (C[side].boosts.spe || 0); };
   const ctl = (side) => {
     const x = C[side];
-    const label = el('b', { class: 'stage' }, stageText(x.boosts.spe || 0));
+    const label = el('b', { class: 'stage' }, rankText(x.boosts.spe || 0));
     const range = el('input', { type: 'range', min: -6, max: 6, step: 1, value: x.boosts.spe || 0, 'aria-label': (side === 'me' ? '自分' : '相手') + 'の素早さランク' });
-    const set = (v) => { v = Math.max(-6, Math.min(6, v)); x.boosts.spe = v; range.value = v; label.textContent = stageText(v); sync(side); refresh(null); };
+    const set = (v) => { v = Math.max(-6, Math.min(6, v)); x.boosts.spe = v; range.value = v; label.textContent = rankText(v); sync(side); refresh(null); };
     range.addEventListener('input', () => set(parseInt(range.value, 10)));
     return el('div', { class: 'sctl ' + side }, el('div', { class: 'sctl-head' }, el('span', {}, 'ランク'), label),
       el('button', { class: 'mini', 'aria-label': 'ランクを上げる', onclick: () => set((x.boosts.spe || 0) + 1) }, '＋'), range,

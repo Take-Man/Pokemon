@@ -14,9 +14,9 @@ from pydantic import BaseModel
 from collectors import jobs
 from engine.move_effects import describe as describe_effect
 from engine.damage import Field, Options, Side, calc
-from engine.data import STATS, dex, to_id
+from engine.data import dex, to_id
 from engine.matchup import battle_species, predict
-from engine.sets import MonSet, estimate_set, likely_set, load_snapshot, usage_set
+from engine.sets import MonSet, likely_set, load_snapshot
 from engine.stats import Build, speed_variants, validate_sp
 
 from . import state
@@ -310,11 +310,6 @@ def _diagnose(sets: list[MonSet], archetype: str, top: int):
     return diagnose(sets, archetype, top)
 
 
-@app.get("/api/diagnose")
-def get_diagnose(top: int = 30):
-    return _diagnose(state.team_sets(), state.load_team().get("archetype", "スタンダード"), top)
-
-
 @app.post("/api/diagnose")
 def post_diagnose(d: DiagnoseIn, top: int = 30):
     """保存していない編集中のパーティを診断する。"""
@@ -462,18 +457,6 @@ class SideIn(BaseModel):
     supreme_overlord: int = 0
 
 
-class CalcIn(BaseModel):
-    attacker: SideIn
-    defender: SideIn
-    moves: list[str]
-    weather: Optional[str] = None
-    terrain: Optional[str] = None
-    crit: bool = False
-    hits: Optional[int] = None
-    bp_override: Optional[int] = None
-    log: bool = True
-
-
 def _side(s: SideIn) -> Side:
     D = dex()
     species = D.pokemon[s.species]["id"]
@@ -495,31 +478,6 @@ def _side(s: SideIn) -> Side:
         pct = 100.0 if s.hp >= mx else max(0.0, s.hp * 100 / mx)
     return Side(b, boosts=s.boosts, status=s.status or None, hp_percent=pct, reflect=s.reflect,
                 light_screen=s.light_screen, aurora_veil=s.aurora_veil, supreme_overlord=s.supreme_overlord)
-
-
-@app.post("/api/calc")
-def post_calc(c: CalcIn):
-    D = dex()
-    a, d = _side(c.attacker), _side(c.defender)
-    fld = Field(c.weather or None, c.terrain or None)
-    cur_hp = int(d.build.stats()["hp"] * d.hp_percent / 100)
-    out = []
-    for m in c.moves:
-        if not m or not D.moves.get(m):
-            continue
-        r = calc(a, d, m, fld, Options(crit=c.crit, hits=c.hits, bp_override=c.bp_override))
-        out.append(r.to_dict(cur_hp))
-    res = {
-        "attacker": {"ja": D.pokemon[a.build.species]["ja"], "stats": a.build.stats()},
-        "defender": {"ja": D.pokemon[d.build.species]["ja"], "stats": d.build.stats(), "current_hp": cur_hp},
-        "results": out,
-    }
-    if c.log and out:
-        best = max(out, key=lambda x: x["max"])
-        state.log_calc({"summary": f"{res['attacker']['ja']}の{best['move']} → {res['defender']['ja']}: "
-                                   f"{best['min_pct']}〜{best['max_pct']}%（{best['ko']}）",
-                        "request": c.model_dump(), "results": out})
-    return res
 
 
 class DuelIn(BaseModel):
@@ -585,7 +543,7 @@ def post_duel(c: DuelIn):
         return out, cur
 
     to_opp, opp_hp = run(me, op, c.my_moves, c.opp)
-    omoves = opp_move_list(op.build.species, c.opp.moves if hasattr(c.opp, "moves") else None) \
+    omoves = opp_move_list(op.build.species, c.opp.moves) \
         if c.opp_moves is None else [{"id": m, "ja": D.ja("moves", m), "rate": None, "src": "set"} for m in c.opp_moves]
     to_me, my_hp = run(op, me, [m["id"] for m in omoves], c.me)
     for r, m in zip(to_me, omoves):
