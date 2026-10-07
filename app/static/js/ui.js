@@ -12,16 +12,26 @@ export const el = (tag, attrs = {}, ...kids) => {
 };
 export const debounce = (fn, ms = 250) => { let h; return (...a) => { clearTimeout(h); h = setTimeout(() => fn(...a), ms); }; };
 
+// サービス版はログインのアクセストークンを付ける（auth.js が設定する）。401 なら onUnauthorized（ログイン画面へ）
+let authToken = async () => null;
+let onUnauthorized = () => {};
+export function setAuth(getToken, unauthorized) { authToken = getToken; onUnauthorized = unauthorized; }
+
 export async function api(path, opt = {}) {
-  const r = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opt, body: opt.body ? JSON.stringify(opt.body) : undefined });
+  const headers = { 'Content-Type': 'application/json' };
+  const tok = await authToken();
+  if (tok) headers.Authorization = `Bearer ${tok}`;
+  const r = await fetch(path, { headers, ...opt, body: opt.body ? JSON.stringify(opt.body) : undefined });
   if (!r.ok) {
     const t = await r.text();
-    if (r.status >= 500 || r.status === 404) banner(`サーバでエラー（${path.split('?')[0]}）。ターミナルの表示を確認してください`);
+    if (r.status === 401) onUnauthorized();
+    else if (r.status === 403) { let d = t; try { d = JSON.parse(t).detail; } catch (_) { /* 本文のまま */ } banner(d); }
+    else if (r.status >= 500 || r.status === 404) banner(`サーバでエラー（${path.split('?')[0]}）。時間をおいても続くときは知らせてください`);
     throw new Error(t);
   }
   return r.json();
 }
-export function banner(msg) { const b = $('#banner'); if (b) { b.textContent = msg; b.hidden = false; } }
+export function banner(msg) { const b = $('#banner'); if (b) { b.textContent = msg; b.title = '押すと閉じる'; b.onclick = () => { b.hidden = true; }; b.hidden = false; } }
 export function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('show'), 1800); }
 
 // ---- タイプ ----

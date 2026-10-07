@@ -1,6 +1,10 @@
 import { api, el, typeChip } from './ui.js';
 
-export const S = { meta: null, types: null, dex: {} };
+export const S = { config: null, meta: null, types: null, dex: {} };
+
+// ローカル版（python -m app）かサービス版（ログインあり）か。サービス版はローカル版だけの機能を出さない
+export async function loadConfig() { return S.config || (S.config = await api('/api/config')); }
+export const isService = () => !!(S.config && S.config.mode === 'service');
 
 export async function loadMeta() { return S.meta || (S.meta = await api('/api/meta')); }
 export async function loadTypes() { return S.types || (S.types = await api('/api/types')); }

@@ -1,5 +1,5 @@
 import { $, el, api, lead, toast, picker, help, typeChip, debounce } from '../ui.js';
-import { S, dexInfo, jaOf, loadMeta, loadTypes } from '../store.js';
+import { S, dexInfo, isService, jaOf, loadMeta, loadTypes } from '../store.js';
 
 import { STATS, STAT_JA, spGrid } from '../parts.js';
 import { evaluateTeam } from './evaluate.js';
@@ -87,7 +87,7 @@ export async function applySp(id, index, sp) {
 function draw(view) {
   view.innerHTML = '';
   view.append(lead('1', 'パーティ'));
-  view.append(teamBar(view), importCard(view));
+  view.append(teamBar(view), isService() ? '' : importCard(view));
   const cards = el('div', { class: 'team-cards' });
   cardEls = team.members.map((m, i) => { const c = memberCard(m, i); cards.append(c); return c; });
   view.append(cards);
@@ -111,7 +111,7 @@ function teamBar(view) {
   return el('div', { class: 'card teambar' },
     el('div', { class: 'row' }, el('div', { class: 'grow' }, el('label', { class: 'f' }, 'パーティを選ぶ', sel)),
       act('＋ 新規', async () => { await api('/api/teams', { method: 'POST', body: { name: '' } }); toast('新しいパーティを作った'); }),
-      el('button', { class: 'btn small alt', onclick: () => { const c = $('#import-card'); c.hidden = !c.hidden; } }, '画像から取り込む'),
+      isService() ? '' : el('button', { class: 'btn small alt', onclick: () => { const c = $('#import-card'); c.hidden = !c.hidden; } }, '画像から取り込む'),  // 画像の読み取りはローカル版だけ
       act('複製', async () => { await api('/api/teams', { method: 'POST', body: { copy_from: team.id } }); toast('複製した'); }),
       act('削除', async () => { if (!confirm(`「${saved.name}」を削除しますか？`)) throw new Error('cancel'); await api(`/api/teams/${team.id}`, { method: 'DELETE' }); toast('削除した'); }, 'ghost')),
     el('div', { class: 'row', style: 'margin-top:10px' },

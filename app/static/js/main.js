@@ -1,5 +1,6 @@
 import { $, el, banner } from './ui.js';
-import { loadMeta, loadTypes } from './store.js';
+import { S, isService, loadConfig, loadMeta, loadTypes } from './store.js';
+import { initAuth, loginView } from './auth.js';
 import team from './pages/team.js';
 import select from './pages/select.js';
 import calc from './pages/calc.js';
@@ -7,8 +8,9 @@ import reverse from './pages/reverse.js';
 import evaluate from './pages/evaluate.js';
 import history from './pages/history.js';
 import types from './pages/types.js';
+import account from './pages/account.js';
 
-const pages = [team, select, calc, reverse, evaluate, history, types];
+let pages = [team, select, calc, reverse, evaluate, history, types, account];
 
 function renderNav(cur) {
   const nav = $('#nav'); nav.innerHTML = '';
@@ -30,5 +32,16 @@ async function show() {
   window.scrollTo(0, 0);
 }
 
-window.addEventListener('hashchange', show);
-(async () => { try { await Promise.all([loadMeta(), loadTypes()]); } catch (e) { banner('データの読み込みに失敗。サーバを確認してください'); } show(); })();
+// 起動: サービス版はログインを確かめ、未ログインならログイン画面だけを出す
+(async () => {
+  try { await loadConfig(); } catch (e) { banner('サーバに接続できない。時間をおいて開き直してください'); return; }
+  pages = pages.filter(p => !p.serviceOnly || isService());
+  if (isService()) {
+    let user = null;
+    try { user = await initAuth(S.config); } catch (e) { banner('ログインの準備に失敗。時間をおいて開き直してください'); return; }
+    if (!user) { $('#view').append(loginView()); return; }
+  }
+  window.addEventListener('hashchange', show);
+  try { await Promise.all([loadMeta(), loadTypes()]); } catch (e) { banner('データの読み込みに失敗。サーバを確認してください'); }
+  show();
+})();

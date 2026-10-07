@@ -1,5 +1,5 @@
 import { $, el, api, lead, toast, picker, help, debounce } from '../ui.js';
-import { loadMeta, monLabel } from '../store.js';
+import { isService, loadMeta, monLabel } from '../store.js';
 
 const STAT_JA = { hp: 'H', atk: 'A', def: 'B', spa: 'C', spd: 'D', spe: 'S' };
 let opp = { species: [], ja: [] }, pred = null, oppMtime = null, pollTimer = null, jobMsg = '';
@@ -42,7 +42,7 @@ async function watchJob(view, id) {
 // ---- 環境データ（使用率・型）の鮮度と「更新を確認」 ----
 const hm = (iso) => iso ? iso.slice(5, 16).replace('T', ' ').replace('-', '/') : '-';
 async function drawEnv() {
-  const box = $('#env'); if (!box) return;
+  const box = $('#env'); if (!box || isService()) return;  // サービス版の環境データは運営が更新する
   let e; try { e = await api('/api/env'); } catch (_) { return; }
   box.innerHTML = '';
   if (!e.season_label) { box.append('環境データ: なし（相手の型は種族値から推定）'); }
@@ -102,8 +102,8 @@ export default {
     view.append(el('div', { id: 'result' }));
     drawResult(view);
 
-    // スクショ判定など、ファイル経由で相手の6体が更新されたら反映
-    pollTimer = setInterval(async () => {
+    // スクショ判定など、ファイル経由で相手の6体が更新されたら反映（ローカル版だけ）
+    if (!isService()) pollTimer = setInterval(async () => {
       if (!document.body.contains(slots)) { clearInterval(pollTimer); return; }
       try {
         const o = await api('/api/opponent');
