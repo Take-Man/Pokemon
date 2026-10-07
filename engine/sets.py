@@ -103,13 +103,23 @@ def estimate_set(species_id: str) -> MonSet:
                   "環境データなし: 種族値からの推定")
 
 
+_snap_cache: tuple = (None, None)  # (ファイルの更新時刻・サイズ, 読み込んだ内容)
+
+
 def load_snapshot() -> Optional[dict]:
-    if not SNAPSHOT.exists():
-        return None
+    """環境データ。ファイルが変わるまでは読み込んだ内容を使い回す（読み取り専用として扱う）。"""
+    global _snap_cache
     try:
-        return json.loads(SNAPSHOT.read_text(encoding="utf-8"))
-    except Exception:
+        st = SNAPSHOT.stat()
+    except OSError:
         return None
+    key = (str(SNAPSHOT), st.st_mtime_ns, st.st_size)
+    if _snap_cache[0] != key:
+        try:
+            _snap_cache = (key, json.loads(SNAPSHOT.read_text(encoding="utf-8")))
+        except Exception:
+            return None
+    return _snap_cache[1]
 
 
 def usage_set(species_id: str, snap: Optional[dict] = None) -> Optional[MonSet]:

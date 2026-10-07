@@ -14,8 +14,12 @@ STATS = ("hp", "atk", "def", "spa", "spd", "spe")
 STAT_JA = {"hp": "H", "atk": "A", "def": "B", "spa": "C", "spd": "D", "spe": "S"}
 
 
+_NON_ID = re.compile(r"[^a-z0-9]")
+
+
+@lru_cache(maxsize=4096)
 def to_id(s: str) -> str:
-    return re.sub(r"[^a-z0-9]", "", s.lower())
+    return _NON_ID.sub("", s.lower())
 
 
 def norm_kana(s: str) -> str:
