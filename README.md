@@ -28,12 +28,21 @@ python -m app
 
 ## 環境データの取得
 
+選出画面の「環境データ」の行で鮮度を確認し、「更新を確認」で取り直す。CLIでもできる。
+
 ```
-python -m collectors.pokedb probe          # 初回: サイト構造の確認（結果をClaudeに見せてパーサを確定）
-python -m collectors.pokedb update --top 60
+python -m collectors.pokedb update --top 30
+python -m collectors.pokedb probe          # 保存済みのHTMLでパーサを確認（通信なし）
 ```
 
-取得前でも、相手の型は種族値からの推定で動く。
+取得先（ポケモンバトルデータベース）の利用規約と robots.txt に合わせて、次を守る。
+
+- 自動・定期的には取りに行かない（「更新を確認」を押したとき、CLI、選出予想で環境データの無い相手がいたときだけ）
+- 1件ずつ3秒以上空ける。1日150件まで。断られたら（403・429・5xx）1時間止める。ブラウザを使った取り直しなどの回避はしない
+- User-Agent は個人用ツールであることを名乗る。robots.txt で禁止されたURLは取らない
+- サイトの更新日時より後に取得済みのページは取り直さない。一覧の確認は1時間に1回まで
+
+取得前でも、相手の型は種族値からの推定で動く。今日の件数・停止中かどうかは `data/snapshots/_raw/_access.json`。
 
 ## テスト
 

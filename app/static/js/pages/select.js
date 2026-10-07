@@ -32,11 +32,33 @@ async function watchJob(view, id) {
     await new Promise(r => setTimeout(r, 2000));
     if (!document.body.contains($('#job'))) return;
     const j = (await api('/api/jobs')).find(x => x.id === id);
-    if (!j || j.status === 'running') continue;
-    if (j.status === 'done') { jobMsg = '追加データを反映した ✓'; pred = await api('/api/predict'); drawResult(view); }
+    if (!j || j.status === 'running') { if (j && j.total) { jobMsg = `追加データを取得中… ${j.done}/${j.total}`; drawJob(); } continue; }
+    if (j.status === 'done') { jobMsg = j.warning ? `一部だけ反映した（${j.warning}）` : '追加データを反映した ✓'; pred = await api('/api/predict'); drawResult(view); }
     else jobMsg = `追加データの取得に失敗: ${j.error || ''}`;
-    drawJob(); return;
+    drawJob(); drawEnv(); return;
   }
+}
+
+// ---- 環境データ（使用率・型）の鮮度と「更新を確認」 ----
+const hm = (iso) => iso ? iso.slice(5, 16).replace('T', ' ').replace('-', '/') : '-';
+async function drawEnv() {
+  const box = $('#env'); if (!box) return;
+  let e; try { e = await api('/api/env'); } catch (_) { return; }
+  box.innerHTML = '';
+  if (!e.season_label) { box.append('環境データ: なし（相手の型は種族値から推定）'); }
+  else box.append('環境データ: ', el('b', {}, e.season_label), ` サイト更新 ${e.source_updated || '-'}・確認 ${hm(e.list_fetched_at)}`,
+    e.stale ? `・上位${e.top}体のうち${e.stale}体が古い` : '');
+  const ac = e.access || {};
+  let note = '', disabled = false;
+  if (e.job) { disabled = true; note = e.job.total ? `取得中 ${e.job.done}/${e.job.total}（3秒に1件）` : '取得中…'; }
+  else if (ac.cooldown_until) { disabled = true; note = `サイトに断られたため ${hm(ac.cooldown_until).slice(6)} まで取得を止めている`; }
+  else if (ac.today >= ac.limit) { disabled = true; note = '今日の取得の上限に達した'; }
+  else if (!e.can_check && !e.stale) { disabled = true; note = `${e.check_hours}時間以内に確認済み`; }
+  box.append(' ', el('button', { class: 'btn small ghost', disabled, title: 'サイトの更新日時を確認し、更新後に取得していない上位のポケモンだけを取りに行く（3秒に1件・1日の上限あり）',
+    onclick: async () => { await api('/api/collect', { method: 'POST' }); drawEnv(); } }, '更新を確認'),
+    note ? el('small', { class: 'muted' }, ' ' + note) : '',
+    help(`取得先: ポケモンバトルデータベース。サイトに負担をかけないよう、自動では取りに行かない（押したときと、選出予想でデータの無い相手がいたときだけ）。今日の取得 ${ac.today || 0}/${ac.limit || '-'}件`));
+  if (e.job) setTimeout(drawEnv, 2000);
 }
 function drawJob() { const j = $('#job'); if (j) j.textContent = jobMsg; }
 
@@ -74,7 +96,9 @@ export default {
         el('button', { id: 'go', class: 'btn primary big', onclick: () => runPredict(view) }, '選出を予想する'),
         el('button', { class: 'btn ghost', onclick: async () => { await api('/api/opponent', { method: 'PUT', body: { species: [], source: 'manual' } }); opp = await api('/api/opponent'); oppMtime = opp.mtime; drawSlots(); } }, 'クリア'),
         el('span', { id: 'job', class: 'muted' })),
-      el('div', { style: 'margin-top:10px' }, myTeam)));
+      el('div', { style: 'margin-top:10px' }, myTeam),
+      el('div', { id: 'env', class: 'muted', style: 'margin-top:6px; font-size:13px' })));
+    drawEnv();
     view.append(el('div', { id: 'result' }));
     drawResult(view);
 
