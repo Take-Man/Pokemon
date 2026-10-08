@@ -87,7 +87,7 @@ body.lp-mode .top { position: static; }
 .lp-final h2 { font-size: 28px; color: var(--yellow); margin-bottom: 12px; }
 .lp-final .btn { border-color: #fff8ec; box-shadow: 4px 4px 0 #000; }
 .lp-footer { padding: 28px 0 40px; text-align: center; font-size: 13px; color: var(--ink-2); }
-.lp-disclaimer { max-width: 44em; margin: 8px auto; font-size: 12px; }
+.lp .lp-disclaimer { max-width: 44em; margin: 8px auto; font-size: 12px; text-align: center; }  /* .lp p の余白より優先して中央に置く */
 .lp-copy { font-size: 12px; }
 .lp-footer a { color: var(--ink); font-weight: 700; }
 
