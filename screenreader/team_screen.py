@@ -6,6 +6,7 @@
 """
 from __future__ import annotations
 
+import re
 from typing import Optional
 
 import numpy as np
@@ -101,9 +102,20 @@ def _read_texts(img: Image.Image, ocr: OCR, lines: list[Line], rects: list) -> l
     return out
 
 
+def _display_name(ja: str) -> str:
+    """ゲーム画面の表示名（フォルムの括弧を除く）。例: ダイケンキ(ヒスイ) → ダイケンキ"""
+    return re.sub(r"[（(].*?[)）]", "", ja).strip()
+
+
 def _species_pool():
+    """表示名 → その名前を持つフォルムの一覧（通常のすがたが先）。画面には「ダイケンキ」としか出ないため、
+    ヒスイのすがた等は名前では決めず、特性・実数値・技で後から選ぶ（_pick_form）。"""
     D = dex()
-    return [(r["ja"], r) for r in D.pokemon.rows if not r["isMega"] and r.get("searchable", True)]
+    groups: dict[str, list[str]] = {}
+    for r in D.pokemon.rows:
+        if not r["isMega"] and r.get("searchable", True):
+            groups.setdefault(_display_name(r["ja"]), []).append(r["id"])
+    return [(name, ids) for name, ids in groups.items()]
 
 
 def read_names(img: Image.Image, ocr: OCR, lines: Optional[list[Line]] = None, cards: Optional[list[L.Card]] = None) -> list[dict]:
@@ -112,8 +124,8 @@ def read_names(img: Image.Image, ocr: OCR, lines: Optional[list[Line]] = None, c
     pool = _species_pool()
     out = []
     for raw in _read_texts(img, ocr, lines, [cards[i].rel(L.NAME) for i in range(6)]):
-        row, sc = best(raw, pool, 0.5)
-        out.append({"raw": raw, "species": row["id"] if row else None, "score": round(sc, 2)})
+        forms, sc = best(raw, pool, 0.5)
+        out.append({"raw": raw, "species": forms[0] if forms else None, "forms": forms or [], "score": round(sc, 2)})
     return out
 
 
@@ -136,11 +148,14 @@ def read_abilities_page(img: Image.Image, ocr: OCR, lines: Optional[list[Line]] 
     res = []
     for i, nm in enumerate(names):
         t = texts[i * 6:(i + 1) * 6]
-        m = {"index": i, "species": nm["species"], "species_raw": nm["raw"], "species_score": nm["score"], "flags": []}
-        sp = D.pokemon.get(nm["species"]) if nm["species"] else None
+        m = {"index": i, "species": nm["species"], "forms": nm["forms"], "species_raw": nm["raw"], "species_score": nm["score"],
+             "flags": []}
+        forms = [D.pokemon[f] for f in nm["forms"]]
+        sp = forms[0] if forms else None
         # 特性: その種族の特性に絞る（絞ってもだめなら全体から）
         raw = t[0]
-        pool = [(ja, {"en": en}) for en, ja in zip(sp["abilities"], sp["abilities_ja"])] if sp else []
+        # 特性・技は、同じ名前のフォルムのどれかに当てはまればよい（どのフォルムかは後で決める）
+        pool = list({en: (ja, {"en": en}) for f in forms for en, ja in zip(f["abilities"], f["abilities_ja"])}.values())
         hit, sc = best(raw, pool, 0.45) if pool else (None, 0.0)
         if not hit:
             row, sc = best(raw, abil_pool, 0.6)
@@ -151,7 +166,7 @@ def read_abilities_page(img: Image.Image, ocr: OCR, lines: Optional[list[Line]] 
         row, sc = best(raw, items_pool, 0.6)
         m["item"], m["item_raw"], m["item_score"] = (row["en"] if row else None), raw, round(sc, 2)
         # 技: その種族の覚える技に絞る
-        learn = set(sp["moves"]) if sp else set()
+        learn = {mv for f in forms for mv in f["moves"]}
         lpool = [(r["ja"], r) for r in D.moves.rows if r["id"] in learn]
         moves, mraw, mscore = [], [], []
         for k in range(4):
@@ -232,8 +247,10 @@ def read_stats_page(img: Image.Image, ocr: OCR, cards: Optional[list[L.Card]] = 
                 if stat != "hp":
                     ax0, ax1 = col["label"] + L.ARROW_DX[0], col["label"] + L.ARROW_DX[1]
                     arrows[stat] = _arrow(img, cards[i].rel((ax0, top, ax1, bot)))
-                base = D.pokemon[species[i]]["baseStats"][stat] if species and species[i] else None
-                lo, hi = _plausible(base, stat)
+                # 同じ名前のフォルムが複数あれば、どれかの実数値としてありうる範囲
+                fs = species[i] if species and isinstance(species[i], list) else ([species[i]] if species and species[i] else [])
+                rng = [_plausible(D.pokemon[f]["baseStats"][stat], stat) for f in fs] or [_plausible(None, stat)]
+                lo, hi = min(r[0] for r in rng), max(r[1] for r in rng)
                 jobs.append((cards[i].rel((col["value"][0], top, col["value"][1], bot)), lo, hi))
                 slots.append((i, "values", stat))
                 jobs.append((cards[i].rel((col["sp"][0], top, col["sp"][1], bot)), 0, SP_MAX))
@@ -303,6 +320,20 @@ def solve_stats(species_id: str, arrows: dict, values: dict, sp_raw: dict) -> di
 # まとめ
 # ---------------------------------------------------------------------------
 
+def _pick_form(m: dict, forms: list[str], st: Optional[dict]) -> str:
+    """同じ表示名のフォルムから、読み取った特性 → 実数値 → 技がいちばん合うものを選ぶ（同点なら通常のすがた）。"""
+    D = dex()
+
+    def score(fid):
+        p = D.pokemon[fid]
+        ability = 1 if m.get("ability") and m["ability"] in p["abilities"] else 0
+        stats = solve_stats(fid, st["arrows"], st["values"], st["sp_raw"])["ok_stats"] if st else 0
+        moves = sum(1 for mv in (m.get("moves") or []) if mv and mv in set(p["moves"]))
+        return (ability, stats, moves)
+
+    return max(forms, key=score)  # max は同点なら先のもの（通常のすがた）を返す
+
+
 def parse_team_screens(images: list[Image.Image], ocr: Optional[OCR] = None) -> dict:
     """1〜2枚の画像から6体分の型を返す。"""
     ocr = ocr or get_backend()
@@ -326,13 +357,17 @@ def parse_team_screens(images: list[Image.Image], ocr: Optional[OCR] = None) -> 
                 m.update({k: v for k, v in a.items() if k != "index"})
         else:
             names = read_names(img, ocr, cards=cards)
-            for i, st in enumerate(read_stats_page(img, ocr, cards=cards, species=[n["species"] for n in names])):
+            for i, st in enumerate(read_stats_page(img, ocr, cards=cards, species=[n["forms"] for n in names])):
                 m = members[i]
                 if not m.get("species") and names[i]["species"]:
                     m["species"], m["species_raw"], m["species_score"] = names[i]["species"], names[i]["raw"], names[i]["score"]
+                    m["forms"] = names[i]["forms"]
                 m["_stats_page"] = st
     for m in members:
         st = m.pop("_stats_page", None)
+        forms = m.pop("forms", None) or ([m["species"]] if m.get("species") else [])
+        if len(forms) > 1:
+            m["species"] = _pick_form(m, forms, st)
         if st and m.get("species"):
             sol = solve_stats(m["species"], st["arrows"], st["values"], st["sp_raw"])
             m["nature"], m["sp"] = sol["nature"], sol["sp"]

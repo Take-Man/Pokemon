@@ -36,9 +36,27 @@ EXPECT = {
         ("ブリムオン", "bold", (32, 0, 32, 0, 2, 0), "Magic Bounce", "Sitrus Berry", ["trickroom", "drainingkiss", "psychicnoise", "healingwish"]),
         ("サザンドラ", "modest", (2, 0, 0, 32, 0, 32), "Levitate", "Choice Scarf", ["darkpulse", "dracometeor", "flamethrower", "focusblast"]),
     ],
+    "d": [  # スマホアプリ 1296x599。上部に戻るボタン・コピー。ダイケンキはヒスイのすがた、フラエッテはえいえんのはな（画面の名前だけでは決まらない）
+        ("リザードン", "jolly", (12, 32, 0, 0, 0, 22), "Blaze", "Charizardite X", ["flareblitz", "dragonclaw", "thunderpunch", "dragondance"]),
+        ("ダイケンキ(ヒスイ)", "careful", (28, 1, 4, 0, 25, 8), "Sharpness", "Leftovers", ["ceaselessedge", "icebeam", "suckerpunch", "encore"]),
+        ("サーフゴー", "timid", (1, 0, 1, 32, 0, 32), "Good as Gold", "Choice Scarf", ["makeitrain", "shadowball", "thunderbolt", "trick"]),
+        ("カバルドン", "impish", (32, 0, 22, 0, 12, 0), "Sand Stream", "Rocky Helmet", ["earthquake", "stealthrock", "yawn", "slackoff"]),
+        ("グソクムシャ", "adamant", (13, 21, 0, 0, 0, 32), "Emergency Exit", "Golisopite", ["leechlife", "closecombat", "suckerpunch", "swordsdance"]),
+        ("フラエッテ(えいえんのはな)", "modest", (24, 0, 10, 0, 0, 32), "Flower Veil", "Floettite", ["moonblast", "drainingkiss", "calmmind", "synthesis"]),
+    ],
+    "e": [  # スマホアプリ 2000x924（webp）。上部の帯がチーム名だけ
+        ("イダイトウ", "adamant", (0, 32, 32, 0, 0, 2), "Adaptability", "Life Orb", ["wavecrash", "lastrespects", "aquajet", "outrage"]),
+        ("ジジーロン", "modest", (32, 0, 2, 32, 0, 0), "Berserk", "Drampanite", ["dracometeor", "hypervoice", "flamethrower", "thunderbolt"]),
+        ("サーフゴー", "timid", (2, 0, 0, 32, 0, 32), "Good as Gold", "Choice Scarf", ["makeitrain", "shadowball", "dazzlinggleam", "thunderbolt"]),
+        ("ボーマンダ", "brave", (0, 32, 2, 0, 32, 0), "Moxie", "Salamencite", ["doubleedge", "dracometeor", "bodyslam", "steelwing"]),
+        ("マリルリ", "adamant", (29, 32, 3, 0, 2, 0), "Huge Power", "Sitrus Berry", ["playrough", "aquajet", "liquidation", "bellydrum"]),
+        ("ガブリアス", "jolly", (2, 32, 0, 0, 0, 32), "Rough Skin", "Focus Sash", ["scaleshot", "earthquake", "rocktomb", "swordsdance"]),
+    ],
 }
 FILES = {"a": ("team_screen_abilities.png", "team_screen_stats.png"), "b": ("team_screen_b_abilities.png", "team_screen_b_stats.png"),
-         "c": ("team_screen_c_abilities.webp", "team_screen_c_stats.webp")}
+         "c": ("team_screen_c_abilities.webp", "team_screen_c_stats.webp"),
+         "d": ("team_screen_d_stats.png", "team_screen_d_abilities.png"),  # ステータス→能力の順でも読める
+         "e": ("team_screen_e_abilities.webp", "team_screen_e_stats.webp")}
 
 
 def _load(key, tf=None):
@@ -96,16 +114,16 @@ def test_solve_stats_without_arrows_uses_all_natures():
     assert r["nature"] == "bold" and r["notes"] == []
 
 
-@pytest.mark.parametrize("key", ["a", "b", "c"])
+@pytest.mark.parametrize("key", ["a", "b", "c", "d", "e"])
 def test_parse_jpeg_screens(key):
     """サービス版と同じく JPEG にしても、同じ結果になる。"""
     _check(parse_team_screens(_load(key, _jpeg)), key)
 
 
-@pytest.mark.parametrize("key", ["a", "b", "c"])
+@pytest.mark.parametrize("key", ["a", "b", "c", "d", "e"])
 def test_parse_real_screens(key):
     imgs = _load(key)
-    assert [detect_tab(i) for i in imgs] == ["abilities", "stats"]
+    assert sorted(detect_tab(i) for i in imgs) == ["abilities", "stats"]
     assert find_cards(imgs[0]) is not None
     res = parse_team_screens(imgs)
     assert res["warnings"] == []
@@ -168,7 +186,7 @@ def _fake_google():
     return post, calls
 
 
-@pytest.mark.parametrize("key", ["a", "b", "c"])
+@pytest.mark.parametrize("key", ["a", "b", "c", "d", "e"])
 def test_google_backend_reads_real_screens_in_few_calls(key):
     import sys
 
