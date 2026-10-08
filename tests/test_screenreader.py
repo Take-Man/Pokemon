@@ -28,8 +28,17 @@ EXPECT = {
         ("アシレーヌ", "modest", (32, 0, 24, 0, 0, 10), "Torrent", "Chesto Berry", None),
         ("カエンジシ", "modest", (10, 0, 0, 32, 0, 24), "Unnerve", "Pyroarite", None),
     ],
+    "c": [  # 小さめ 1200x675（webp）。▲▼のアイコンが小さく、JPEG にすると色がにじんで読めない
+        ("リザードン", "bold", (32, 0, 32, 1, 1, 0), "Blaze", "Charizardite Y", ["weatherball", "rocktomb", "solarbeam", "dragonpulse"]),
+        ("カバルドン", "impish", (32, 0, 32, 0, 2, 0), "Sand Stream", "Leftovers", ["protect", "yawn", "earthquake", "slackoff"]),
+        ("イダイトウ", "adamant", (8, 32, 18, 0, 5, 3), "Adaptability", "Spell Tag", ["lastrespects", "aquajet", "agility", "substitute"]),
+        ("ガルーラ", "adamant", (27, 32, 1, 0, 6, 0), "Scrappy", "Kangaskhanite", ["bodyslam", "earthquake", "icepunch", "circlethrow"]),
+        ("ブリムオン", "bold", (32, 0, 32, 0, 2, 0), "Magic Bounce", "Sitrus Berry", ["trickroom", "drainingkiss", "psychicnoise", "healingwish"]),
+        ("サザンドラ", "modest", (2, 0, 0, 32, 0, 32), "Levitate", "Choice Scarf", ["darkpulse", "dracometeor", "flamethrower", "focusblast"]),
+    ],
 }
-FILES = {"a": ("team_screen_abilities.png", "team_screen_stats.png"), "b": ("team_screen_b_abilities.png", "team_screen_b_stats.png")}
+FILES = {"a": ("team_screen_abilities.png", "team_screen_stats.png"), "b": ("team_screen_b_abilities.png", "team_screen_b_stats.png"),
+         "c": ("team_screen_c_abilities.webp", "team_screen_c_stats.webp")}
 
 
 def _load(key, tf=None):
@@ -59,7 +68,41 @@ def test_solve_stats_recovers_nature_and_sp():
     assert r["nature"] == "jolly" and r["sp"] == {"hp": 2, "atk": 32, "def": 0, "spa": 0, "spd": 0, "spe": 32}
 
 
-@pytest.mark.parametrize("key", ["a", "b"])
+def _jpeg(im, quality=90):
+    """サービス版の画面は送る前に JPEG（品質0.9）にする。"""
+    import io
+
+    buf = io.BytesIO()
+    im.save(buf, "JPEG", quality=quality)
+    return Image.open(io.BytesIO(buf.getvalue())).convert("RGB")
+
+
+def _check(res, key):
+    for m, (ja, nature, sp, ability, item, moves) in zip(res["members"], EXPECT[key]):
+        assert m["species_ja"] == ja
+        assert m["nature"] == nature
+        assert tuple(m["sp"][k] for k in ("hp", "atk", "def", "spa", "spd", "spe")) == sp
+        assert (m["ability"], m["item"]) == (ability, item)
+        if moves:
+            assert m["moves"] == moves
+        assert m["flags"] == []
+
+
+def test_solve_stats_without_arrows_uses_all_natures():
+    """▲▼が1つも読めなくても「補正なし」に決め打ちせず、実数値から性格を決める（ずぶとい リザードン）。"""
+    r = solve_stats("charizard", {"atk": None, "def": None, "spa": None, "spd": None, "spe": None},
+                    {"hp": 185, "atk": 93, "def": 143, "spa": 130, "spd": 106, "spe": 120},
+                    {"hp": 32, "atk": 0, "def": 32, "spa": 1, "spd": 1, "spe": 0})
+    assert r["nature"] == "bold" and r["notes"] == []
+
+
+@pytest.mark.parametrize("key", ["a", "b", "c"])
+def test_parse_jpeg_screens(key):
+    """サービス版と同じく JPEG にしても、同じ結果になる。"""
+    _check(parse_team_screens(_load(key, _jpeg)), key)
+
+
+@pytest.mark.parametrize("key", ["a", "b", "c"])
 def test_parse_real_screens(key):
     imgs = _load(key)
     assert [detect_tab(i) for i in imgs] == ["abilities", "stats"]
@@ -125,7 +168,7 @@ def _fake_google():
     return post, calls
 
 
-@pytest.mark.parametrize("key", ["a", "b"])
+@pytest.mark.parametrize("key", ["a", "b", "c"])
 def test_google_backend_reads_real_screens_in_few_calls(key):
     import sys
 
@@ -135,7 +178,7 @@ def test_google_backend_reads_real_screens_in_few_calls(key):
         pytest.skip("偽の Google 応答に macOS Vision を使う")
     post, calls = _fake_google()
     g = GoogleVisionOCR(key="test", post=post)
-    res = parse_team_screens(_load(key), g)
+    res = parse_team_screens(_load(key, _jpeg), g)  # サービス版と同じ: JPEG にして Google で読む
     assert res["warnings"] == [] and res["backend"] == "google-vision"
     for m, (ja, nature, sp, ability, item, moves) in zip(res["members"], EXPECT[key]):
         assert m["species_ja"] == ja

@@ -231,9 +231,10 @@ export default {
 
 // ---- 画像（ゲームの「パーティ確認」画面のスクショ）から取り込む ----
 const readFile = (f) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(f); });
-// サービス版は送る前にJPEG（品質0.9）にする（1回の送信は4.5MBまで。読み取りの結果は変わらないことを実機スクショで確認済み）
+// サービス版は1回の送信が4.5MBまで。小さい画像（1.5MB以下）はそのまま送り（JPEG のにじみで▲▼が読みにくくなるため）、
+// 大きい画像だけJPEG（品質0.9・長辺3000pxまで）にする（実機スクショで読み取り結果が変わらないことを確認済み）
 const toUpload = async (f) => {
-  if (!isService()) return readFile(f);
+  if (!isService() || f.size <= 1.5e6) return readFile(f);
   const bmp = await createImageBitmap(f);
   const s = Math.min(1, 3000 / Math.max(bmp.width, bmp.height));
   const c = el('canvas', { width: Math.round(bmp.width * s), height: Math.round(bmp.height * s) });

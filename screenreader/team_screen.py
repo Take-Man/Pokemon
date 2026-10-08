@@ -61,6 +61,9 @@ def _arrow(img: Image.Image, rect) -> Optional[str]:
     c = np.asarray(img.convert("RGB").crop(rect)).astype(int)
     R, G, B = c[..., 0], c[..., 1], c[..., 2]
     red = ((R > 185) & (G < 150) & (B < 175) & (R - G > 70)).sum()
+    # 小さな画像・JPEG では▲の赤がにじんで上の条件に届かない。背景（紫）は R が G・B の平均より低いので、
+    # R が G・B の平均よりはっきり高い画素も▲として数える
+    red = max(red, int(((R - (G + B) / 2 > 30) & (R > 150)).sum()))
     blue = ((B > 185) & (R < 140) & (G > 80) & (B - R > 80)).sum()
     need = max(3, int(0.0003 * c.shape[0] * c.shape[1]))
     if red >= need and red > blue:
@@ -258,12 +261,14 @@ def solve_stats(species_id: str, arrows: dict, values: dict, sp_raw: dict) -> di
     down = [s for s, a in arrows.items() if a == "down"]
     natures = D.natures.rows
 
-    def candidates():
-        exact = [n for n in natures if (n["plus"] is None and not up and not down) or
-                 (n["plus"] and up == [n["plus"]] and down == [n["minus"]])]
-        if exact:
-            return [n for n in exact if n["plus"] or n["id"] == NEUTRAL]
-        return natures  # アイコンが読めなかった: 全部から実数値で決める
+    # ▲▼は小さく、縮小・JPEG では読めない・読み違えることがあるので、決め手にはしない。
+    # 性格は「実数値が合う項目の数」→「読み取った能力ポイントとの一致」で決め、▲▼は同点のときだけ使う
+    def arrow_score(n):
+        if not up and not down:
+            return 0
+        return sum(1 if n["plus"] == st else -1 for st in up) + sum(1 if n["minus"] == st else -1 for st in down)
+
+    candidates = [n for n in natures if n["plus"] or n["id"] == NEUTRAL]  # 補正なしの5性格は実数値が同じなので1つで代表
 
     def fit(n):
         ok, sps, miss = 0, {}, []
@@ -283,8 +288,8 @@ def solve_stats(species_id: str, arrows: dict, values: dict, sp_raw: dict) -> di
             ok -= 10
         return ok, agree, sps, miss
 
-    scored = [(fit(n), n) for n in candidates()]
-    (ok, agree, sps, miss), n = max(scored, key=lambda t: (t[0][0], t[0][1]))
+    scored = [(fit(n), arrow_score(n), n) for n in candidates]
+    (ok, agree, sps, miss), _, n = max(scored, key=lambda t: (t[0][0], t[0][1], t[1]))
     notes = []
     if miss:
         notes.append("実数値が合わない項目: " + "・".join(STAT_JA[s] for s in miss))
