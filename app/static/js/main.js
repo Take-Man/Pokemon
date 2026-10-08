@@ -1,6 +1,7 @@
 import { $, el, banner } from './ui.js';
 import { S, isService, loadConfig, loadMeta, loadTypes } from './store.js';
-import { initAuth, loginView } from './auth.js';
+import { initAuth, startLogin } from './auth.js';
+import { landingView } from './landing.js';
 import team from './pages/team.js';
 import select from './pages/select.js';
 import calc from './pages/calc.js';
@@ -32,14 +33,19 @@ async function show() {
   window.scrollTo(0, 0);
 }
 
-// 起動: サービス版はログインを確かめ、未ログインならログイン画面だけを出す
+// 起動: サービス版はログインを確かめ、未ログインならランディングページ（サービスの紹介とログイン）を出す
 (async () => {
   try { await loadConfig(); } catch (e) { banner('サーバに接続できない。時間をおいて開き直してください'); return; }
   pages = pages.filter(p => !p.serviceOnly || isService());
   if (isService()) {
     let user = null;
     try { user = await initAuth(S.config); } catch (e) { banner('ログインの準備に失敗。時間をおいて開き直してください'); return; }
-    if (!user) { $('#view').append(loginView()); return; }
+    if (!user) {
+      document.body.classList.add('lp-mode');
+      $('#nav').append(el('button', { class: 'btn small primary lp-login', onclick: startLogin }, 'ログイン'));
+      $('#view').append(landingView(startLogin));
+      return;
+    }
   }
   window.addEventListener('hashchange', show);
   try { await Promise.all([loadMeta(), loadTypes()]); } catch (e) { banner('データの読み込みに失敗。サーバを確認してください'); }

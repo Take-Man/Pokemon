@@ -1,5 +1,5 @@
 // サービス版のログイン（Supabase Auth・Google）。ローカル版では読み込まない
-import { el, setAuth } from './ui.js';
+import { banner, setAuth } from './ui.js';
 
 const SUPABASE_JS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/+esm';
 let client = null;
@@ -20,18 +20,8 @@ export async function initAuth(config) {
 
 export async function signOut() { await client.auth.signOut(); location.hash = ''; location.reload(); }
 
-export function loginView() {
-  const err = el('div', { class: 'err', hidden: true });
-  const go = async () => {
-    const { error } = await client.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + '/' } });
-    if (error) { err.textContent = 'ログインを始められなかった: ' + error.message; err.hidden = false; }
-  };
-  return el('div', { class: 'login' },
-    el('div', { class: 'card login-card' },
-      el('h1', {}, 'ギャクダメノート'), el('div', { class: 'muted login-en' }, 'Gyakudame Note'),
-      el('p', {}, 'ポケモンチャンピオンズ（シングル）の選出・ダメ計・対戦中の型の絞り込みを、手元の端末で素早く引き出すための道具。'),
-      el('button', { class: 'btn primary big', onclick: go }, 'Googleでログイン'),
-      err,
-      el('p', { class: 'muted', style: 'font-size:13px' }, '保存する個人情報はログイン用のメールアドレスだけ。パーティと対戦履歴は本人しか見られない。'),
-      el('p', { class: 'muted', style: 'font-size:13px' }, el('a', { href: '/terms' }, '利用規約'), '・', el('a', { href: '/privacy' }, 'プライバシーポリシー'), '・', el('a', { href: 'https://forms.gle/BZJUwgC3okBH2XrW9', target: '_blank', rel: 'noopener' }, 'お問い合わせ'))));
+// Google のログイン画面へ移る（戻ってくると initAuth がログイン済みとして扱う）
+export async function startLogin() {
+  const { error } = await client.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + '/' } });
+  if (error) banner('ログインを始められなかった: ' + error.message);
 }

@@ -55,7 +55,7 @@ subscriptions（将来） user_id / stripe_customer_id / status / plan / current
 
 - `app/storage.py`: 保存先の差し替え口。ローカル版は `FileStore`（今のファイル）、サービス版は `service/supabase.py` の `SupabaseStore`（利用者のアクセストークンでPostgRESTを呼ぶ）
 - サービス用の入口 `service/main.py`（FastAPI）。`app/server.py` の /api（APIRouter）をそのまま取り込み、ログインの確認と保存先の切り替えだけを足す
-- 画面は `/api/config` で版を知り（`store.js` の `isService()`）、サービス版ではログイン画面（`auth.js`）・アカウント画面を出し、ローカル版だけの機能を隠す
+- 画面は `/api/config` で版を知り（`store.js` の `isService()`）、サービス版では未ログインならランディングページ（`landing.js`。サービスの紹介とGoogleログイン、ログアウト後もここ）、ログイン後はアカウント画面を出し、ローカル版だけの機能を隠す
 - 逆算のキャッシュは関数の中に残る（同じ実体が続けて使われる間は速い）。初回だけ1〜数秒かかることがある
 
 ## 画面: 流用か作り直しか
@@ -116,7 +116,7 @@ subscriptions（将来） user_id / stripe_customer_id / status / plan / current
 | 保存先の差し替え口（ローカル版の動作は旧コードと一致を確認） | app/storage.py |
 | テーブル・RLS・上限・登録時のプロフィール作成 | supabase/migrations/ |
 | ログインの確認・利用者ごとの保存先・アカウント（情報・書き出し・削除） | service/ |
-| ログイン画面・アカウント画面・ローカル版だけの機能を隠す | app/static/js/auth.js、pages/account.js |
+| ランディングページ（未ログイン・ログアウト後）・アカウント画面・ローカル版だけの機能を隠す | app/static/js/landing.js、auth.js、pages/account.js、css/landing.css |
 | Vercel の設定（東京リージョン、使わないファイルを除外） | pyproject.toml、vercel.json |
 | 画像からの取り込み: OCR の呼び出しをまとめて Google Cloud Vision で読む（1回の取り込みで3〜4回の呼び出し）、24時間の回数の上限 | screenreader/ocr.py、supabase/migrations/20261008010000_* |
 | 使いすぎ対策: 取り込みの全利用者の合計の上限（app_limits）、画像の枚数・大きさの制限、Vercel のレート制限（IPごと1分200回）、Google Cloud の割り当て | supabase/migrations/20261009000000_*、service-setup.md の6 |
